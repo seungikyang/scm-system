@@ -1,0 +1,57 @@
+// 실제 파일 위치 예: build.gradle (프로젝트 루트)
+// 목표: SCM 시스템에 필요한 의존성과 Java/Spring Boot 버전을 채우세요.
+//       TRD 3.1 참고.
+
+plugins {
+    // TODO 01: Spring Boot 3.x 플러그인 ID 를 채우세요.
+    id 'org.springframework.boot' version '____'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    // TODO 02: 이 프로젝트에서 사용할 Java 버전은?
+    sourceCompatibility = JavaVersion.VERSION_____
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // TODO 03: REST 컨트롤러 + Tomcat + Jackson 을 묶어 주는 starter 는?
+    implementation 'org.springframework.boot:spring-boot-starter-____'
+
+    // TODO 04: JPA + Hibernate Repository 자동 구현을 제공하는 starter 는?
+    implementation 'org.springframework.boot:spring-boot-starter-____'
+
+    // TODO 05: @Valid 와 Hibernate Validator(jakarta.validation) 를 활성화하는 starter 는?
+    implementation 'org.springframework.boot:spring-boot-starter-____'
+
+    // TODO 06: 서버 사이드 렌더링 화면(PRD 2.7) 을 위한 starter 는?
+    implementation 'org.springframework.boot:spring-boot-starter-____'
+
+    // Lombok (선택)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // TODO 07: 인메모리 DB 로 학습용에 적합한 DB 는?
+    runtimeOnly 'com.h2database:____'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// 학습 질문:
+// Q1. spring-boot-starter-web 과 spring-boot-starter-thymeleaf 를 같이 쓰면 어떤 일이 가능한가?
+//     A:
+// Q2. Spring Boot 3.x 부터 javax.* 가 jakarta.* 로 바뀐 의미는?
+//     A:
+// Q3. 운영 DB 로 MySQL 을 쓴다면 어떤 의존성을 추가해야 하는가?
+//     A:

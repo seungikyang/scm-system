@@ -1,0 +1,47 @@
+# 실제 파일 위치 예: src/main/resources/application.yml
+# 목표: 로컬 개발용 H2 + JPA 설정을 채우세요. TRD 3.1, 3.2 참고.
+
+spring:
+  datasource:
+    # TODO 01: H2 인메모리 모드 + 테스트 모드 끄기 설정을 채우세요.
+    url: jdbc:h2:mem:scmdb;MODE=____;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      # TODO 02: 로컬에서 http://localhost:8080/h2-console 로 접속하려면?
+      enabled: ____
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      # TODO 03: 학습용: 시작할 때마다 스키마를 새로 만들고 종료 시 drop 하려면?
+      ddl-auto: ____
+    properties:
+      hibernate:
+        # TODO 04: 실행되는 SQL 을 보기 좋게 포맷하려면?
+        format_sql: ____
+    # TODO 05: 콘솔에 SQL 을 찍어 보려면?
+    show-sql: ____
+    # open-in-view 의 의미를 한 줄로 적어 보세요:
+    # A:
+    open-in-view: false
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    # TODO 06: JPA 파라미터 바인딩 값을 보려면?
+    org.hibernate.orm.jdbc.bind: ____
+
+# 학습 질문:
+# Q1. ddl-auto 값 create / create-drop / update / validate / none 의 차이는?
+#     A:
+# Q2. 운영 환경에서 ddl-auto 로 안전한 값은?
+#     A:
+# Q3. open-in-view=false 로 두면 어떤 장점/단점이 있는가?
+#     A:
