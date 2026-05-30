@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('거래처 상세 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${partner.name}">거래처명</h1>
+        <div class="form-actions" style="margin:0;"
+             th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}">
+            <a class="btn btn-ghost" th:href="@{/partners/{id}/edit(id=${partner.partnerId})}">수정</a>
+            <form class="inline-form" th:action="@{/partners/{id}/deactivate(id=${partner.partnerId})}" method="post"
+                  th:if="${partner.status.name() == 'ACTIVE'}"
+                  onsubmit="return confirm('이 거래처를 비활성 처리하시겠습니까?');">
+                <button type="submit" class="btn btn-danger">비활성</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <dl class="detail">
+            <dt>거래처명</dt><dd th:text="${partner.name}">거래처명</dd>
+            <dt>사업자번호</dt><dd th:text="${partner.businessNumber}">000-00-00000</dd>
+            <dt>유형</dt><dd th:text="${partner.partnerType}">SUPPLIER</dd>
+            <dt>상태</dt>
+            <dd><span class="badge" th:classappend="'badge-' + ${partner.status}" th:text="${partner.status}">ACTIVE</span></dd>
+            <dt>담당자명</dt><dd th:text="${partner.contactName} ?: '-'">담당자</dd>
+            <dt>연락처</dt><dd th:text="${partner.phone} ?: '-'">연락처</dd>
+            <dt>이메일</dt><dd th:text="${partner.email} ?: '-'">이메일</dd>
+            <dt>주소</dt><dd th:text="${partner.address} ?: '-'">주소</dd>
+            <dt>등록일시</dt><dd th:text="${partner.createdAt}">-</dd>
+            <dt>수정일시</dt><dd th:text="${partner.updatedAt} ?: '-'">-</dd>
+        </dl>
+    </div>
+
+    <a class="btn btn-ghost" th:href="@{/partners}">&larr; 목록으로</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('대시보드 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>대시보드</h1>
+        <span class="muted" th:if="${currentUser != null}"
+              th:text="|환영합니다, ${currentUser.name()}님|">환영합니다</span>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="label">거래처</div>
+            <div class="value" th:text="${partnerCount}">0</div>
+            <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+               th:href="@{/partners}">거래처 관리 &rarr;</a>
+        </div>
+        <div class="stat-card">
+            <div class="label">카테고리</div>
+            <div class="value" th:text="${categoryCount}">0</div>
+            <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+               th:href="@{/categories}">카테고리 관리 &rarr;</a>
+        </div>
+        <div class="stat-card">
+            <div class="label">품목</div>
+            <div class="value" th:text="${itemCount}">0</div>
+            <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+               th:href="@{/items}">품목 관리 &rarr;</a>
+        </div>
+        <div class="stat-card">
+            <div class="label">결재 대기 발주(REQUESTED)</div>
+            <div class="value" th:text="${purchaseOrderPendingCount}">0</div>
+            <a th:if="${currentUser != null and (currentUser.role().name() == 'ADMIN' or currentUser.role().name() == 'MANAGER')}"
+               th:href="@{/admin/purchase-orders(status='REQUESTED')}">승인 관리 &rarr;</a>
+        </div>
+        <div class="stat-card">
+            <div class="label">내 발주</div>
+            <div class="value" th:text="${myPurchaseOrderCount}">0</div>
+            <a th:href="@{/purchase-orders/my}">내 발주 보기 &rarr;</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>바로가기</h2>
+        <div class="quick-links">
+            <a class="btn btn-primary" th:href="@{/purchase-orders/new}">발주서 작성</a>
+            <a class="btn btn-ghost" th:href="@{/purchase-orders/my}">내 발주 목록</a>
+            <a th:if="${currentUser != null and (currentUser.role().name() == 'ADMIN' or currentUser.role().name() == 'MANAGER')}"
+               class="btn btn-ghost" th:href="@{/admin/purchase-orders}">발주 승인 관리</a>
+            <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+               class="btn btn-ghost" th:href="@{/partners}">거래처</a>
+            <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+               class="btn btn-ghost" th:href="@{/items}">품목</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

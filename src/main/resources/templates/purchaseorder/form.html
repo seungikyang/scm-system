@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('발주서 작성 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>발주서 작성</h1>
+    </div>
+
+    <div class="card">
+        <!-- POST /purchase-orders ; th:object=purchaseOrderForm ; 라인 인덱스 바인딩 lines[i].itemId/quantity/unitPrice -->
+        <form th:object="${purchaseOrderForm}" th:action="@{/purchase-orders}" method="post">
+
+            <!-- 전역(라인 리스트) 검증 에러 -->
+            <div class="alert alert-error" th:if="${#fields.hasErrors('lines')}" th:errors="*{lines}">라인 오류</div>
+
+            <div class="form-row">
+                <label for="partnerId">공급사<span class="req">*</span></label>
+                <select id="partnerId" th:field="*{partnerId}"
+                        th:classappend="${#fields.hasErrors('partnerId')} ? 'invalid'">
+                    <option value="">선택</option>
+                    <option th:each="p : ${partners}" th:value="${p.id}" th:text="${p.name}">공급사</option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('partnerId')}" th:errors="*{partnerId}"></span>
+            </div>
+
+            <div class="search-bar" style="align-items:flex-start;">
+                <div class="form-row">
+                    <label for="orderDate">발주일<span class="req">*</span></label>
+                    <input type="date" id="orderDate" th:field="*{orderDate}"
+                           th:classappend="${#fields.hasErrors('orderDate')} ? 'invalid'">
+                    <span class="field-error" th:if="${#fields.hasErrors('orderDate')}" th:errors="*{orderDate}"></span>
+                </div>
+                <div class="form-row">
+                    <label for="dueDate">납기일</label>
+                    <input type="date" id="dueDate" th:field="*{dueDate}"
+                           th:classappend="${#fields.hasErrors('dueDate')} ? 'invalid'">
+                    <span class="field-error" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></span>
+                </div>
+            </div>
+
+            <h2 style="font-size:16px;margin:18px 0 10px;">발주 라인</h2>
+            <p class="muted" style="font-size:12px;margin:0 0 10px;">단가 미입력 시 품목 표준단가가 적용됩니다.</p>
+
+            <table class="data">
+                <thead>
+                <tr>
+                    <th style="width:48px;">#</th>
+                    <th>품목<span class="req">*</span></th>
+                    <th style="width:140px;">수량<span class="req">*</span></th>
+                    <th style="width:180px;">단가</th>
+                    <th style="width:80px;"></th>
+                </tr>
+                </thead>
+                <tbody id="po-line-body">
+                <!-- 서버 렌더 라인(에러/값 round-trip). data-name 으로 JS reindex 대상 표시 -->
+                <tr class="po-line" th:each="line, st : *{lines}">
+                    <td><span class="po-line-no" th:text="${st.index + 1}">1</span></td>
+                    <td>
+                        <select data-name="itemId"
+                                th:field="*{lines[__${st.index}__].itemId}"
+                                th:classappend="${#fields.hasErrors('lines[' + st.index + '].itemId')} ? 'invalid'">
+                            <option value="">선택</option>
+                            <option th:each="it : ${items}" th:value="${it.id}" th:data-price="${it.unitPrice}"
+                                    th:text="${it.itemCode + ' - ' + it.name}">품목</option>
+                        </select>
+                        <span class="field-error"
+                              th:if="${#fields.hasErrors('lines[' + st.index + '].itemId')}"
+                              th:errors="*{lines[__${st.index}__].itemId}"></span>
+                    </td>
+                    <td>
+                        <input type="number" data-name="quantity" min="1" step="1"
+                               th:field="*{lines[__${st.index}__].quantity}"
+                               th:classappend="${#fields.hasErrors('lines[' + st.index + '].quantity')} ? 'invalid'">
+                        <span class="field-error"
+                              th:if="${#fields.hasErrors('lines[' + st.index + '].quantity')}"
+                              th:errors="*{lines[__${st.index}__].quantity}"></span>
+                    </td>
+                    <td>
+                        <input type="number" data-name="unitPrice" min="0" step="1"
+                               placeholder="미입력 시 표준단가 적용"
+                               th:field="*{lines[__${st.index}__].unitPrice}"
+                               th:classappend="${#fields.hasErrors('lines[' + st.index + '].unitPrice')} ? 'invalid'">
+                        <span class="field-error"
+                              th:if="${#fields.hasErrors('lines[' + st.index + '].unitPrice')}"
+                              th:errors="*{lines[__${st.index}__].unitPrice}"></span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-ghost btn-sm po-remove-line">삭제</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-2">
+                <button type="button" class="btn btn-ghost btn-sm" id="po-add-line">+ 라인 추가</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">발주서 작성</button>
+                <a class="btn btn-ghost" th:href="@{/purchase-orders/my}">취소</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- 라인 추가용 빈 행 템플릿 (data-name 만 보유; JS 가 lines[i].* name/id 부여) -->
+    <template id="po-line-template">
+        <tr class="po-line">
+            <td><span class="po-line-no">0</span></td>
+            <td>
+                <select data-name="itemId">
+                    <option value="">선택</option>
+                    <option th:each="it : ${items}" th:value="${it.id}" th:data-price="${it.unitPrice}"
+                            th:text="${it.itemCode + ' - ' + it.name}">품목</option>
+                </select>
+            </td>
+            <td><input type="number" data-name="quantity" min="1" step="1"></td>
+            <td><input type="number" data-name="unitPrice" min="0" step="1" placeholder="미입력 시 표준단가 적용"></td>
+            <td><button type="button" class="btn btn-ghost btn-sm po-remove-line">삭제</button></td>
+        </tr>
+    </template>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script th:src="@{/js/purchase-order-form.js}"></script>
+</body>
+</html>

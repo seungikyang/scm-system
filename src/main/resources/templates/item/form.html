@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('품목 ' + (${mode} == 'edit' ? '수정' : '등록') + ' - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${mode == 'edit'} ? '품목 수정' : '품목 등록'">품목 등록</h1>
+    </div>
+
+    <div class="card">
+        <!-- create: POST /items, edit: POST /items/{id} -->
+        <form th:object="${itemForm}"
+              th:action="${mode == 'edit'} ? @{/items/{id}(id=${itemId})} : @{/items}"
+              method="post">
+
+            <div class="form-row">
+                <label for="itemCode">품목코드<span class="req">*</span></label>
+                <input type="text" id="itemCode" th:field="*{itemCode}"
+                       th:classappend="${#fields.hasErrors('itemCode')} ? 'invalid'"
+                       th:readonly="${mode == 'edit'}">
+                <span class="field-error" th:if="${#fields.hasErrors('itemCode')}" th:errors="*{itemCode}"></span>
+                <span class="muted" th:if="${mode == 'edit'}" style="font-size:12px;">품목코드는 수정할 수 없습니다.</span>
+            </div>
+
+            <div class="form-row">
+                <label for="name">품목명<span class="req">*</span></label>
+                <input type="text" id="name" th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="categoryId">카테고리<span class="req">*</span></label>
+                <select id="categoryId" th:field="*{categoryId}"
+                        th:classappend="${#fields.hasErrors('categoryId')} ? 'invalid'">
+                    <option value="">선택</option>
+                    <option th:each="c : ${categories}" th:value="${c.categoryId}" th:text="${c.name}">카테고리</option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="unit">단위<span class="req">*</span></label>
+                <input type="text" id="unit" th:field="*{unit}" placeholder="예: EA, BOX, KG"
+                       th:classappend="${#fields.hasErrors('unit')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="unitPrice">단가<span class="req">*</span></label>
+                <input type="number" id="unitPrice" th:field="*{unitPrice}" min="0" step="1"
+                       th:classappend="${#fields.hasErrors('unitPrice')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('unitPrice')}" th:errors="*{unitPrice}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="safetyStock">안전재고<span class="req">*</span></label>
+                <input type="number" id="safetyStock" th:field="*{safetyStock}" min="0" step="1"
+                       th:classappend="${#fields.hasErrors('safetyStock')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('safetyStock')}" th:errors="*{safetyStock}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" th:text="${mode == 'edit'} ? '수정' : '등록'">등록</button>
+                <a class="btn btn-ghost"
+                   th:href="${mode == 'edit'} ? @{/items/{id}(id=${itemId})} : @{/items}">취소</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

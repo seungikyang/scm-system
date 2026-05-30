@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('품목 목록 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>품목</h1>
+        <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+           class="btn btn-primary" th:href="@{/items/new}">+ 품목 등록</a>
+    </div>
+
+    <!-- 검색 -->
+    <div class="card">
+        <form th:object="${searchForm}" th:action="@{/items}" method="get" class="search-bar">
+            <div class="form-row">
+                <label for="name">품목명</label>
+                <input type="text" id="name" th:field="*{name}" placeholder="품목명 부분일치">
+            </div>
+            <div class="form-row">
+                <label for="itemCode">품목코드</label>
+                <input type="text" id="itemCode" th:field="*{itemCode}" placeholder="품목코드">
+            </div>
+            <div class="form-row">
+                <label for="categoryId">카테고리</label>
+                <select id="categoryId" th:field="*{categoryId}">
+                    <option value="">전체</option>
+                    <option th:each="c : ${categories}" th:value="${c.categoryId}" th:text="${c.name}">카테고리</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="status">상태</label>
+                <select id="status" th:field="*{status}">
+                    <option value="">전체</option>
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                </select>
+            </div>
+            <div class="form-row" style="flex:0;">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 목록 -->
+    <table class="data">
+        <thead>
+        <tr>
+            <th>품목코드</th>
+            <th>품목명</th>
+            <th>카테고리</th>
+            <th>단위</th>
+            <th class="num">단가</th>
+            <th class="num">안전재고</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="empty-row" th:if="${items.isEmpty()}">
+            <td colspan="7">조회된 품목이 없습니다.</td>
+        </tr>
+        <tr th:each="i : ${items.content}">
+            <td><a th:href="@{/items/{id}(id=${i.itemId})}" th:text="${i.itemCode}">ITM-001</a></td>
+            <td th:text="${i.name}">품목명</td>
+            <td th:text="${i.categoryName} ?: '-'">카테고리명</td>
+            <td th:text="${i.unit}">EA</td>
+            <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+            <td class="num" th:text="${i.safetyStock}">0</td>
+            <td><span class="badge" th:classappend="'badge-' + ${i.status}" th:text="${i.status}">ACTIVE</span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 (검색조건 유지) -->
+    <nav th:replace="~{fragments/layout :: pagination(${items},
+            @{/items(name=${searchForm.name},itemCode=${searchForm.itemCode},categoryId=${searchForm.categoryId},status=${searchForm.status})} + '&page=')}"></nav>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

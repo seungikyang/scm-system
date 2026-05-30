@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('발주서 상세 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${order.orderNumber}">PO-20260530-0001</h1>
+        <span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}">DRAFT</span>
+    </div>
+
+    <!-- 상태 전이 액션 (컨트롤러 boolean 플래그로만 노출) -->
+    <div class="card" th:if="${canSubmit or canCancel or canApproveReject or canReceive}">
+        <div class="form-actions" style="margin:0;">
+            <!-- 결재요청: 작성자 본인 & DRAFT -->
+            <form class="inline-form" th:if="${canSubmit}"
+                  th:action="@{/purchase-orders/{id}/submit(id=${order.purchaseOrderId})}" method="post">
+                <button type="submit" class="btn btn-primary">결재요청</button>
+            </form>
+            <!-- 취소: 작성자 본인 & DRAFT/REQUESTED/APPROVED -->
+            <form class="inline-form" th:if="${canCancel}"
+                  th:action="@{/purchase-orders/{id}/cancel(id=${order.purchaseOrderId})}" method="post"
+                  onsubmit="return confirm('이 발주를 취소하시겠습니까?');">
+                <button type="submit" class="btn btn-danger">취소</button>
+            </form>
+            <!-- 승인: ADMIN/MANAGER & REQUESTED -->
+            <form class="inline-form" th:if="${canApproveReject}"
+                  th:action="@{/admin/purchase-orders/{id}/approve(id=${order.purchaseOrderId})}" method="post"
+                  onsubmit="return confirm('이 발주를 승인하시겠습니까?');">
+                <button type="submit" class="btn btn-success">승인</button>
+            </form>
+            <!-- 반려: ADMIN/MANAGER & REQUESTED → 모달 -->
+            <button type="button" class="btn btn-warning" th:if="${canApproveReject}"
+                    onclick="document.getElementById('reject-modal').classList.add('open');">반려</button>
+            <!-- 입고: ADMIN/MANAGER & APPROVED -->
+            <form class="inline-form" th:if="${canReceive}"
+                  th:action="@{/admin/purchase-orders/{id}/receive(id=${order.purchaseOrderId})}" method="post"
+                  onsubmit="return confirm('이 발주를 입고 처리하시겠습니까? (재고가 증가합니다)');">
+                <button type="submit" class="btn btn-primary">입고</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 헤더 정보 -->
+    <div class="card">
+        <h2>발주 정보</h2>
+        <dl class="detail">
+            <dt>발주번호</dt><dd th:text="${order.orderNumber}">PO-20260530-0001</dd>
+            <dt>공급사</dt><dd th:text="${order.partnerName} ?: '-'">공급사</dd>
+            <dt>상태</dt>
+            <dd><span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}">DRAFT</span></dd>
+            <dt>발주일</dt><dd th:text="${order.orderDate}">2026-05-30</dd>
+            <dt>납기일</dt><dd th:text="${order.dueDate} ?: '-'">-</dd>
+            <dt>작성자</dt><dd th:text="${order.writerName} ?: '-'">작성자</dd>
+            <dt>승인자</dt><dd th:text="${order.approverName} ?: '-'">-</dd>
+            <dt th:if="${order.status.name() == 'REJECTED'}">반려사유</dt>
+            <dd th:if="${order.status.name() == 'REJECTED'}" th:text="${order.rejectReason} ?: '-'">-</dd>
+        </dl>
+    </div>
+
+    <!-- 라인 -->
+    <div class="card">
+        <h2>발주 품목</h2>
+        <table class="data">
+            <thead>
+            <tr>
+                <th>품목코드</th>
+                <th>품목명</th>
+                <th class="num">수량</th>
+                <th class="num">단가</th>
+                <th class="num">라인금액</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="empty-row" th:if="${order.lines == null or order.lines.isEmpty()}">
+                <td colspan="5">발주 품목이 없습니다.</td>
+            </tr>
+            <tr th:each="l : ${order.lines}">
+                <td th:text="${l.itemCode}">ITM-001</td>
+                <td th:text="${l.itemName}">품목명</td>
+                <td class="num" th:text="${l.quantity}">0</td>
+                <td class="num" th:text="${#numbers.formatDecimal(l.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td class="num" th:text="${#numbers.formatDecimal(l.lineAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="4" class="num">총금액</th>
+                <th class="num" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- 처리 이력 -->
+    <div class="card">
+        <h2>처리 이력</h2>
+        <ul class="timeline">
+            <li th:if="${order.createdAt != null}">
+                <strong>작성</strong> <span class="muted" th:text="${order.createdAt}">-</span>
+            </li>
+            <li th:if="${order.approvedAt != null}">
+                <strong>승인</strong>
+                <span class="muted" th:text="${order.approverName} ?: ''"></span>
+                <span class="muted" th:text="${order.approvedAt}">-</span>
+            </li>
+            <li th:if="${order.status.name() == 'REJECTED'}">
+                <strong>반려</strong>
+                <span class="muted" th:text="${order.approverName} ?: ''"></span>
+                <span class="muted" th:text="${order.rejectReason} ?: ''"></span>
+            </li>
+            <li th:if="${order.receivedAt != null}">
+                <strong>입고</strong> <span class="muted" th:text="${order.receivedAt}">-</span>
+            </li>
+        </ul>
+    </div>
+
+    <a class="btn btn-ghost" th:href="@{/purchase-orders/my}">&larr; 내 발주 목록</a>
+
+    <!-- 반려 모달 (canApproveReject 일 때만 렌더) -->
+    <div class="modal-overlay" id="reject-modal" th:if="${canApproveReject}">
+        <div class="modal">
+            <h3>발주 반려</h3>
+            <!-- detail 화면은 rejectForm 모델 미주입 → name 기반 바인딩(rejectReason) -->
+            <form th:action="@{/admin/purchase-orders/{id}/reject(id=${order.purchaseOrderId})}" method="post">
+                <div class="form-row">
+                    <label for="rejectReason">반려 사유<span class="req">*</span></label>
+                    <textarea id="rejectReason" name="rejectReason" required maxlength="500"
+                              placeholder="반려 사유를 입력하세요."></textarea>
+                </div>
+                <div class="form-actions" style="justify-content:flex-end;">
+                    <button type="button" class="btn btn-ghost"
+                            onclick="document.getElementById('reject-modal').classList.remove('open');">닫기</button>
+                    <button type="submit" class="btn btn-warning">반려 확정</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('오류 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div class="card error-page">
+        <div class="code" th:text="${status} ?: '오류'">500</div>
+        <h1 th:text="${code} ?: 'ERROR'">INTERNAL_ERROR</h1>
+        <p class="muted" th:text="${errorMessage} ?: '요청을 처리하는 중 문제가 발생했습니다.'">
+            요청을 처리하는 중 문제가 발생했습니다.
+        </p>
+        <div class="form-actions" style="justify-content:center;">
+            <a class="btn btn-primary" th:href="@{/}">대시보드로 이동</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

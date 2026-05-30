@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:scm;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create          # 1차: 매 기동 스키마 생성 (운영은 validate)
+    properties:
+      hibernate.format_sql: true
+    open-in-view: false         # OSIV off — 표시값은 Service에서 DTO로 채운다
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    org.hibernate.SQL: debug

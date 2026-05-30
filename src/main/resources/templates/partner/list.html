@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('거래처 목록 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>거래처</h1>
+        <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+           class="btn btn-primary" th:href="@{/partners/new}">+ 거래처 등록</a>
+    </div>
+
+    <!-- 검색 -->
+    <div class="card">
+        <form th:object="${searchForm}" th:action="@{/partners}" method="get" class="search-bar">
+            <div class="form-row">
+                <label for="name">거래처명</label>
+                <input type="text" id="name" th:field="*{name}" placeholder="거래처명 부분일치">
+            </div>
+            <div class="form-row">
+                <label for="businessNumber">사업자번호</label>
+                <input type="text" id="businessNumber" th:field="*{businessNumber}" placeholder="사업자번호">
+            </div>
+            <div class="form-row">
+                <label for="partnerType">유형</label>
+                <select id="partnerType" th:field="*{partnerType}">
+                    <option value="">전체</option>
+                    <option th:each="t : ${partnerTypes}" th:value="${t}" th:text="${t}"></option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="status">상태</label>
+                <select id="status" th:field="*{status}">
+                    <option value="">전체</option>
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                </select>
+            </div>
+            <div class="form-row" style="flex:0;">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 목록 -->
+    <table class="data">
+        <thead>
+        <tr>
+            <th>거래처명</th>
+            <th>사업자번호</th>
+            <th>유형</th>
+            <th>담당자</th>
+            <th>연락처</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="empty-row" th:if="${partners.isEmpty()}">
+            <td colspan="6">조회된 거래처가 없습니다.</td>
+        </tr>
+        <tr th:each="p : ${partners.content}">
+            <td><a th:href="@{/partners/{id}(id=${p.partnerId})}" th:text="${p.name}">거래처명</a></td>
+            <td th:text="${p.businessNumber}">000-00-00000</td>
+            <td th:text="${p.partnerType}">SUPPLIER</td>
+            <td th:text="${p.contactName}">담당자</td>
+            <td th:text="${p.phone}">연락처</td>
+            <td><span class="badge" th:classappend="'badge-' + ${p.status}" th:text="${p.status}">ACTIVE</span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 (검색조건 유지) -->
+    <nav th:replace="~{fragments/layout :: pagination(${partners},
+            @{/partners(name=${searchForm.name},businessNumber=${searchForm.businessNumber},partnerType=${searchForm.partnerType},status=${searchForm.status})} + '&page=')}"></nav>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

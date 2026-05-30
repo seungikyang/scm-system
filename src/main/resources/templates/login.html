@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('로그인 - SCM')}"></head>
+<body>
+<div class="login-wrap">
+    <div class="login-box">
+        <h1>SCM 로그인</h1>
+
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">오류</div>
+
+        <form th:action="@{/login}" th:object="${loginForm}" method="post">
+            <div class="form-row">
+                <label for="email">이메일<span class="req">*</span></label>
+                <input type="email" id="email" th:field="*{email}"
+                       th:classappend="${#fields.hasErrors('email')} ? 'invalid'"
+                       placeholder="admin@scm.com" autofocus>
+                <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="password">비밀번호<span class="req">*</span></label>
+                <input type="password" id="password" th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password')} ? 'invalid'"
+                       placeholder="비밀번호">
+                <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" style="width:100%;">로그인</button>
+            </div>
+        </form>
+
+        <div class="seed-info">
+            <strong>시드 계정</strong> (비밀번호 공통: <code>password1!</code>)
+            <ul style="margin:8px 0 0;padding-left:18px;">
+                <li><code>admin@scm.com</code> — 관리자(ADMIN)</li>
+                <li><code>manager@scm.com</code> — 매니저(MANAGER)</li>
+                <li><code>user@scm.com</code> — 홍길동(USER)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

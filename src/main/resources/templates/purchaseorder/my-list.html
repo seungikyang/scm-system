@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('내 발주 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>내 발주</h1>
+        <a class="btn btn-primary" th:href="@{/purchase-orders/new}">+ 발주서 작성</a>
+    </div>
+
+    <!-- 상태 필터 -->
+    <div class="card">
+        <form th:action="@{/purchase-orders/my}" method="get" class="search-bar">
+            <div class="form-row">
+                <label for="status">상태</label>
+                <select id="status" name="status">
+                    <option value="">전체</option>
+                    <option th:each="s : ${statusOptions}" th:value="${s}" th:text="${s}"
+                            th:selected="${selectedStatus != null and selectedStatus == s.name()}"></option>
+                </select>
+            </div>
+            <div class="form-row" style="flex:0;">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 목록 -->
+    <table class="data">
+        <thead>
+        <tr>
+            <th>발주번호</th>
+            <th>공급사</th>
+            <th>발주일</th>
+            <th class="num">총금액</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="empty-row" th:if="${orders.isEmpty()}">
+            <td colspan="5">조회된 발주가 없습니다.</td>
+        </tr>
+        <tr th:each="o : ${orders.content}">
+            <td><a th:href="@{/purchase-orders/{id}(id=${o.purchaseOrderId})}" th:text="${o.orderNumber}">PO-20260530-0001</a></td>
+            <td th:text="${o.partnerName} ?: '-'">공급사</td>
+            <td th:text="${o.orderDate}">2026-05-30</td>
+            <td class="num" th:text="${#numbers.formatDecimal(o.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+            <td><span class="badge" th:classappend="'badge-' + ${o.status}" th:text="${o.status}">DRAFT</span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 (필터 유지) -->
+    <nav th:replace="~{fragments/layout :: pagination(${orders},
+            @{/purchase-orders/my(status=${selectedStatus})} + '&page=')}"></nav>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

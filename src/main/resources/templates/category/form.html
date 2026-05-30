@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('카테고리 ' + (${mode} == 'edit' ? '수정' : '등록') + ' - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${mode == 'edit'} ? '카테고리 수정' : '카테고리 등록'">카테고리 등록</h1>
+    </div>
+
+    <div class="card">
+        <form th:object="${categoryForm}"
+              th:action="${mode == 'edit'} ? @{/categories/{id}(id=${categoryId})} : @{/categories}"
+              method="post">
+
+            <div class="form-row">
+                <label for="name">카테고리명<span class="req">*</span></label>
+                <input type="text" id="name" th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="description">설명</label>
+                <textarea id="description" th:field="*{description}"
+                          th:classappend="${#fields.hasErrors('description')} ? 'invalid'"></textarea>
+                <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" th:text="${mode == 'edit'} ? '수정' : '등록'">등록</button>
+                <a class="btn btn-ghost"
+                   th:href="${mode == 'edit'} ? @{/categories/{id}(id=${categoryId})} : @{/categories}">취소</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

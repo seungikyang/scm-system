@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('카테고리 상세 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${category.name}">카테고리명</h1>
+        <div class="form-actions" style="margin:0;"
+             th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}">
+            <a class="btn btn-ghost" th:href="@{/categories/{id}/edit(id=${category.categoryId})}">수정</a>
+            <form class="inline-form" th:action="@{/categories/{id}/delete(id=${category.categoryId})}" method="post"
+                  onsubmit="return confirm('이 카테고리를 삭제하시겠습니까? (소속 품목이 있으면 삭제할 수 없습니다.)');">
+                <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <dl class="detail">
+            <dt>카테고리명</dt><dd th:text="${category.name}">카테고리명</dd>
+            <dt>설명</dt><dd th:text="${category.description} ?: '-'">설명</dd>
+            <dt>등록일시</dt><dd th:text="${category.createdAt}">-</dd>
+            <dt>수정일시</dt><dd th:text="${category.updatedAt} ?: '-'">-</dd>
+        </dl>
+    </div>
+
+    <div class="card">
+        <h2>소속 품목</h2>
+        <table class="data">
+            <thead>
+            <tr>
+                <th>품목코드</th>
+                <th>품목명</th>
+                <th>단위</th>
+                <th class="num">표준단가</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="empty-row" th:if="${items == null or items.isEmpty()}">
+                <td colspan="5">소속 품목이 없습니다.</td>
+            </tr>
+            <tr th:each="i : ${items}">
+                <td><a th:href="@{/items/{id}(id=${i.itemId})}" th:text="${i.itemCode}">ITM-001</a></td>
+                <td th:text="${i.name}">품목명</td>
+                <td th:text="${i.unit}">EA</td>
+                <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td><span class="badge" th:classappend="'badge-' + ${i.status}" th:text="${i.status}">ACTIVE</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-ghost" th:href="@{/categories}">&larr; 목록으로</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

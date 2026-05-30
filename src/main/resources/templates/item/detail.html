@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('품목 상세 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${item.name}">품목명</h1>
+        <div class="form-actions" style="margin:0;"
+             th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}">
+            <a class="btn btn-ghost" th:href="@{/items/{id}/edit(id=${item.itemId})}">수정</a>
+            <form class="inline-form" th:action="@{/items/{id}/discontinue(id=${item.itemId})}" method="post"
+                  th:if="${item.status.name() != 'DISCONTINUED'}"
+                  onsubmit="return confirm('이 품목을 단종 처리하시겠습니까?');">
+                <button type="submit" class="btn btn-danger">단종</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <dl class="detail">
+            <dt>품목코드</dt><dd th:text="${item.itemCode}">ITM-001</dd>
+            <dt>품목명</dt><dd th:text="${item.name}">품목명</dd>
+            <dt>카테고리</dt><dd th:text="${item.categoryName} ?: '-'">카테고리명</dd>
+            <dt>단위</dt><dd th:text="${item.unit}">EA</dd>
+            <dt>단가</dt><dd th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</dd>
+            <dt>안전재고</dt><dd th:text="${item.safetyStock}">0</dd>
+            <dt>상태</dt>
+            <dd><span class="badge" th:classappend="'badge-' + ${item.status}" th:text="${item.status}">ACTIVE</span></dd>
+            <dt>등록일시</dt><dd th:text="${item.createdAt}">-</dd>
+            <dt>수정일시</dt><dd th:text="${item.updatedAt} ?: '-'">-</dd>
+        </dl>
+    </div>
+
+    <a class="btn btn-ghost" th:href="@{/items}">&larr; 목록으로</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# SCM 시스템 — MySQL 영속 DB로 실행하는 구성.
+#   docker compose up --build        # 앱(http://localhost:8080) + MySQL 기동
+#   docker compose down              # 중지 (데이터 볼륨 유지)
+#   docker compose down -v           # 중지 + DB 볼륨 삭제(초기화)
+#
+# H2 in-memory 로 가볍게 띄우려면 compose 없이:
+#   docker build -t scm-system .
+#   docker run --rm -p 8080:8080 scm-system
+services:
+  db:
+    image: mysql:8.0
+    container_name: scm-mysql
+    environment:
+      MYSQL_DATABASE: scm
+      MYSQL_USER: scm
+      MYSQL_PASSWORD: scm
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Seoul
+    ports:
+      - "3306:3306"
+    volumes:
+      - scm-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build: .
+    container_name: scm-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: scm
+      DB_USER: scm
+      DB_PASSWORD: scm
+      TZ: Asia/Seoul
+    ports:
+      - "8080:8080"
+
+volumes:
+  scm-mysql-data:

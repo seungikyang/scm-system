@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  공통 레이아웃 프래그먼트 (순수 Thymeleaf, layout-dialect 미사용).
+  - head(title)            : 공통 head + app.css
+  - nav                    : 상단 네비 (currentUser 표시, 권한별 메뉴, 로그아웃 POST)
+  - alerts                 : flash 메시지 영역 (successMessage / errorMessage)
+  - footer                 : 하단
+  - pagination(page,baseUrl): Spring Page 기반 페이지네이션
+
+  currentUser 는 GlobalModelAdvice 가 모든 web 뷰에 주입 (record LoginUser → 접근자 메서드형).
+-->
+
+<!-- ===================== head(title) ===================== -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">SCM</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+
+<!-- ===================== nav ===================== -->
+<nav th:fragment="nav" class="navbar">
+    <a class="brand" th:href="@{/}">SCM</a>
+
+    <div class="menu" th:with="role=${currentUser != null ? currentUser.role().name() : ''}">
+        <a th:href="@{/}">대시보드</a>
+
+        <!-- 마스터 관리: ADMIN 만 (PRD 3.11.3) -->
+        <a th:if="${role == 'ADMIN'}" th:href="@{/partners}">거래처</a>
+        <a th:if="${role == 'ADMIN'}" th:href="@{/categories}">카테고리</a>
+        <a th:if="${role == 'ADMIN'}" th:href="@{/items}">품목</a>
+
+        <!-- 발주: 로그인 사용자 전원 -->
+        <a th:if="${currentUser != null}" th:href="@{/purchase-orders/new}">발주작성</a>
+        <a th:if="${currentUser != null}" th:href="@{/purchase-orders/my}">내 발주</a>
+
+        <!-- 관리자 발주(승인관리): ADMIN, MANAGER -->
+        <a th:if="${role == 'ADMIN' or role == 'MANAGER'}" th:href="@{/admin/purchase-orders}">관리자발주</a>
+    </div>
+
+    <div class="user-area" th:if="${currentUser != null}">
+        <span>
+            <span class="uname" th:text="${currentUser.name()}">사용자</span>
+            <span class="pill-role" th:text="${currentUser.role().name()}">USER</span>
+        </span>
+        <a th:href="@{/me}">내 정보</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-sm btn-ghost" style="color:#fff;border-color:#4b5563;">로그아웃</button>
+        </form>
+    </div>
+</nav>
+
+<!-- ===================== alerts (flash) ===================== -->
+<div th:fragment="alerts">
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">성공</div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">오류</div>
+</div>
+
+<!-- ===================== footer ===================== -->
+<footer th:fragment="footer" class="footer">
+    <span>SCM System &copy; 2026 — 공급망 관리 시스템</span>
+</footer>
+
+<!-- ===================== pagination(page, baseUrl) =====================
+     page    : org.springframework.data.domain.Page
+     baseUrl : 기존 쿼리스트링(검색조건 등)이 포함된 base URL. 끝에 page 파라미터를 붙인다.
+               호출 측에서 '?'/'&' 구분자를 포함해 전달 (예: @{/items(name=...)} + '&page=')
+-->
+<nav th:fragment="pagination(page, baseUrl)" class="pagination" th:if="${page != null and page.totalPages > 1}">
+    <!-- 이전 -->
+    <a th:if="${!page.first}" th:href="${baseUrl + (page.number - 1)}">&laquo;</a>
+    <span th:unless="${!page.first}" class="disabled">&laquo;</span>
+
+    <!-- 페이지 번호 (현재 ±2 범위) -->
+    <th:block th:with="start=${page.number - 2 < 0 ? 0 : page.number - 2},
+                       end=${page.number + 2 >= page.totalPages ? page.totalPages - 1 : page.number + 2}">
+        <th:block th:each="i : ${#numbers.sequence(start, end)}">
+            <span th:if="${i == page.number}" class="current" th:text="${i + 1}">1</span>
+            <a th:unless="${i == page.number}" th:href="${baseUrl + i}" th:text="${i + 1}">1</a>
+        </th:block>
+    </th:block>
+
+    <!-- 다음 -->
+    <a th:if="${!page.last}" th:href="${baseUrl + (page.number + 1)}">&raquo;</a>
+    <span th:unless="${!page.last}" class="disabled">&raquo;</span>
+</nav>
+
+</body>
+</html>

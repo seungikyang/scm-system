@@ -1,0 +1,33 @@
+# ===== Build artifacts =====
+build/
+.gradle/
+out/
+bin/
+
+# ===== IDE / Editor =====
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+
+# ===== Claude 하네스 (로컬 개발 도구 — push 제외) =====
+.claude/
+
+# ===== SDLC 중간 산출물 (정제판은 docs/ 에 있음) =====
+_workspace/
+_workspace_prev/
+
+# ===== 임시·진단 스크립트 / 출력물 (history 추출 등) =====
+_*.py
+_*.txt

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('카테고리 목록 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1>카테고리</h1>
+        <a th:if="${currentUser != null and currentUser.role().name() == 'ADMIN'}"
+           class="btn btn-primary" th:href="@{/categories/new}">+ 카테고리 등록</a>
+    </div>
+
+    <table class="data">
+        <thead>
+        <tr>
+            <th>카테고리명</th>
+            <th>설명</th>
+            <th class="num">소속 품목 수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="empty-row" th:if="${categories.isEmpty()}">
+            <td colspan="3">등록된 카테고리가 없습니다.</td>
+        </tr>
+        <tr th:each="c : ${categories}">
+            <td><a th:href="@{/categories/{id}(id=${c.categoryId})}" th:text="${c.name}">카테고리명</a></td>
+            <td th:text="${c.description} ?: '-'">설명</td>
+            <td class="num" th:text="${c.itemCount}">0</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

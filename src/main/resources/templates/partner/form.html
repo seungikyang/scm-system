@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('거래처 ' + (${mode} == 'edit' ? '수정' : '등록') + ' - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${mode == 'edit'} ? '거래처 수정' : '거래처 등록'">거래처 등록</h1>
+    </div>
+
+    <div class="card">
+        <!-- create: POST /partners, edit: POST /partners/{id} -->
+        <form th:object="${partnerForm}"
+              th:action="${mode == 'edit'} ? @{/partners/{id}(id=${partnerId})} : @{/partners}"
+              method="post">
+
+            <div class="form-row">
+                <label for="name">거래처명<span class="req">*</span></label>
+                <input type="text" id="name" th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="businessNumber">사업자번호<span class="req">*</span></label>
+                <input type="text" id="businessNumber" th:field="*{businessNumber}"
+                       th:classappend="${#fields.hasErrors('businessNumber')} ? 'invalid'"
+                       th:readonly="${mode == 'edit'}">
+                <span class="field-error" th:if="${#fields.hasErrors('businessNumber')}" th:errors="*{businessNumber}"></span>
+                <span class="muted" th:if="${mode == 'edit'}" style="font-size:12px;">사업자번호는 수정할 수 없습니다.</span>
+            </div>
+
+            <div class="form-row">
+                <label for="partnerType">거래처 유형<span class="req">*</span></label>
+                <select id="partnerType" th:field="*{partnerType}"
+                        th:classappend="${#fields.hasErrors('partnerType')} ? 'invalid'">
+                    <option value="">선택</option>
+                    <option th:each="t : ${partnerTypes}" th:value="${t}" th:text="${t}"></option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('partnerType')}" th:errors="*{partnerType}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="contactName">담당자명</label>
+                <input type="text" id="contactName" th:field="*{contactName}"
+                       th:classappend="${#fields.hasErrors('contactName')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('contactName')}" th:errors="*{contactName}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="phone">연락처</label>
+                <input type="text" id="phone" th:field="*{phone}"
+                       th:classappend="${#fields.hasErrors('phone')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="email">이메일</label>
+                <input type="email" id="email" th:field="*{email}"
+                       th:classappend="${#fields.hasErrors('email')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+
+            <div class="form-row">
+                <label for="address">주소</label>
+                <input type="text" id="address" th:field="*{address}"
+                       th:classappend="${#fields.hasErrors('address')} ? 'invalid'">
+                <span class="field-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" th:text="${mode == 'edit'} ? '수정' : '등록'">등록</button>
+                <a class="btn btn-ghost"
+                   th:href="${mode == 'edit'} ? @{/partners/{id}(id=${partnerId})} : @{/partners}">취소</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
