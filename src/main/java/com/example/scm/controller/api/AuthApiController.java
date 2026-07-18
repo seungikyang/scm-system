@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,11 +30,12 @@ public class AuthApiController {
                                               HttpServletRequest httpRequest) {
         LoginUser loginUser = authService.login(request.getEmail(), request.getPassword());
         HttpSession session = httpRequest.getSession(true);
+        httpRequest.changeSessionId();
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
         return ResponseEntity.ok(userService.getMe(loginUser.id()));
     }
 
-    @PostMapping("/logout")
+    @PostMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> logout(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession(false);
         if (session != null) {

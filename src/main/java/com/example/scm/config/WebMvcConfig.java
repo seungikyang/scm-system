@@ -1,5 +1,6 @@
 package com.example.scm.config;
 
+import com.example.scm.common.auth.AdminOnlyInterceptor;
 import com.example.scm.common.auth.CurrentUserArgumentResolver;
 import com.example.scm.common.auth.LoginInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,8 +36,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/js/**",
                         "/images/**",
                         "/favicon.ico",
-                        "/h2-console/**",
                         "/error"
                 );
+        registry.addInterceptor(new AdminOnlyInterceptor())
+                .order(2)
+                .addPathPatterns("/h2-console/**");
     }
 }

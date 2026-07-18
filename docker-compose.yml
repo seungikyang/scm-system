@@ -40,6 +40,7 @@ services:
       DB_NAME: scm
       DB_USER: scm
       DB_PASSWORD: scm
+      SCM_SEED_ENABLED: "true" # 데모용 compose에서만 문서의 시드 계정을 생성
       TZ: Asia/Seoul
     ports:
       - "8080:8080"

@@ -1,5 +1,6 @@
 package com.example.scm.dto.item;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -34,6 +35,7 @@ public class ItemCreateRequest {
 
     @NotNull(message = "단가는 필수입니다.")
     @PositiveOrZero(message = "단가는 0 이상이어야 합니다.")
+    @Digits(integer = 13, fraction = 2, message = "단가는 정수 13자리, 소수 2자리 이하여야 합니다.")
     private BigDecimal unitPrice;
 
     @NotNull(message = "안전재고는 필수입니다.")

@@ -6,6 +6,7 @@ import com.example.scm.service.CategoryService;
 import com.example.scm.service.ItemService;
 import com.example.scm.service.PartnerService;
 import com.example.scm.service.PurchaseOrderService;
+import com.example.scm.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ public class DashboardController {
     private final ItemService itemService;
     private final CategoryService categoryService;
     private final PurchaseOrderService purchaseOrderService;
+    private final StockService stockService;
 
     @GetMapping("/")
     public String dashboard(@CurrentUser LoginUser loginUser, Model model) {
@@ -32,6 +34,7 @@ public class DashboardController {
         model.addAttribute("purchaseOrderPendingCount", purchaseOrderService.countPending());
         model.addAttribute("myPurchaseOrderCount",
                 loginUser != null ? purchaseOrderService.countMyOrders(loginUser.id()) : 0L);
+        model.addAttribute("stockSummary", stockService.getSummary(loginUser));
         return "dashboard";
     }
 }

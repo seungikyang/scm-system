@@ -20,10 +20,10 @@ public void submit(Long currentUserId, Long purchaseOrderId) {
 // ============ 발주 승인 (REQUESTED → APPROVED) ============
 @Transactional
 public PurchaseOrderResponse approve(Long currentUserId, Long purchaseOrderId) {
-    // TODO 03: ADMIN 권한 확인.
+    // TODO 03: ADMIN 또는 MANAGER 권한 확인.
     User approver = userRepository.findById(currentUserId)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    if (approver.getRole() != UserRole.____) {
+    if (approver.getRole() != UserRole.____ && approver.getRole() != UserRole.____) {
         throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
@@ -45,7 +45,7 @@ public PurchaseOrderResponse approve(Long currentUserId, Long purchaseOrderId) {
 public PurchaseOrderResponse reject(Long currentUserId, Long purchaseOrderId, String reason) {
     User approver = userRepository.findById(currentUserId)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    if (approver.getRole() != UserRole.ADMIN) {
+    if (approver.getRole() != UserRole.____ && approver.getRole() != UserRole.____) {
         throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
@@ -69,9 +69,9 @@ public PurchaseOrderResponse reject(Long currentUserId, Long purchaseOrderId, St
 // ============ 입고 처리 (APPROVED → RECEIVED) ============
 @Transactional
 public PurchaseOrderResponse receive(Long currentUserId, Long purchaseOrderId) {
-    User admin = userRepository.findById(currentUserId)
+    User operator = userRepository.findById(currentUserId)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    if (admin.getRole() != UserRole.ADMIN) {
+    if (operator.getRole() != UserRole.____ && operator.getRole() != UserRole.____) {
         throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
@@ -85,9 +85,21 @@ public PurchaseOrderResponse receive(Long currentUserId, Long purchaseOrderId) {
         throw new BusinessException(ErrorCode.INVALID_STATUS, e.getMessage());
     }
 
-    // 확장: 라인별 재고 +quantity 반영 (Inventory 도메인 추가 시)
-    // TODO 07: 어디서 어떻게 호출할지 한 줄로 적어 보세요.
-    // A:
+    // TODO 07: 상태 전이와 같은 트랜잭션에서 라인별 재고를 증가시키세요.
+    // 같은 품목의 최초 재고 생성 경합을 막기 위해 품목 ID를 정렬한 뒤 행 잠금을 잡습니다.
+    List<Long> itemIds = po.getLines().stream()
+        .map(line -> line.getItem().getId())
+        .distinct()
+        .sorted()
+        .toList();
+    itemRepository.____(itemIds);
+
+    for (PurchaseOrderLine line : po.getLines()) {
+        Long itemId = line.getItem().getId();
+        Stock stock = stockRepository.findByItemId(itemId)
+            .orElseGet(() -> stockRepository.save(new Stock(itemId, 0)));
+        stock.____(line.getQuantity());
+    }
 
     return PurchaseOrderResponse.from(po);
 }
@@ -98,4 +110,6 @@ public PurchaseOrderResponse receive(Long currentUserId, Long purchaseOrderId) {
 // Q2. 도메인 IllegalStateException 을 BusinessException(INVALID_STATUS) 로 매핑하는 이유는?
 //     A:
 // Q3. 권한 검사를 Controller(@PreAuthorize)와 Service 양쪽에서 하는 이점은?
+//     A:
+// Q4. 상태를 RECEIVED로 바꾼 뒤 재고 증가 중 하나가 실패하면 왜 전체가 롤백되어야 하는가?
 //     A:

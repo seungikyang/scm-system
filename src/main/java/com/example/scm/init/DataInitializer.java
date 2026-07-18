@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Order(1)
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "scm.seed", name = "enabled", havingValue = "true")
 public class DataInitializer implements CommandLineRunner {
 
     private static final String SEED_PASSWORD = "password1!";
@@ -46,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
             log.info("[DataInitializer] 시드 데이터가 이미 존재합니다. skip.");
             return;
         }
-        log.info("[DataInitializer] 시드 데이터를 생성합니다. (계정 비밀번호: {})", SEED_PASSWORD);
+        log.info("[DataInitializer] 시드 데이터를 생성합니다.");
 
         seedUsers();
         seedPartners();

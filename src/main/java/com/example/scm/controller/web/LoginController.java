@@ -38,6 +38,7 @@ public class LoginController {
         try {
             LoginUser loginUser = authService.login(loginForm.getEmail(), loginForm.getPassword());
             HttpSession session = request.getSession(true);
+            request.changeSessionId();
             session.setAttribute(SessionConst.LOGIN_USER, loginUser);
             return "redirect:/";
         } catch (BusinessException e) {

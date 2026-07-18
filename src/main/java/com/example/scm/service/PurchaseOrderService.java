@@ -51,6 +51,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PurchaseOrderService {
 
     private static final int ORDER_NUMBER_RETRY = 5;
+    private static final int REJECT_REASON_MAX_LENGTH = 500;
+    private static final BigDecimal MAX_MONEY = new BigDecimal("9999999999999.99");
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final StockRepository stockRepository;
@@ -58,12 +60,12 @@ public class PurchaseOrderService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final OrderNumberGenerator orderNumberGenerator;
+    private final PurchaseOrderPersistenceService purchaseOrderPersistenceService;
 
     // ====================================================================
     // 작성 (T1, REQ-PO-001) — 헤더+라인 cascade 동시 저장, 서버 계산, 채번
     // ====================================================================
 
-    @Transactional
     public PurchaseOrderCreateResponse create(PurchaseOrderCreateRequest request, LoginUser loginUser) {
         Authz.requireLogin(loginUser);
 
@@ -99,8 +101,9 @@ public class PurchaseOrderService {
         // 라인 검증 + 단가 결정(OQ-13) — 채번/재시도와 무관하므로 1회만 수행.
         List<ResolvedLine> resolvedLines = lineReqs.stream().map(this::resolveLine).toList();
         BigDecimal totalAmount = resolvedLines.stream()
-                .map(rl -> rl.unitPrice().multiply(BigDecimal.valueOf(rl.quantity())))
+                .map(this::calculateLineAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add); // totalAmount 서버 계산 (OQ-1)
+        validateMoney(totalAmount, "총금액");
 
         for (int attempt = 0; attempt < ORDER_NUMBER_RETRY; attempt++) {
             String orderNumber = orderNumberGenerator.generate(LocalDate.now());
@@ -122,9 +125,12 @@ public class PurchaseOrderService {
             }
 
             try {
-                return purchaseOrderRepository.saveAndFlush(po); // flush 로 UNIQUE 충돌 즉시 감지
+                return purchaseOrderPersistenceService.saveAndFlush(po);
             } catch (DataIntegrityViolationException e) {
-                // 채번 충돌 가능성 → 재시도 (다음 루프에서 재채번)
+                // 실제 발주번호 충돌만 재시도한다. 다른 제약 위반은 원인을 숨기지 않는다.
+                if (!purchaseOrderRepository.existsByOrderNumber(orderNumber)) {
+                    throw e;
+                }
             }
         }
         throw new BusinessException(ErrorCode.INTERNAL_ERROR,
@@ -151,7 +157,21 @@ public class PurchaseOrderService {
         } else if (unitPrice.signum() < 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "단가는 0 이상이어야 합니다.");
         }
+        validateMoney(unitPrice, "단가");
         return new ResolvedLine(item.getId(), lr.getQuantity(), unitPrice);
+    }
+
+    private BigDecimal calculateLineAmount(ResolvedLine line) {
+        BigDecimal lineAmount = line.unitPrice().multiply(BigDecimal.valueOf(line.quantity()));
+        validateMoney(lineAmount, "라인 금액");
+        return lineAmount;
+    }
+
+    private void validateMoney(BigDecimal value, String fieldName) {
+        if (value.scale() > 2 || value.compareTo(MAX_MONEY) > 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT,
+                    fieldName + "은 정수 13자리, 소수 2자리 이하여야 합니다.");
+        }
     }
 
     /** 검증·해소가 끝난 라인 데이터 (채번 재시도 간 재사용). */
@@ -202,8 +222,12 @@ public class PurchaseOrderService {
         if (rejectReason == null || rejectReason.isBlank()) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "반려 사유는 필수입니다.");
         }
+        String normalizedReason = rejectReason.trim();
+        if (normalizedReason.length() > REJECT_REASON_MAX_LENGTH) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "반려 사유는 500자 이하여야 합니다.");
+        }
         PurchaseOrder po = getEntity(poId);
-        po.reject(loginUser.id(), rejectReason);
+        po.reject(loginUser.id(), normalizedReason);
         return PurchaseOrderStatusResponse.of(po, "발주가 반려되었습니다.");
     }
 
@@ -218,6 +242,15 @@ public class PurchaseOrderService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.PURCHASE_ORDER_NOT_FOUND));
 
         po.receive(); // 상태 검증(APPROVED) 포함
+
+        // 같은 품목의 재고 행을 서로 다른 발주에서 동시에 최초 생성하면 UNIQUE 충돌이 난다.
+        // 품목 행을 ID 순서로 잠가 최초 생성과 증가를 품목별로 직렬화한다.
+        List<Long> itemIds = po.getLines().stream()
+                .map(PurchaseOrderLine::getItemId)
+                .distinct()
+                .sorted()
+                .toList();
+        itemRepository.findAllByIdForUpdate(itemIds);
 
         for (PurchaseOrderLine line : po.getLines()) {
             Stock stock = stockRepository.findByItemId(line.getItemId())

@@ -2,6 +2,10 @@
 
 Java Spring Boot 기반 공급망 관리 시스템(SCM) — 거래처/품목/카테고리/발주/수주/공지. 상세 요구사항은 `scm_system_PRD_TRD.md` 참조. 스택: Java 17 + Spring Boot + Spring Data JPA + Thymeleaf + H2/MySQL + Gradle + JUnit 5.
 
+## 필수 작업 경계
+
+모든 프로그램 변경은 `git rev-parse --show-toplevel`로 확인한 이 저장소 루트에서 수행한다. `.omc/`, `.playwright-cli/`, `.gradle/`, `build/`, `bin/`, `out/`, `output/`, `_workspace*`, `practice/workspace/`, `/tmp`는 재생성 가능한 임시 산출물 전용이며 소스·테스트·정식 문서를 구현하거나 보관하지 않는다. 커밋 전 `./scripts/verify-repository-boundary.sh`를 실행한다. 세부 규칙은 `AGENTS.md`를 따른다.
+
 ## 하네스: SCM 개발 (SDLC)
 
 **목표:** 요구사항 분석 → 설계 → 구현(백엔드 + Thymeleaf 화면) → QA → 문서화를 전문 에이전트 팀으로 조율해, PRD/TRD를 정합성 있는 구현으로 만든다.

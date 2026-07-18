@@ -12,9 +12,9 @@
 - `starter/00-build-config/application.yml.fragment`
 
 - Spring Web, Spring Data JPA, Validation, Thymeleaf, H2 의존성의 역할을 구분한다.
-- Java 17 / Spring Boot 3.x 조합과 `javax` → `jakarta` 변경을 인지한다.
+- Java 17 / 현재 참조 버전의 Spring Boot 조합과 `javax` → `jakarta` 변경을 인지한다.
 - `ddl-auto` 옵션의 의미(create/create-drop/update/validate/none)를 구분한다.
-- 로컬 H2 콘솔 활성화 설정을 채운다.
+- H2 콘솔을 기본 비활성화하고, 필요할 때만 환경 변수로 켜는 설정을 채운다.
 
 ## 1. User 엔티티 (TRD 3.3.1, 3.6.1)
 
@@ -127,6 +127,8 @@
 - `REQUESTED` 상태가 아닌 발주에 대해 승인/반려를 막는 검증 위치.
 - 반려 시 `rejectReason` 이 비어 있으면 어떻게 처리할지.
 - 승인 시 `approverId`, `approvedAt` 을 채우는 시점.
+- 승인/반려/입고를 `ADMIN`과 `MANAGER`에게 허용하는 권한 가드.
+- 입고 상태 변경과 라인별 재고 증가를 같은 트랜잭션으로 묶는 이유.
 - 동시에 두 관리자가 같은 발주를 승인하면 어떻게 되는지 생각해본다.
 
 ## 12. 공지사항 Service (TRD 3.8.4)
@@ -191,7 +193,7 @@
 
 파일: `starter/19-controller-purchase/PurchaseOrderController.java`
 
-- `/api/purchase-orders` (USER) 와 `/api/admin/purchase-orders` (ADMIN) 경로 분리.
+- `/api/purchase-orders` (로그인 사용자)와 `/api/admin/purchase-orders` (ADMIN/MANAGER) 경로 분리.
 - `PATCH /api/admin/purchase-orders/{poId}/approve` 같은 동사형 경로의 장단점.
 - 로그인 사용자의 ID 를 Controller 에서 어떻게 꺼낼지(`HttpSession`, `Principal`, `@AuthenticationPrincipal`).
 
@@ -200,7 +202,8 @@
 파일: `starter/20-security-session/SecurityFlow.md`
 
 - 1차 구현: 세션 기반 로그인 흐름을 단계별로 적는다.
-- 2차 구현: Spring Security + BCrypt + Role 기반 접근 제어로 진화시키는 차이.
+- 현재 참조 구현: Interceptor/Service 인증·인가와 Spring Security의 CSRF/보안 헤더 역할을 구분한다.
+- 대안 구현: Spring Security가 인증·인가까지 맡을 때 중복 책임을 어떻게 제거할지 설명한다.
 - 3차 구현: JWT 로 무상태(stateless) 인증을 적용할 때 달라지는 점.
 
 ## 21. 통합 테스트 흐름 (TRD 3.12)
@@ -209,7 +212,7 @@
 
 - MockMvc 로 로그인 → 발주 작성 → 발주 요청 → 관리자 승인 → 입고 흐름을 채운다.
 - 응답 JSON 에서 다음 요청에 쓸 값(purchaseOrderId 등)을 어떻게 꺼낼지.
-- 권한 실패 테스트(USER 가 ADMIN API 호출)를 어떻게 작성할지.
+- 권한 실패 테스트(USER가 ADMIN/MANAGER API를 호출)를 어떻게 작성할지.
 
 ## 22. 문서화 (TRD 3.15 ~ 3.17)
 
@@ -304,7 +307,8 @@
 파일: `starter/29-purchase-my-cancel/PurchaseOrderService.my.java`
 
 - 본인 발주만 조회 가능하도록 Service 에서 소유자 검증.
-- 본인 DRAFT/REQUESTED 발주만 취소 가능하도록 도메인 메서드에서 상태 검증.
+- 본인 DRAFT/REQUESTED/APPROVED 발주만 취소 가능하도록 도메인 메서드에서 상태 검증.
+- 상세 조회는 작성자 또는 ADMIN/MANAGER만 가능하도록 인가.
 - 관리자 전체 목록은 FR-PO-009 기준으로 `/api/admin/purchase-orders` 에서 상태/거래처 조건을 받는다.
 - 관리자 목록을 status + partnerId 조건으로 분기 조회하는 패턴.
 - 기간(from/to) 조건을 추가했을 때의 확장 방법.
@@ -344,7 +348,7 @@
 - `@EnableJpaAuditing` 없으면 `createdAt` 이 null 로 들어오는 이유.
 - BCrypt 가 SHA-256 보다 안전한 이유(salt + work factor).
 - `WebMvcConfigurer` 의 `addInterceptors` / `addArgumentResolvers` 역할.
-- 1차(세션) Config 와 2차(Security) Config 를 동시에 켜면 안 되는 이유.
+- 세션 Interceptor와 Security filter chain을 역할 구분 없이 중복 적용할 때 생기는 충돌과, 현재 참조 구현의 역할 분담.
 
 ## 34. 세션 인터셉터 + @CurrentUser ArgumentResolver (TRD 3.11.1)
 
@@ -361,7 +365,7 @@
 
 - `templates/` 디렉터리 구조와 도메인별 분리.
 - `th:text` vs `th:utext` (escape) 의 안전한 사용.
-- 폼 + CSRF 토큰 처리.
+- `th:action` 폼의 CSRF 자동 삽입과 일반 HTML/JavaScript 요청의 명시적 토큰 전달 차이.
 - Fragment 재사용 (`th:fragment`, `th:replace`).
 - 발주서 작성 화면에서 라인 동적 추가 UX.
 - `@RestController` 와 `@Controller` 의 차이와 동시 운영.

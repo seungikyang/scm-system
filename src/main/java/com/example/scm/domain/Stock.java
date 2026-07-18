@@ -1,6 +1,8 @@
 package com.example.scm.domain;
 
 import com.example.scm.common.entity.BaseTimeEntity;
+import com.example.scm.common.exception.BusinessException;
+import com.example.scm.common.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,6 +48,13 @@ public class Stock extends BaseTimeEntity {
 
     /** 입고 시 재고 증가 (OQ-4). */
     public void increase(int amount) {
-        this.quantity += amount;
+        if (amount <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "입고 수량은 0보다 커야 합니다.");
+        }
+        try {
+            this.quantity = Math.addExact(this.quantity, amount);
+        } catch (ArithmeticException e) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "재고 수량이 허용 범위를 초과합니다.");
+        }
     }
 }

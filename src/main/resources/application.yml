@@ -10,12 +10,17 @@ spring:
     properties:
       hibernate.format_sql: true
     open-in-view: false         # OSIV off — 표시값은 Service에서 DTO로 채운다
+  flyway:
+    enabled: false              # 기본 H2 학습 모드는 Hibernate가 임시 스키마를 생성한다
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /h2-console
   thymeleaf:
     cache: false
 logging:
   level:
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG_LEVEL:info}
+scm:
+  seed:
+    enabled: ${SCM_SEED_ENABLED:true}

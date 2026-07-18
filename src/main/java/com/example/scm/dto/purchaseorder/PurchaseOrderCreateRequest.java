@@ -1,6 +1,7 @@
 package com.example.scm.dto.purchaseorder;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -50,6 +51,7 @@ public class PurchaseOrderCreateRequest {
         private Integer quantity;
 
         @PositiveOrZero(message = "단가는 0 이상이어야 합니다.")
+        @Digits(integer = 13, fraction = 2, message = "단가는 정수 13자리, 소수 2자리 이하여야 합니다.")
         private BigDecimal unitPrice;                 // nullable → item.unitPrice 적용 (OQ-13)
     }
 }

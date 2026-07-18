@@ -11,8 +11,8 @@ spring:
 
   h2:
     console:
-      # TODO 02: 로컬에서 http://localhost:8080/h2-console 로 접속하려면?
-      enabled: ____
+      # TODO 02: 기본은 끄고, H2_CONSOLE_ENABLED=true일 때만 활성화하려면?
+      enabled: ${H2_CONSOLE_ENABLED:____}
       path: /h2-console
 
   jpa:
@@ -44,4 +44,6 @@ logging:
 # Q2. 운영 환경에서 ddl-auto 로 안전한 값은?
 #     A:
 # Q3. open-in-view=false 로 두면 어떤 장점/단점이 있는가?
+#     A:
+# Q4. H2 console을 켰을 때도 ADMIN 인증을 요구해야 하는 이유는?
 #     A:

@@ -1,6 +1,6 @@
 # 정답 방향 (Answers)
 
-빈칸의 키워드 자체보다 **왜 그렇게 채워야 하는가**를 설명합니다. PRD/TRD 의 해당 절을 다시 펴 보며 한 줄로 자기 답을 만들어 보세요.
+빈칸의 키워드 자체보다 **왜 그렇게 채워야 하는가**를 설명합니다. 먼저 직접 풀고 실패 사례를 적은 뒤 확인하세요. 핵심 트랙의 현재 정책은 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 하며, 이 문서는 토큰 단위 정답표가 아닙니다.
 
 ---
 
@@ -11,8 +11,11 @@
 - `spring-boot-starter-validation` 은 `@Valid` 와 Hibernate Validator(jakarta.validation) 를 활성화한다.
 - `h2` 는 인메모리/파일 DB 로, 로컬과 테스트에서 별도 설치 없이 빠르게 띄울 수 있다.
 - `spring-boot-starter-thymeleaf` 는 서버 렌더링용. 화면 요구사항(2.7) 을 위해 사용한다.
+- `spring-boot-starter-security` 는 현재 참조 구현에서 웹 폼 CSRF와 기본 보안 헤더를 담당한다.
+- 참조 구현은 Java 17과 Spring Boot 3.5.14를 사용한다. 학습 시에는 `build.gradle`을 단일 버전 기준으로 삼는다.
 - `ddl-auto: create` 는 시작할 때마다 스키마를 새로 만들기 때문에 로컬 학습용에 가깝다. 운영은 `validate` 또는 `none` 이 안전하다.
 - Spring Boot 3.x 부터 패키지가 `javax.*` → `jakarta.*` 로 바뀌었다. 검증 어노테이션도 `jakarta.validation.constraints` 를 쓴다.
+- H2 console은 `${H2_CONSOLE_ENABLED:false}`처럼 기본 비활성화하고 필요할 때만 켠다. 활성화 상태에서도 인증과 ADMIN 접근 제한이 필요하다.
 
 ## 1. User
 
@@ -49,6 +52,7 @@
 - `rejectReason` 은 `APPROVED` 일 때 null, `REJECTED` 일 때 필수다. → Service 검증에서 강제한다.
 - `@OneToMany(mappedBy = "purchaseOrder", cascade = ALL, orphanRemoval = true)` 로 두면 헤더 저장만으로 라인까지 함께 저장되고 라인 삭제 동기화도 쉽다. 단, JPA cascade 는 컬렉션 mutation 시 의도치 않은 삭제를 일으킬 수 있으므로 도메인 메서드(`addLine`, `removeLine`)로 통제하는 것이 좋다.
 - 총금액(`totalAmount`)은 라인 변경 시점에 갱신되어야 한다. 도메인 메서드 `recalculateTotal()` 을 두고 라인 변경 후 호출하면 일관성이 유지된다.
+- starter의 Partner/Item 연관관계는 JPA 객체 그래프 학습용 대안이다. 현재 참조 구현은 aggregate 경계를 명확히 하려고 `partnerId`, `itemId`를 저장하고, 발주 헤더-라인 내부만 연관관계와 cascade를 사용한다.
 
 ## 5. Notice
 
@@ -72,7 +76,7 @@
 - 메서드 이름 쿼리는 Spring Data JPA 가 메서드 이름의 키워드(`existsBy`, `findBy`, `Containing`, `OrderBy` 등)를 보고 JPQL 을 자동 생성한다.
 - 검색 쿼리는 `findByNameContainingOrItemCodeContainingOrCategory_NameContaining(...)` 처럼 길어질 수 있다. 조건이 동적이면 Querydsl/JPA Criteria 로 옮긴다.
 - 페이징은 `Page<Item> findAll(Pageable pageable)` 처럼 시그니처만 맞추면 정렬과 페이지 메타 정보를 자동으로 채워 준다.
-- `findByCategoryId(Long categoryId, Pageable pageable)` 처럼 FK 컬럼명 그대로 쓰면 된다.
+- 현재 참조 구현처럼 `categoryId` 필드를 저장하면 `findByCategoryId(...)`, 연관관계 필드 `category.id`를 탐색하면 `findByCategory_Id(...)`를 쓴다. 엔티티 필드 모델에 맞춰 파생 쿼리 이름을 정해야 한다.
 
 ## 8. 품목 등록
 
@@ -97,10 +101,12 @@
 
 ## 11. 발주 승인/반려
 
+- 승인·반려·입고는 `ADMIN` 또는 `MANAGER`만 수행한다. URL 규칙에만 기대지 말고 Service에서도 역할을 검증한다.
 - 상태 검증은 Service 진입 직후. `if (po.getStatus() != REQUESTED) throw INVALID_STATUS`.
 - 반려 사유 blank 는 DTO `@NotBlank` 로 1차, Service `if (reason.isBlank())` 로 2차 검증.
 - 승인 시 `approverId`, `approvedAt` 을 도메인 메서드 `approve(approverId)` 안에서 함께 채운다.
 - 동시 승인 방지: 낙관적 락(`@Version`) 으로 두 요청 중 하나에 `OptimisticLockingFailureException` 을 발생시키거나, 비관적 락(`SELECT ... FOR UPDATE`) 으로 직렬화.
+- 입고는 `APPROVED → RECEIVED` 상태 변경과 라인별 재고 증가를 같은 트랜잭션으로 묶는다. 같은 품목 재고의 최초 생성 경합에는 품목 행 잠금과 일관된 잠금 순서가 필요하다.
 
 ## 12. 공지
 
@@ -144,18 +150,19 @@
 ## 18. ItemController
 
 - `/api/items` 와 HTTP 메서드 매칭: 목록 GET, 등록 POST, 상세 GET /{id}, 수정 PUT /{id}, 단종 PATCH /{id}/discontinue.
-- 권한 검증은 Spring Security 의 `@PreAuthorize("hasRole('ADMIN')")` 또는 Service 에서 `requireRole(ADMIN)`. 가급적 둘 다 두는 다층 방어.
+- 현재 참조 구현의 품목 변경 권한은 Service `Authz.requireRole(...)`이 보장한다. 인증까지 Spring Security로 옮긴 대안에서는 `@EnableMethodSecurity`와 `@PreAuthorize`를 추가할 수 있으며, 어노테이션만 붙이고 활성화하지 않으면 동작하지 않는다.
 
 ## 19. PurchaseOrderController
 
-- USER 용 `/api/purchase-orders/*` 와 ADMIN 용 `/api/admin/purchase-orders/*` 를 분리하면 권한 정책을 경로로 표현할 수 있다.
+- 로그인 사용자용 `/api/purchase-orders/*`와 ADMIN/MANAGER용 `/api/admin/purchase-orders/*`를 분리하면 권한 정책을 경로로 표현할 수 있다.
 - `PATCH /{id}/approve` 같은 동사형 경로는 RESTful 원리에 살짝 어긋나지만 상태 전이 의미가 명확해서 실무에서 자주 쓴다.
 - 로그인 사용자 ID 추출: 1차는 `HttpSession.getAttribute("USER_ID")`, 개선은 `@CurrentUser Long userId`, Spring Security 는 `@AuthenticationPrincipal`.
 
 ## 20. 보안 흐름
 
-- 1차(세션): 로그인 성공 시 `session.changeSessionId()` 로 세션 ID 재발급 → `USER_ID`, `USER_ROLE` 저장 → Interceptor 가 매 요청 검사.
-- 2차(Spring Security): `SecurityFilterChain`, `BCryptPasswordEncoder`, `UserDetailsService`, `@PreAuthorize` 로 선언적 권한.
+- 현재 참조 구현: 로그인 성공 시 `session.changeSessionId()`로 세션 ID 재발급 → 세션에 사용자 저장 → Interceptor가 인증 → ArgumentResolver가 현재 사용자 주입 → Service가 역할/소유권 인가.
+- Spring Security filter chain은 현재 웹 폼 CSRF와 기본 보안 헤더를 담당한다. form login, `SecurityContext` 인증과 URL 인가는 사용하지 않는다.
+- 대안 진화: 인증·인가까지 Spring Security로 옮긴다면 `UserDetailsService`, `@PreAuthorize` 등을 도입하고 기존 Interceptor/Service와 중복된 책임을 정리한다.
 - 3차(JWT): 무상태 토큰 발급 → `Authorization: Bearer ...` → 토큰 만료 시 refresh. 로그아웃 강제는 블랙리스트/짧은 TTL.
 
 ## 21. 통합 테스트
@@ -199,7 +206,7 @@
 
 ### 25-A. PartnerController
 
-- ADMIN 검사는 `@PreAuthorize` 1차, Service `requireRole(ADMIN)` 2차.
+- 현재 참조 구현은 Service의 ADMIN 가드를 기준으로 한다. Spring Security 인증·인가 대안을 선택한 경우 `@PreAuthorize`를 진입 전 추가 방어로 사용할 수 있다.
 - 전체 갱신은 PUT (모든 필드 교체), 부분 갱신은 PATCH (변경 필드만). 학습용으론 PUT 으로 단순화 가능.
 - 거래처 상세에 발주/수주 통계까지 포함하면 API 가 무거워지므로 별도 `/stats` 엔드포인트로 분리할지 결정.
 
@@ -224,14 +231,15 @@
 
 ## 28. 품목 상세 / 수정 / 단종
 
-- LAZY 로 묶인 카테고리는 DTO 변환 시점에 트랜잭션이 살아있어야 한다. open-in-view 가 켜져 있으면 view 렌더링 시점까지 트랜잭션이 유지된다(성능 트레이드오프).
-- 카테고리 변경: 새 카테고리 존재 확인 → `item.changeCategory(category)` 도메인 메서드. setter 를 직접 호출하지 않으면 도메인 규칙이 한 곳에 모인다.
+- LAZY 연관관계는 DTO 변환 시점에 영속성 컨텍스트가 열려 있어야 한다. OSIV는 view 렌더링까지 EntityManager를 열어 두지만 Service 트랜잭션 자체를 연장하는 것은 아니다. 현재 참조 구현은 OSIV를 끄고 Service에서 DTO를 완성한다.
+- 연관관계 starter는 `item.changeCategory(category)`, ID 참조인 현재 구현은 `item.changeCategory(categoryId)`를 사용한다. 둘 다 새 카테고리 존재 확인 후 도메인 메서드로 변경 규칙을 모은다.
 - soft delete(`DISCONTINUED`)는 과거 발주/수주 라인을 보존한다. hard delete 는 FK 제약 때문에 어렵고 이력 추적이 끊긴다.
 
 ## 29. 발주 — 내 목록 / 상세 / 취소 + 관리자 목록
 
 - 본인 발주 조회: `findByWriterId(currentUserId, pageable)`. URL 에 writerId 를 받지 않고 세션 사용자 기반.
-- 본인 취소 가능 상태: `DRAFT`, `REQUESTED` 까지. `APPROVED` 이후는 관리자 처리 영역.
+- 본인 취소 가능 상태: `DRAFT`, `REQUESTED`, `APPROVED`. `RECEIVED`, `REJECTED`, `CANCELED`은 종료 상태라 취소할 수 없다.
+- 상세 조회는 작성자 본인 또는 `ADMIN`/`MANAGER`에게 허용한다.
 - 관리자 목록은 status + partnerId 조건 분기. 4가지 조합을 if-else 또는 Specification 으로 처리.
 - 기간 조건(from/to)은 `orderDate BETWEEN :from AND :to` JPQL 또는 Querydsl.
 
@@ -262,7 +270,7 @@
 - `@EnableJpaAuditing` 가 없으면 `@CreatedDate`, `@LastModifiedDate` 가 동작하지 않아 null 이 들어간다.
 - BCrypt 의 안전성: salt 자동 생성 + work factor(라운드 수)로 GPU 무차별 대입에 강하다.
 - `addInterceptors` 는 매 요청 전후 가로채기, `addArgumentResolvers` 는 컨트롤러 파라미터 해석.
-- 1차(세션 Interceptor)와 2차(Security) 를 동시에 켜면 검증이 두 번 + 충돌. 한 가지로 통일.
+- Interceptor와 Security를 역할 구분 없이 모두 인증·인가에 사용하면 검증 중복과 401/403, 로그인 경로 충돌이 생긴다. 현재 참조 구현처럼 Interceptor/Service는 인증·인가, Security는 CSRF/헤더로 책임을 분리하는 하이브리드는 가능하다.
 
 ## 34. CurrentUser / Interceptor
 
@@ -275,7 +283,7 @@
 
 - `templates/items/`, `templates/purchase-orders/` 처럼 도메인별로 디렉터리 분리.
 - `th:text` 는 escape 자동(XSS 안전), `th:utext` 는 raw HTML(취약). 사용자 입력은 항상 `th:text`.
-- CSRF 토큰은 폼 안에 `<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />`.
+- Spring Security와 Thymeleaf가 통합된 `th:action` POST 폼은 CSRF hidden input이 자동 삽입된다. 일반 HTML action이나 JavaScript 요청에서는 `_csrf` 값을 직접 전달해야 한다.
 - Fragment 로 헤더/푸터 재사용: `<header th:fragment="header">...</header>` → `<div th:replace="~{fragments :: header}"></div>`.
 - 발주 작성 화면의 라인 동적 추가: JS 로 행 복제 또는 Thymeleaf list rendering + 클라이언트 스크립트.
 - `@RestController` = JSON 응답, `@Controller` + 메서드 String 반환 = view 렌더링.

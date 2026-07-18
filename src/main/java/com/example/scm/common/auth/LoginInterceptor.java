@@ -31,15 +31,15 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String uri = request.getRequestURI();
-        if (uri.startsWith("/api/")) {
+        String servletPath = request.getServletPath();
+        if (servletPath.startsWith("/api/")) {
             response.setStatus(ErrorCode.AUTHENTICATION_REQUIRED.getHttpStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter()
                     .write(objectMapper.writeValueAsString(ErrorResponse.of(ErrorCode.AUTHENTICATION_REQUIRED)));
         } else {
-            response.sendRedirect("/login");
+            response.sendRedirect(request.getContextPath() + "/login");
         }
         return false;
     }

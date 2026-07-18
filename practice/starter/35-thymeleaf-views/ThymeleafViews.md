@@ -87,10 +87,8 @@ src/main/resources/
 <!-- TODO 04: 동적 URL — /items/{id} -->
 <a th:____="@{/items/{id}(id=${item.itemId})}">상세</a>
 
-<!-- TODO 05: CSRF 토큰을 폼에 자동으로 넣는 방법 -->
+<!-- TODO 05: Spring Security + Thymeleaf에서 th:action POST 폼의 CSRF hidden input은 ____ 삽입된다. -->
 <form th:action="@{/api/purchase-orders}" method="post" th:object="${form}">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.____}"/>
-
     <label>공급사</label>
     <select th:field="*{partnerId}">
         <option th:each="p : ${partners}"
@@ -132,8 +130,6 @@ src/main/resources/
 
 ```html
 <form th:action="@{/api/purchase-orders}" method="post" th:object="${form}">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
     <h2>발주서 작성</h2>
 
     <div>
@@ -238,6 +234,8 @@ REST API 와 Thymeleaf 페이지를 같은 프로젝트에 두는 패턴:
 ---
 
 ## 6. 자주 빠뜨리는 보안 포인트
+
+`th:action`이 아닌 일반 HTML `action` 또는 JavaScript 요청에서는 자동 삽입을 기대하지 말고 CSRF header/parameter를 직접 전달해야 합니다. 현재 `/api/**` 예외 정책은 호환성 선택이며, 외부 노출 API의 일반적인 정답으로 외우지 않습니다.
 
 - [ ] `th:text` 가 아닌 `th:utext` 를 쓰면 HTML escape 가 사라집니다. 어떤 경우에만 사용 가능한가요?
 - [ ] 로그인하지 않은 사용자가 보호 화면(/admin/purchase-orders) 에 접근할 때 어디서 막아야 하나요?

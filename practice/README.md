@@ -1,81 +1,80 @@
 # SCM System 학습 워크북
 
-이 폴더는 [scm_system_PRD_TRD.md](../scm_system_PRD_TRD.md)에 정의된 공급망 관리(SCM) 시스템의 기술/개념을 직접 채워보며 공부하는 TODO/빈칸 워크북입니다.
+> [HTML 학습 목차](../index.html) · [루프 엔지니어링 가이드](../docs/LOOP_ENGINEERING.md) · [취업 포트폴리오 가이드](../docs/PORTFOLIO_GUIDE.md) · [실행 README](../README.md)
 
-완성 코드를 베끼는 대신 핵심 로직을 손으로 채워보는 것을 목표로 합니다.
+이 디렉터리는 완성된 SCM 애플리케이션을 읽기만 하는 자료가 아니라, 요구사항을 해석하고 핵심 코드를 직접 채우며 설계 이유까지 설명하는 실습형 워크북입니다.
 
-## 사용 방법
+이 프로젝트의 최우선 목적은 **취업에 필요한 Java/Spring 실무 사고를 반복 훈련하는 것**입니다. 루트 [`index.html`](../index.html)을 열면 40개 모듈을 검색·필터링하고 완료 진도를 브라우저에 저장할 수 있습니다.
 
-1. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
-2. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
-3. `practice/starter/` 아래의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-4. 막히면 [scm_system_PRD_TRD.md](../scm_system_PRD_TRD.md) 의 관련 절(3.x)을 다시 읽습니다.
-5. 채운 다음 [answers.md](./answers.md) 로 의도를 확인합니다.
-6. 같은 흐름을 한 번 더 백지에서 작성해 봅니다.
+- `src/`: 실행·테스트할 수 있는 현재 참조 구현
+- `practice/starter/`: 매번 다시 사용할 원본 문제 조각. 직접 수정하지 않습니다.
+- `practice/workspace/`: 개인 풀이 공간. Git 추적에서 제외됩니다.
+- [problems.md](./problems.md): 모듈별 문제와 학습 목표
+- [answers.md](./answers.md): 정답 문자열이 아니라 판단 방향
+- [feature-implementation-workbook.md](./feature-implementation-workbook.md): 기능 요구사항에서 계층·테스트까지 내려가는 설계 연습
+- [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md): 참조 구현의 현재 정책과 의도적인 대안
+- [REFERENCE_MAP.md](./REFERENCE_MAP.md): 문제와 실제 코드·테스트의 연결표
 
-이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
+starter는 import와 패키지 선언을 생략한 조각 코드이므로 그 자체로 컴파일되지 않습니다. 빈칸을 다 채웠다는 사실만으로 정답이 되지는 않으며, 실패 사례와 설계 이유를 말할 수 있어야 완료입니다.
 
-## 학습 순서
+## 시작하기
 
-| 순서 | 영역 | starter 파일 | 핵심 개념 |
-|---|---|---|---|
-| 00 | 빌드/설정 | `00-build-config/*` | Spring Boot 의존성, JPA 설정, 환경 변수 |
-| 01 | 도메인 | `01-user-entity/User.entity.java` | User 엔티티와 UserRole enum |
-| 02 | 도메인 | `02-category-entity/Category.entity.java`<br>`02-category-entity/Partner.entity.java` | Category 엔티티, 카테고리명 unique<br>Partner 엔티티, PartnerType/PartnerStatus, 사업자번호 unique |
-| 03 | 도메인 | `03-item-entity/Item.entity.java` | Item 엔티티, FK, ItemStatus |
-| 04 | 도메인 | `04-purchase-order-entity/PurchaseOrder.entity.java` | PurchaseOrder + Line, PurchaseOrderStatus |
-| 05 | 도메인 | `05-notice-entity/Notice.entity.java` | Notice 엔티티, 중요 공지/조회수 |
-| 06 | 도메인 | `06-sales-order-entity/SalesOrder.entity.java` | 수주서, DRAFT/CONFIRMED/SHIPPED/COMPLETED |
-| 07 | Repository | `07-repository/ItemRepository.java` | 메서드 쿼리, 검색, 페이징 |
-| 08 | Service | `08-item-register/ItemService.register.java` | 품목 등록, 코드/카테고리 검증 |
-| 09 | Service | `09-item-search/ItemService.search.java` | 검색 + 페이징 |
-| 10 | Service | `10-purchase-order-create/PurchaseOrderService.create.java` | 발주 작성, 헤더+라인 트랜잭션 |
-| 11 | Service | `11-purchase-order-approval/PurchaseOrderService.approval.java` | 발주 승인/반려 상태 검증 |
-| 12 | Service | `12-notice-service/NoticeService.java` | 공지 CRUD, important 정렬 |
-| 13 | Service | `13-sales-order-create/SalesOrderService.create.java` | 수주 작성, DRAFT → CONFIRMED |
-| 14 | Service | `14-sales-order-decision/SalesOrderService.decision.java` | 출고/완료/취소 상태 전이 |
-| 15 | 예외 | `15-error-model/ErrorCodeAndResponse.java` | ErrorCode, BusinessException, 응답 포맷 |
-| 16 | 예외 | `16-global-handler/GlobalExceptionHandler.java` | @RestControllerAdvice |
-| 17 | DTO | `17-dto-validation/ItemCreateRequest.java` | Bean Validation 어노테이션 |
-| 18 | Controller | `18-controller-item/ItemController.java` | REST 매핑, 권한 검사 |
-| 19 | Controller | `19-controller-purchase/PurchaseOrderController.java` | 일반/관리자 경로 분리 |
-| 20 | 보안 | `20-security-session/SecurityFlow.md` | 세션 → Spring Security 진화 |
-| 21 | 테스트 | `21-test-flow/PurchaseFlowTest.java` | MockMvc 통합 흐름 |
-| 22 | 문서화 | `22-documentation/PortfolioDocs.md` | README/ERD/API/트러블슈팅 |
-| 23 | 인증 | `23-auth-login/*` | 로그인/로그아웃/내 정보/비밀번호 변경 |
-| 24 | Service | `24-partner-service/PartnerService.java`<br>`24-partner-service/CategoryService.java` | 거래처 CRUD + 유형 검증<br>카테고리 CRUD + 삭제 정책 |
-| 25 | Controller | `25-partner-controller/PartnerController.java`<br>`25-partner-controller/CategoryController.java` | 거래처 REST API + DTO<br>카테고리 REST API + DTO |
-| 26 | Controller | `26-notice-controller/NoticeController.java` | 공지 REST API + DTO |
-| 27 | Controller | `27-sales-controller/SalesOrderController.java` | 수주 REST API + my/pending |
-| 28 | Service | `28-item-detail-update/ItemService.detail.java` | 품목 상세/수정/단종 처리 |
-| 29 | Service | `29-purchase-my-cancel/PurchaseOrderService.my.java` | 발주 내 목록/상세/취소 + 관리자 목록 |
-| 30 | Service | `30-sales-lists/SalesOrderService.lists.java` | 수주 my/pending/detail 권한 검사 |
-| 31 | Repository | `31-repositories-all/AllRepositories.java` | User/Partner/Category/Item/PO/SO/Notice Repository |
-| 32 | DTO | `32-response-dto-mapping/ResponseDtoMapping.java` | Entity↔DTO 변환 패턴 |
-| 33 | Config | `33-config-beans/ConfigBeans.java` | JPA Auditing + PasswordEncoder + WebMvc |
-| 34 | 보안 | `34-current-user-interceptor/CurrentUserAndInterceptor.java` | HandlerInterceptor + @CurrentUser ArgumentResolver |
-| 35 | View | `35-thymeleaf-views/ThymeleafViews.md` | Thymeleaf 템플릿 / 폼 / CSRF |
-| 36 | 구조 | `36-package-architecture/PackageArchitecture.md` | 패키지 구조와 계층 책임 |
-| 37 | 규칙 | `37-business-rules/BusinessRulesChecklist.md` | 비즈니스 규칙 다층 검증 매트릭스 |
-| 38 | 운영 | `38-troubleshooting/Troubleshooting.md` | 5건 트러블슈팅 워크북 |
-| 39 | 면접 | `39-interview-and-commit/InterviewAndCommit.md` | 면접 카드 + 커밋 컨벤션 + PR 템플릿 |
+```bash
+./gradlew practiceInit
+./gradlew practiceStatus
+```
 
-## 추천 학습 호흡
+`practiceInit`은 starter 원본과 학습 기록 양식을 `practice/workspace/`에 복사합니다. 기존 풀이가 있으면 덮어쓰지 않습니다. 이후에는 workspace만 수정합니다.
 
-0일차: `feature-implementation-workbook.md` 로 전체 FR ID 와 구현 계층 매핑 훑기
-1주차: 00 ~ 07 (빌드 + 도메인 모델링 + Repository)
-2주차: 08 ~ 14, 23 ~ 30 (Service 비즈니스 로직 — 등록/검색/발주/공지/수주/인증/거래처/상세·취소·리스트)
-3주차: 15 ~ 19, 25 ~ 27, 31 ~ 34 (예외/DTO/Controller/Repository/Config/Interceptor)
-4주차: 20 ~ 22, 35 ~ 39 (보안/테스트/문서/뷰/구조/규칙/트러블슈팅/면접)
+한 모듈의 권장 순서는 다음과 같습니다.
 
-## 진행도 자가 점검
+1. `problems.md`의 목표와 실패 조건을 먼저 읽습니다.
+2. 답을 보지 않고 입력·출력·상태 전이를 예측해 학습 기록에 적습니다.
+3. workspace의 `TODO`와 `____`를 채웁니다.
+4. 정상 사례 1개와 실패 사례 3개를 적고, 가능한 경우 테스트로 표현합니다.
+5. `answers.md`로 판단 방향을 확인합니다.
+6. [REFERENCE_MAP.md](./REFERENCE_MAP.md)를 따라 `src/`와 테스트를 읽고 차이를 기록합니다.
+7. 다음 날 코드를 보지 않고 핵심 흐름을 다시 설명하거나 작성합니다.
 
-직접 풀고 나면 다음 질문에 짧게 답해 봅니다.
+이 순서는 [`docs/LOOP_ENGINEERING.md`](../docs/LOOP_ENGINEERING.md)의 `목표 → 기준선 → 계약 → 실패 증거 → 최소 변경 → 검증 → 설명 → 정리` 루프와 동일합니다. 각 학습 기록에는 마지막에 1분 면접 답변과 다음 루프를 반드시 남깁니다.
 
-- 이 코드에서 트랜잭션이 필요한 이유는?
-- 이 검증을 Controller 가 아닌 Service 에서 한 이유는?
-- 이 응답을 Entity 그대로 두지 않고 DTO 로 감싼 이유는?
-- 이 상태값을 String 이 아닌 enum 으로 둔 이유는?
-- 헤더-라인 구조에서 라인 검증을 어디서 했는가?
+```bash
+./gradlew practiceStatus   # 모듈별 남은 빈칸과 체크 항목
+./gradlew practiceCheck    # 형식상 완료 여부만 검사하며 정답을 채점하지 않음
+./gradlew test             # 참조 구현의 실제 동작과 워크북 구조 검증
+```
 
-답을 한 줄로 적을 수 있으면 그 문제는 졸업입니다.
+## 학습 트랙
+
+40개 모듈은 난이도순 한 줄 목록이 아닙니다. 먼저 실행 가능한 참조 구현과 직접 연결되는 핵심 트랙을 끝낸 뒤, 아직 제품 코드가 없는 기능을 확장 설계로 다룹니다.
+
+| 단계 | 모듈 | 학습 결과 |
+|---|---|---|
+| 1. 기반 | 00~04, 07 | 빌드 설정, 핵심 엔티티, Repository의 책임을 설명한다. |
+| 2. 발주 수직 흐름 | 08~11, 15~19, 21, 29 | 요청 DTO부터 저장·상태 전이·예외·API·통합 테스트까지 연결한다. |
+| 3. 인증과 마스터 | 20, 23~25, 28, 31~35 | 세션 인증, 역할 인가, 거래처·카테고리·품목, 화면 보안을 연결한다. |
+| 4. 설계 회고 | 22, 36~39 | 계층 경계, 규칙 매트릭스, 장애 기록과 설명 능력을 점검한다. |
+| 5. 확장 설계 | 05~06, 12~14, 26~27, 30 | 공지·수주를 요구사항부터 새로 구현하거나 설계한다. |
+
+확장 트랙은 현재 `src/`에 정답 구현이 없는 의도적인 설계 과제입니다. 먼저 API와 상태 전이 표, 실패 테스트를 작성한 다음 구현하며, `answers.md`는 여러 가능한 설계 중 하나의 방향으로만 사용합니다.
+
+## 모듈 완료 기준
+
+- 빈칸과 TODO를 모두 직접 해결했다.
+- 정상 사례 1개와 실패 사례 3개를 설명하거나 테스트했다.
+- Controller가 아닌 Service에서 지켜야 할 규칙을 구분했다.
+- 트랜잭션 경계와 권한·소유권 검증 위치를 설명했다.
+- 답안 및 참조 구현과 다른 선택을 한 경우 이유를 기록했다.
+- 다음 날 힌트 없이 핵심 코드를 다시 작성하거나 흐름을 설명했다.
+
+특히 아래 질문에 한 문장으로 답하지 못하면 아직 완료가 아닙니다.
+
+- 이 작업이 하나의 트랜잭션이어야 하는 이유는 무엇인가?
+- 정상 상태 전이와 금지된 상태 전이는 무엇인가?
+- URL의 ID만 믿을 때 어떤 소유권 우회가 가능한가?
+- Entity를 그대로 응답하지 않고 DTO로 변환하는 이유는 무엇인가?
+- 동시 요청이 들어왔을 때 어떤 데이터가 어긋날 수 있는가?
+
+## 문서가 다를 때의 기준
+
+핵심 트랙에서는 현재 테스트되는 `src/`와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 합니다. 원 PRD/TRD와 차이가 있으면 잘못된 자료로 외우지 말고, 차이와 선택 이유를 학습 기록에 남깁니다. 확장 트랙은 PRD/TRD를 출발점으로 삼되 모호한 정책을 먼저 결정하고 테스트로 고정합니다.

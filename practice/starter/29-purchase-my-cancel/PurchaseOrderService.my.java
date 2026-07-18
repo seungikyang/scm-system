@@ -9,7 +9,7 @@ public Page<PurchaseOrderResponse> myList(Long currentUserId, Pageable pageable)
         .map(PurchaseOrderResponse::from);
 }
 
-// ============ 발주 상세 (본인 또는 ADMIN) ============
+// ============ 발주 상세 (본인 또는 ADMIN/MANAGER) ============
 @Transactional(readOnly = true)
 public PurchaseOrderResponse getDetail(Long currentUserId, Long purchaseOrderId) {
     User user = userRepository.findById(currentUserId)
@@ -18,10 +18,10 @@ public PurchaseOrderResponse getDetail(Long currentUserId, Long purchaseOrderId)
     PurchaseOrder po = purchaseOrderRepository.findById(purchaseOrderId)
         .orElseThrow(() -> new BusinessException(ErrorCode.PURCHASE_ORDER_NOT_FOUND));
 
-    // TODO 02: 권한 분기 — 작성자이거나 ADMIN 이어야 함.
+    // TODO 02: 권한 분기 — 작성자이거나 ADMIN/MANAGER여야 함.
     boolean isOwner = po.getWriterId().equals(user.getId());
-    boolean isAdmin = (user.getRole() == UserRole.____);
-    if (!isOwner && !isAdmin) {
+    boolean isOperator = user.getRole() == UserRole.____ || user.getRole() == UserRole.____;
+    if (!isOwner && !isOperator) {
         throw new BusinessException(ErrorCode.ACCESS_DENIED);
     }
 
@@ -35,7 +35,7 @@ public void cancel(Long currentUserId, Long purchaseOrderId) {
         .orElseThrow(() -> new BusinessException(ErrorCode.PURCHASE_ORDER_NOT_FOUND));
 
     try {
-        // TODO 03: 도메인 메서드 안에서 작성자 + DRAFT/REQUESTED 검증.
+        // TODO 03: 도메인 메서드 안에서 작성자 + DRAFT/REQUESTED/APPROVED 검증.
         po.____(currentUserId);
     } catch (AccessDeniedException e) {
         throw new BusinessException(ErrorCode.ACCESS_DENIED, e.getMessage());
@@ -70,5 +70,5 @@ public Page<PurchaseOrderResponse> adminList(
 //     A:
 // Q2. 조건 분기를 4갈래 if-else 로 두는 게 부담스러우면 어떤 대안이 있는가?
 //     A:
-// Q3. 본인 + ADMIN 분기 권한 검사 코드를 헬퍼로 추출한다면 어떤 시그니처가 좋을까?
+// Q3. 본인 + ADMIN/MANAGER 분기 권한 검사 코드를 헬퍼로 추출한다면 어떤 시그니처가 좋을까?
 //     A:

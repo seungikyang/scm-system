@@ -24,8 +24,12 @@ public interface PurchaseOrderRepository
             + "where po.id = :id")
     Optional<PurchaseOrder> findByIdWithLines(@Param("id") Long id);
 
-    // ===== 채번 (일자별 시퀀스 산출) =====
-    long countByOrderNumberStartingWith(String prefix);
+    // ===== 채번 (삭제/공백과 무관하게 일자별 마지막 번호 산출) =====
+    @Query("select max(po.orderNumber) from PurchaseOrder po "
+            + "where po.orderNumber like concat(:prefix, '%')")
+    String findMaxOrderNumber(@Param("prefix") String prefix);
+
+    boolean existsByOrderNumber(String orderNumber);
 
     // ===== 대시보드 집계 =====
     long countByStatus(PurchaseOrderStatus status);

@@ -45,9 +45,9 @@ public class PurchaseOrderController {
 
     // ============ 관리자 영역: /api/admin/purchase-orders ============
 
-    // TODO 03: 관리자만 접근 가능하도록 보호.
+    // TODO 03: ADMIN/MANAGER만 접근 가능하도록 보호.
     @GetMapping("/api/admin/purchase-orders")
-    @PreAuthorize("hasRole('____')")
+    @PreAuthorize("hasAnyRole('____', '____')")
     public Page<PurchaseOrderResponse> adminList(
             @RequestParam(required = false) PurchaseOrderStatus status,
             @RequestParam(required = false) Long partnerId,
@@ -57,13 +57,13 @@ public class PurchaseOrderController {
     }
 
     @PatchMapping("/api/admin/purchase-orders/{poId}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public PurchaseOrderResponse approve(@CurrentUser Long currentUserId, @PathVariable Long poId) {
         return purchaseOrderService.approve(currentUserId, poId);
     }
 
     @PatchMapping("/api/admin/purchase-orders/{poId}/reject")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public PurchaseOrderResponse reject(
             @CurrentUser Long currentUserId,
             @PathVariable Long poId,
@@ -74,7 +74,7 @@ public class PurchaseOrderController {
     }
 
     @PatchMapping("/api/admin/purchase-orders/{poId}/receive")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public PurchaseOrderResponse receive(@CurrentUser Long currentUserId, @PathVariable Long poId) {
         return purchaseOrderService.receive(currentUserId, poId);
     }

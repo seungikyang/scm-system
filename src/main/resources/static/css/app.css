@@ -209,6 +209,14 @@ table.data th.num {
     text-align: right;
 }
 
+.table-scroll {
+    overflow-x: auto;
+}
+
+.strong {
+    font-weight: 700;
+}
+
 .empty-row td {
     text-align: center;
     color: var(--color-muted);
@@ -426,6 +434,29 @@ textarea.invalid {
 .badge-INACTIVE     { background: #f3f4f6; color: #6b7280; border-color: #d1d5db; }
 .badge-DISCONTINUED { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
 
+/* Stock levels */
+.badge-NORMAL       { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.badge-LOW          { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+.badge-OUT_OF_STOCK { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
+.stock-warning {
+    color: var(--color-warning);
+}
+
+.checkbox-row label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    margin: 0;
+}
+
+.search-actions {
+    flex: 0 0 auto !important;
+    display: flex;
+    gap: 8px;
+}
+
 /* role pill */
 .pill-role {
     display: inline-block;
@@ -592,4 +623,51 @@ textarea.invalid {
     font-size: 64px;
     font-weight: 800;
     color: var(--color-primary);
+}
+
+@media (max-width: 760px) {
+    .navbar {
+        height: auto;
+        min-height: 56px;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+    }
+
+    .navbar .brand {
+        margin-right: 0;
+    }
+
+    .navbar .menu {
+        order: 3;
+        flex-basis: 100%;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .navbar .menu a {
+        flex: 0 0 auto;
+    }
+
+    .navbar .user-area > span {
+        display: none;
+    }
+
+    main {
+        margin: 18px auto;
+        padding: 0 14px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    table.data {
+        min-width: 720px;
+    }
+
+    dl.detail {
+        grid-template-columns: 120px 1fr;
+    }
 }

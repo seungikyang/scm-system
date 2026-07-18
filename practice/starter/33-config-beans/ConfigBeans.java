@@ -45,22 +45,26 @@ public class PasswordConfig {
 public class WebMvcConfig implements ____ {
 
     private final AuthCheckInterceptor authCheckInterceptor;
+    private final AdminOnlyInterceptor adminOnlyInterceptor;
     private final CurrentUserArgumentResolver currentUserArgumentResolver;
     private final CurrentUserRoleArgumentResolver currentUserRoleArgumentResolver;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authCheckInterceptor)
-            // TODO 04: 어떤 경로를 보호 대상에서 제외해야 할까요? (로그인, 정적 리소스, H2 콘솔)
+            // TODO 04: 어떤 경로를 보호 대상에서 제외해야 할까요? (로그인, 정적 리소스)
             .excludePathPatterns(
                 "/api/auth/login",
                 "/api/auth/logout",
-                "/h2-console/**",
                 "/css/**", "/js/**", "/images/**",
                 // TODO 05: API 명세 자동화 (springdoc-openapi) 를 쓴다면 제외할 경로 두 가지는?
                 "/____/**", "/____/**"
             )
-            .addPathPatterns("/api/**");
+            .addPathPatterns("/api/**", "/h2-console/**");
+
+        // H2 console은 환경 변수로 켠 경우에도 로그인한 ADMIN만 접근합니다.
+        registry.addInterceptor(adminOnlyInterceptor)
+            .addPathPatterns("/h2-console/**");
     }
 
     @Override
@@ -73,31 +77,22 @@ public class WebMvcConfig implements ____ {
 
 
 // =====================================================================
-// 4. (학습 2차) Spring Security 단계의 SecurityFilterChain — 보강용 미리보기
+// 4. 현재 참조 구현의 SecurityFilterChain — 역할 분담
 // =====================================================================
-// 이 단계는 TRD 3.11.2 의 "확장 구현" 입니다.
-// 1차(세션) 단계와 2차(Security) 단계를 동시에 켜지 않습니다.
+// 인증/인가는 위 Interceptor + Service가 담당하고 Security는 CSRF/보안 헤더만 담당합니다.
+// 역할을 분리한 하이브리드는 가능하지만, 두 체계가 모두 인증을 시도하게 만들면 안 됩니다.
 //
 // @Configuration
-// @EnableMethodSecurity
 // public class SecurityConfig {
 //     @Bean
 //     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //         http
-//             .csrf(csrf -> csrf.disable())
-//             .sessionManagement(s -> s.sessionFixation().changeSessionId())
-//             .authorizeHttpRequests(auth -> auth
-//                 .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-//                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-//                 .requestMatchers(
-//                     "/api/sales-orders/pending",
-//                     "/api/sales-orders/*/ship",
-//                     "/api/sales-orders/*/complete"
-//                 ).hasAnyRole("MANAGER", "ADMIN")
-//                 .anyRequest().authenticated()
-//             )
-//             .formLogin(form -> form.loginProcessingUrl("/api/auth/login").permitAll())
-//             .logout(logout -> logout.logoutUrl("/api/auth/logout"));
+//             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+//             .formLogin(form -> form.disable())
+//             .httpBasic(basic -> basic.disable())
+//             .logout(logout -> logout.disable())
+//             .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"))
+//             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 //         return http.build();
 //     }
 // }
@@ -131,5 +126,7 @@ public class WebMvcConfig implements ____ {
 //     A:
 // Q5. AuditorAware<Long> 가 없으면 createdBy / modifiedBy 컬럼은 어떻게 들어가는가?
 //     A:
-// Q6. 1차(세션) Config 와 2차(Security) Config 를 동시에 켜면 어떤 충돌이 나는가?
+// Q6. 현재 하이브리드에서 Interceptor/Service와 Security filter chain의 책임은 각각 무엇인가?
+//     A:
+// Q7. 인증까지 Spring Security로 옮긴다면 제거하거나 변경해야 할 기존 구성은 무엇인가?
 //     A:

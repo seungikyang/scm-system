@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Java와 Spring Boot SCM 프로젝트를 직접 구현하고 면접까지 준비하는 취업용 워크북 학습 목차">
+  <title>SCM 취업 워크북 · 학습 목차</title>
+  <style>
+    :root {
+      --paper: #f7f4ed;
+      --surface: #fffdf8;
+      --surface-strong: #ffffff;
+      --ink: #17201d;
+      --muted: #62706b;
+      --line: #dfe4dc;
+      --brand: #176b5b;
+      --brand-dark: #0d4d41;
+      --brand-soft: #dff1eb;
+      --accent: #df6c3f;
+      --accent-soft: #fbe8de;
+      --blue: #285d91;
+      --blue-soft: #e4eef8;
+      --shadow: 0 18px 60px rgba(29, 51, 44, .09);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(223, 108, 63, .10), transparent 27rem),
+        radial-gradient(circle at 88% 3%, rgba(23, 107, 91, .12), transparent 32rem),
+        var(--paper);
+      font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: -5rem;
+      z-index: 100;
+      padding: .7rem 1rem;
+      color: white;
+      background: var(--brand-dark);
+      border-radius: 10px;
+    }
+    .skip-link:focus { top: 1rem; }
+    .shell { max-width: 1440px; margin: 0 auto; padding: 26px; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      color: white;
+      background: var(--brand);
+      border-radius: 11px;
+      box-shadow: 0 8px 20px rgba(23, 107, 91, .20);
+    }
+    .top-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .top-links a {
+      padding: 7px 11px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 750;
+      border-radius: 10px;
+    }
+    .top-links a:hover, .top-links a:focus-visible { color: var(--brand-dark); background: var(--brand-soft); }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+      gap: 38px;
+      min-height: 400px;
+      padding: clamp(34px, 6vw, 76px);
+      color: white;
+      background: linear-gradient(135deg, #0e4e43 0%, #176b5b 55%, #238370 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 430px;
+      height: 430px;
+      right: -160px;
+      top: -210px;
+      border: 80px solid rgba(255, 255, 255, .07);
+      border-radius: 50%;
+    }
+    .hero-copy, .hero-panel { position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      opacity: .88;
+    }
+    .eyebrow::before { content: ""; width: 24px; height: 2px; background: #ffc19e; }
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2.45rem, 5vw, 5.25rem);
+      line-height: 1.06;
+      letter-spacing: -.055em;
+    }
+    .hero-lead { max-width: 710px; margin: 24px 0 0; color: rgba(255,255,255,.85); font-size: 1.06rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      text-decoration: none;
+      font-weight: 850;
+      border: 1px solid transparent;
+      border-radius: 12px;
+    }
+    .button.primary { color: var(--brand-dark); background: #fff8eb; }
+    .button.ghost { color: white; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08); }
+    .button:hover, .button:focus-visible { transform: translateY(-1px); }
+    .hero-panel {
+      align-self: end;
+      padding: 22px;
+      background: rgba(8, 49, 42, .42);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .hero-panel strong { display: block; margin-bottom: 8px; font-size: 1.04rem; }
+    .hero-panel p { margin: 0; color: rgba(255,255,255,.78); font-size: .9rem; }
+    .progress-label { display: flex; justify-content: space-between; margin-top: 20px; font-size: .82rem; font-weight: 800; }
+    .progress-track { height: 9px; margin-top: 8px; overflow: hidden; background: rgba(255,255,255,.16); border-radius: 999px; }
+    .progress-bar { width: 0; height: 100%; background: #ffc19e; border-radius: inherit; transition: width .25s ease; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0 0; }
+    .stat { padding: 17px 18px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 15px; }
+    .stat b { display: block; font-size: 1.5rem; line-height: 1.2; }
+    .stat span { color: rgba(255,255,255,.7); font-size: .78rem; }
+    .layout { display: grid; grid-template-columns: 238px minmax(0, 1fr); gap: 34px; margin-top: 34px; align-items: start; }
+    .toc {
+      position: sticky;
+      top: 22px;
+      padding: 20px;
+      background: rgba(255,253,248,.82);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 36px rgba(29,51,44,.05);
+      backdrop-filter: blur(12px);
+    }
+    .toc h2 { margin: 0 0 12px; font-size: .77rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .toc a { display: block; padding: 8px 10px; text-decoration: none; font-size: .9rem; font-weight: 760; border-radius: 9px; }
+    .toc a:hover, .toc a:focus-visible { color: var(--brand-dark); background: var(--brand-soft); }
+    .toc small { display: block; margin: 14px 10px 0; color: var(--muted); }
+    main { min-width: 0; }
+    .section { scroll-margin-top: 24px; padding: 34px 0 14px; }
+    .section:first-child { padding-top: 0; }
+    .section-kicker { margin: 0 0 6px; color: var(--accent); font-size: .75rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    h2.section-title { margin: 0; font-size: clamp(1.65rem, 3vw, 2.55rem); line-height: 1.2; letter-spacing: -.035em; }
+    .section-intro { max-width: 760px; margin: 10px 0 22px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .card {
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 34px rgba(29,51,44,.04);
+    }
+    .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .card .card-link { display: inline-flex; margin-top: 14px; color: var(--brand-dark); font-weight: 850; text-decoration: none; }
+    .card .card-link:hover { text-decoration: underline; }
+    .steps { counter-reset: step; display: grid; gap: 12px; }
+    .step { position: relative; padding: 20px 22px 20px 70px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+    .step::before {
+      counter-increment: step;
+      content: counter(step, decimal-leading-zero);
+      position: absolute;
+      left: 20px;
+      top: 19px;
+      color: var(--accent);
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+    .step strong { display: block; }
+    .step span { color: var(--muted); font-size: .9rem; }
+    .loop-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .loop-node { position: relative; min-height: 126px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+    .loop-node b { display: block; margin-bottom: 6px; color: var(--brand-dark); }
+    .loop-node span { color: var(--muted); font-size: .84rem; }
+    .loop-node:nth-child(4n+2) { background: var(--accent-soft); }
+    .loop-node:nth-child(4n+4) { background: var(--brand-soft); }
+    .toolbox { position: sticky; top: 0; z-index: 20; padding: 14px 0; background: linear-gradient(var(--paper) 78%, transparent); }
+    .toolbox-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 13px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 10px 34px rgba(29,51,44,.07); }
+    .search { flex: 1 1 260px; min-height: 42px; padding: 9px 13px; color: var(--ink); background: #fbfcf9; border: 1px solid #cfd8d1; border-radius: 11px; }
+    .filter { min-height: 38px; padding: 7px 11px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+    .filter.active { color: white; background: var(--brand); border-color: var(--brand); }
+    .reset { margin-left: auto; color: #8b3d25; background: var(--accent-soft); }
+    .track { margin-top: 28px; }
+    .track-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .track-head h3 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
+    .track-head p { margin: 0; color: var(--muted); font-size: .84rem; }
+    .module-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .module {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      min-height: 122px;
+      padding: 17px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      transition: transform .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+    .module:hover { transform: translateY(-2px); border-color: #b7c9c0; }
+    .module[hidden], .track[hidden] { display: none; }
+    .module input { width: 19px; height: 19px; margin: 3px 0 0; accent-color: var(--brand); cursor: pointer; }
+    .module.done { background: #f1f8f4; }
+    .module.done .module-title { text-decoration: line-through; text-decoration-color: #8aa399; }
+    .module-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .module-title { margin: 0; font-size: .95rem; line-height: 1.42; }
+    .num { color: var(--accent); font-weight: 950; font-variant-numeric: tabular-nums; }
+    .badge { flex: 0 0 auto; padding: 3px 7px; font-size: .66rem; font-weight: 900; border-radius: 999px; }
+    .badge.core { color: var(--brand-dark); background: var(--brand-soft); }
+    .badge.extension { color: #7a3b22; background: var(--accent-soft); }
+    .badge.review { color: #274f78; background: var(--blue-soft); }
+    .module p { margin: 7px 0 9px; color: var(--muted); font-size: .79rem; }
+    .module-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .module-links a { padding: 4px 7px; color: var(--brand-dark); background: #eef5f1; text-decoration: none; font-size: .72rem; font-weight: 800; border-radius: 7px; }
+    .module-links a:hover, .module-links a:focus-visible { background: var(--brand-soft); text-decoration: underline; }
+    .evidence { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .evidence .card { min-height: 185px; }
+    .evidence .number { display: block; margin-bottom: 20px; color: var(--accent); font-size: 2rem; font-weight: 950; }
+    .callout { padding: 24px; background: linear-gradient(135deg, #fbe8de, #fff7ee); border: 1px solid #f1c7b3; border-radius: var(--radius); }
+    .callout strong { display: block; margin-bottom: 5px; font-size: 1.08rem; }
+    footer { margin: 48px 0 16px; padding: 24px 0; color: var(--muted); border-top: 1px solid var(--line); font-size: .85rem; }
+    footer a { color: var(--brand-dark); font-weight: 800; }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .layout { grid-template-columns: 1fr; }
+      .toc { position: static; display: flex; flex-wrap: wrap; gap: 4px; }
+      .toc h2, .toc small { width: 100%; }
+      .toc a { display: inline-flex; }
+      .loop-flow { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .shell { padding: 14px; }
+      .topbar { align-items: flex-start; }
+      .top-links { display: none; }
+      .hero { min-height: auto; padding: 34px 24px; border-radius: 22px; }
+      h1 { font-size: 2.55rem; }
+      .stats, .grid, .module-grid, .evidence { grid-template-columns: 1fr; }
+      .loop-flow { grid-template-columns: 1fr; }
+      .toolbox { position: static; }
+      .reset { margin-left: 0; }
+    }
+    @media print {
+      body { background: white; }
+      .topbar, .toc, .toolbox, .hero-actions, .reset { display: none !important; }
+      .shell { max-width: none; padding: 0; }
+      .hero { color: var(--ink); background: white; border: 2px solid var(--ink); box-shadow: none; }
+      .hero-lead, .hero-panel p, .stat span { color: var(--ink); }
+      .layout { display: block; }
+      .card, .module, .step, .loop-node { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">본문으로 이동</a>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="SCM 워크북 홈">
+        <span class="brand-mark">S</span>
+        <span>SCM Career Workbook</span>
+      </a>
+      <nav class="top-links" aria-label="빠른 문서 이동">
+        <a href="README.md">실행 README</a>
+        <a href="practice/README.md">워크북 안내</a>
+        <a href="docs/LOOP_ENGINEERING.md">루프 가이드</a>
+        <a href="history.html">구현 히스토리</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Java · Spring Boot · SCM</p>
+        <h1 id="hero-title">외우는 코드가 아닌,<br>설명할 수 있는 실력.</h1>
+        <p class="hero-lead">요구사항을 읽고, 직접 구현하고, 실패를 테스트하고, 면접에서 선택 이유까지 말하는 SI·백엔드 취업용 SCM 워크북입니다.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#modules">40개 모듈 시작하기</a>
+          <a class="button ghost" href="docs/PORTFOLIO_GUIDE.md">3분 데모 준비</a>
+        </div>
+        <div class="stats" aria-label="프로젝트 현황">
+          <div class="stat"><b>40</b><span>학습 모듈</span></div>
+          <div class="stat"><b>94</b><span>테스트 계약</span></div>
+          <div class="stat"><b>6</b><span>발주 상태</span></div>
+          <div class="stat"><b>4</b><span>반복 루프</span></div>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label="나의 학습 진도">
+        <strong>나의 워크북 진도</strong>
+        <p>모듈 카드의 체크박스를 선택하면 이 브라우저에 진도가 저장됩니다.</p>
+        <div class="progress-label"><span>완료</span><span id="progressText">0 / 40</span></div>
+        <div class="progress-track" role="progressbar" aria-label="워크북 완료율" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="layout">
+      <nav class="toc" aria-label="페이지 목차">
+        <h2>학습 목차</h2>
+        <a href="#purpose">01 · 워크북 목적</a>
+        <a href="#start">02 · 시작 순서</a>
+        <a href="#loop">03 · 반복 학습 루프</a>
+        <a href="#modules">04 · 40개 모듈</a>
+        <a href="#documents">05 · 설계 문서</a>
+        <a href="#portfolio">06 · 취업 증거</a>
+        <small>목표는 진도 100%가 아니라, 핵심 규칙을 자신의 말로 설명하는 것입니다.</small>
+      </nav>
+
+      <main id="content">
+        <section class="section" id="purpose">
+          <p class="section-kicker">Purpose</p>
+          <h2 class="section-title">두 가지 최상위 목적</h2>
+          <p class="section-intro">모든 코드와 문서는 취업 역량을 증명하거나 공부를 쉽게 만드는 데 기여해야 합니다.</p>
+          <div class="grid">
+            <article class="card">
+              <h3>01. 취업을 위한 실전 워크북</h3>
+              <p>요구사항 분석, 계층 설계, 상태 전이, 트랜잭션, 보안, 테스트와 장애 대응을 직접 구현하고 면접 답변으로 연결합니다.</p>
+              <a class="card-link" href="docs/PORTFOLIO_GUIDE.md">포트폴리오 가이드 보기 →</a>
+            </article>
+            <article class="card">
+              <h3>02. HTML로 쉬운 학습 탐색</h3>
+              <p>40개 모듈과 구현 증거를 한 화면에서 검색하고, 학습 트랙별로 필터링하며, 완료 진도를 브라우저에 저장합니다.</p>
+              <a class="card-link" href="#modules">학습 모듈 열기 →</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="start">
+          <p class="section-kicker">Quick Start</p>
+          <h2 class="section-title">처음 공부하는 순서</h2>
+          <p class="section-intro">참조 구현을 먼저 읽지 않습니다. 예측하고, 실패 사례를 만들고, 구현한 뒤 비교합니다.</p>
+          <div class="steps">
+            <div class="step"><strong>HTML 목차에서 오늘의 모듈을 고른다.</strong><span>처음이면 00 빌드 설정부터, Spring 경험이 있다면 10 발주 작성부터 시작합니다.</span></div>
+            <div class="step"><strong>문제와 요구사항을 읽고 먼저 예측한다.</strong><span>입력·출력·권한·상태·실패 조건을 학습 노트에 적습니다.</span></div>
+            <div class="step"><strong>개인 workspace에서 빈칸을 직접 채운다.</strong><span><code>./gradlew practiceInit</code>은 최초 한 번만 실행하며 starter 원본은 수정하지 않습니다.</span></div>
+            <div class="step"><strong>정상 1건과 실패 3건을 테스트한다.</strong><span>권한 실패, 잘못된 상태, 잘못된 입력을 최소 기준으로 삼습니다.</span></div>
+            <div class="step"><strong>참조 구현과 비교하고 자신의 말로 설명한다.</strong><span>다른 선택을 했다면 어느 쪽이 정답인지보다 트레이드오프를 기록합니다.</span></div>
+          </div>
+        </section>
+
+        <section class="section" id="loop">
+          <p class="section-kicker">Loop Engineering</p>
+          <h2 class="section-title">한 사이클의 반복 구조</h2>
+          <p class="section-intro">기능 개발, 문서 정리, 학습과 면접 준비에 같은 루프를 적용합니다.</p>
+          <div class="loop-flow" aria-label="루프 엔지니어링 8단계">
+            <div class="loop-node"><b>1 · 목표</b><span>취업 역량과 사용자 가치를 한 문장으로 정합니다.</span></div>
+            <div class="loop-node"><b>2 · 기준선</b><span>현재 코드·문서·테스트의 실제 상태를 확인합니다.</span></div>
+            <div class="loop-node"><b>3 · 계약</b><span>입력, 출력, 권한, 상태와 실패 조건을 고정합니다.</span></div>
+            <div class="loop-node"><b>4 · 실패 증거</b><span>잘못된 구현을 잡는 테스트나 재현 절차를 먼저 만듭니다.</span></div>
+            <div class="loop-node"><b>5 · 최소 변경</b><span>계약을 만족하는 가장 작은 구현을 작성합니다.</span></div>
+            <div class="loop-node"><b>6 · 검증</b><span>대상 테스트, 전체 테스트와 패키징을 확인합니다.</span></div>
+            <div class="loop-node"><b>7 · 설명</b><span>선택 이유와 대안을 1분 면접 답변으로 정리합니다.</span></div>
+            <div class="loop-node"><b>8 · 정리</b><span>문서, HTML 목차, 학습 노트와 이력을 동기화합니다.</span></div>
+          </div>
+          <div class="callout" style="margin-top:14px">
+            <strong>완료의 정의</strong>
+            구현이 동작하는 것에 더해 실패를 테스트하고, 문서를 현재 상태로 맞추고, 설계 이유를 설명할 수 있어야 루프가 끝납니다.
+            <a href="docs/LOOP_ENGINEERING.md"> 전체 운영 규칙 보기 →</a>
+          </div>
+        </section>
+
+        <section class="section" id="modules">
+          <p class="section-kicker">Workbook Modules</p>
+          <h2 class="section-title">40개 학습 모듈</h2>
+          <p class="section-intro">검색 또는 트랙 필터로 오늘 공부할 항목을 찾으세요. ‘확장 설계’는 현재 제품 코드에 정답 구현이 없는 의도적인 과제입니다.</p>
+
+          <div class="toolbox">
+            <div class="toolbox-inner">
+              <label for="moduleSearch" class="skip-link">모듈 검색</label>
+              <input class="search" id="moduleSearch" type="search" placeholder="예: 트랜잭션, 발주, Security, 면접" autocomplete="off">
+              <button class="filter active" type="button" data-filter="all">전체</button>
+              <button class="filter" type="button" data-filter="base">기반</button>
+              <button class="filter" type="button" data-filter="purchase">발주</button>
+              <button class="filter" type="button" data-filter="master">인증·마스터</button>
+              <button class="filter" type="button" data-filter="review">설계·면접</button>
+              <button class="filter" type="button" data-filter="extension">확장</button>
+              <button class="filter reset" id="resetProgress" type="button">진도 초기화</button>
+            </div>
+          </div>
+
+          <section class="track" data-track-section="base">
+            <div class="track-head"><div><h3>1. 기반 이해</h3><p>빌드, 엔티티, Repository 경계를 먼저 잡습니다.</p></div></div>
+            <div class="module-grid">
+              <article class="module" data-module="00" data-track="base" data-search="빌드 gradle spring boot application yml h2 mysql flyway migration"><input type="checkbox" aria-label="00 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">00</span> 빌드와 설정</h4><span class="badge core">핵심</span></div><p>Java 17, H2 학습 모드와 MySQL Flyway 운영 계약을 이해합니다.</p><div class="module-links"><a href="practice/starter/00-build-config/build.gradle.fragment">Starter</a><a href="build.gradle">참조</a><a href="src/main/resources/db/migration/mysql/V1__baseline_schema.sql">Migration</a></div></div></article>
+              <article class="module" data-module="01" data-track="base" data-search="user entity jpa enum password audit"><input type="checkbox" aria-label="01 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">01</span> User 엔티티</h4><span class="badge core">핵심</span></div><p>식별자, BCrypt 비밀번호, 역할 enum과 감사 컬럼을 다룹니다.</p><div class="module-links"><a href="practice/starter/01-user-entity/User.entity.java">Starter</a><a href="src/main/java/com/example/scm/domain/User.java">참조</a></div></div></article>
+              <article class="module" data-module="02" data-track="base" data-search="category partner entity 거래처 카테고리 unique enum"><input type="checkbox" aria-label="02 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">02</span> Category · Partner</h4><span class="badge core">핵심</span></div><p>마스터 데이터의 unique 정책과 비활성화를 설계합니다.</p><div class="module-links"><a href="practice/starter/02-category-entity/Partner.entity.java">Starter</a><a href="src/main/java/com/example/scm/domain/Partner.java">참조</a></div></div></article>
+              <article class="module" data-module="03" data-track="base" data-search="item entity 품목 bigdecimal 단종 category"><input type="checkbox" aria-label="03 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">03</span> Item 엔티티</h4><span class="badge core">핵심</span></div><p>금액 타입, 단종 soft delete와 카테고리 참조를 학습합니다.</p><div class="module-links"><a href="practice/starter/03-item-entity/Item.entity.java">Starter</a><a href="src/main/java/com/example/scm/domain/Item.java">참조</a></div></div></article>
+              <article class="module" data-module="04" data-track="base" data-search="purchase order entity 발주 header line aggregate 상태"><input type="checkbox" aria-label="04 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">04</span> 발주 헤더 · 라인</h4><span class="badge core">핵심</span></div><p>헤더-라인 aggregate와 상태 전이의 저장 구조를 설계합니다.</p><div class="module-links"><a href="practice/starter/04-purchase-order-entity/PurchaseOrder.entity.java">Starter</a><a href="src/main/java/com/example/scm/domain/PurchaseOrder.java">참조</a></div></div></article>
+              <article class="module" data-module="07" data-track="base" data-search="repository spring data jpa query pageable 검색"><input type="checkbox" aria-label="07 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">07</span> Repository 쿼리</h4><span class="badge core">핵심</span></div><p>메서드 이름 쿼리, Specification과 페이징을 구분합니다.</p><div class="module-links"><a href="practice/starter/07-repository/ItemRepository.java">Starter</a><a href="src/main/java/com/example/scm/repository/ItemRepository.java">참조</a></div></div></article>
+            </div>
+          </section>
+
+          <section class="track" data-track-section="purchase">
+            <div class="track-head"><div><h3>2. 발주 수직 흐름</h3><p>요청 DTO부터 입고 재고와 통합 테스트까지 연결합니다.</p></div></div>
+            <div class="module-grid">
+              <article class="module" data-module="08" data-track="purchase" data-search="item register service 품목 등록 transaction"><input type="checkbox" aria-label="08 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">08</span> 품목 등록 Service</h4><span class="badge core">핵심</span></div><p>중복 검사와 카테고리 검증의 트랜잭션 경계를 연습합니다.</p><div class="module-links"><a href="practice/starter/08-item-register/ItemService.register.java">Starter</a><a href="src/main/java/com/example/scm/service/ItemService.java">참조</a></div></div></article>
+              <article class="module" data-module="09" data-track="purchase" data-search="item search pageable dto 품목 검색 페이징"><input type="checkbox" aria-label="09 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">09</span> 품목 검색 · 페이징</h4><span class="badge core">핵심</span></div><p>Specification 검색과 Page DTO 변환을 구현합니다.</p><div class="module-links"><a href="practice/starter/09-item-search/ItemService.search.java">Starter</a><a href="src/main/java/com/example/scm/repository/spec/ItemSpecs.java">참조</a></div></div></article>
+              <article class="module" data-module="10" data-track="purchase" data-search="purchase create 발주 작성 transaction money server calculation"><input type="checkbox" aria-label="10 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">10</span> 발주서 작성</h4><span class="badge core">핵심</span></div><p>라인 검증, 서버 금액 계산과 원자적 저장을 구현합니다.</p><div class="module-links"><a href="practice/starter/10-purchase-order-create/PurchaseOrderService.create.java">Starter</a><a href="src/main/java/com/example/scm/service/PurchaseOrderService.java">참조</a></div></div></article>
+              <article class="module" data-module="11" data-track="purchase" data-search="approve reject receive stock 발주 승인 반려 입고 재고 동시성 current inventory"><input type="checkbox" aria-label="11 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">11</span> 승인 · 입고 · 재고</h4><span class="badge core">핵심</span></div><p>상태·권한·동시 입고와 현재고 부족 조회까지 연결합니다.</p><div class="module-links"><a href="practice/starter/11-purchase-order-approval/PurchaseOrderService.approval.java">Starter</a><a href="docs/STATE_MACHINE.md">상태표</a><a href="src/main/java/com/example/scm/service/StockService.java">재고 참조</a></div></div></article>
+              <article class="module" data-module="15" data-track="purchase" data-search="error code response exception api 에러 모델"><input type="checkbox" aria-label="15 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">15</span> 에러 모델</h4><span class="badge core">핵심</span></div><p>HTTP 상태와 비즈니스 에러 코드를 분리합니다.</p><div class="module-links"><a href="practice/starter/15-error-model/ErrorCodeAndResponse.java">Starter</a><a href="src/main/java/com/example/scm/common/exception/ErrorCode.java">참조</a></div></div></article>
+              <article class="module" data-module="16" data-track="purchase" data-search="global exception handler rest controller advice 예외"><input type="checkbox" aria-label="16 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">16</span> 전역 예외 처리</h4><span class="badge core">핵심</span></div><p>API와 Web의 실패 응답 경계를 구현합니다.</p><div class="module-links"><a href="practice/starter/16-global-handler/GlobalExceptionHandler.java">Starter</a><a href="src/main/java/com/example/scm/common/exception/ApiExceptionHandler.java">참조</a></div></div></article>
+              <article class="module" data-module="17" data-track="purchase" data-search="dto validation bean valid 검증"><input type="checkbox" aria-label="17 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">17</span> DTO 검증</h4><span class="badge core">핵심</span></div><p>형식 검증과 업무 규칙 검증의 위치를 구분합니다.</p><div class="module-links"><a href="practice/starter/17-dto-validation/ItemCreateRequest.java">Starter</a><a href="src/main/java/com/example/scm/dto/item/ItemCreateRequest.java">참조</a></div></div></article>
+              <article class="module" data-module="18" data-track="purchase" data-search="item controller rest api 품목"><input type="checkbox" aria-label="18 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">18</span> Item Controller</h4><span class="badge core">핵심</span></div><p>HTTP 메서드와 요청 DTO, 권한 전달을 연결합니다.</p><div class="module-links"><a href="practice/starter/18-controller-item/ItemController.java">Starter</a><a href="src/main/java/com/example/scm/controller/api/ItemApiController.java">참조</a></div></div></article>
+              <article class="module" data-module="19" data-track="purchase" data-search="purchase order controller api admin 작성자"><input type="checkbox" aria-label="19 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">19</span> 발주 Controller</h4><span class="badge core">핵심</span></div><p>사용자와 관리자 API를 분리하고 동일 Service에 연결합니다.</p><div class="module-links"><a href="practice/starter/19-controller-purchase/PurchaseOrderController.java">Starter</a><a href="src/main/java/com/example/scm/controller/api/PurchaseOrderApiController.java">참조</a></div></div></article>
+              <article class="module" data-module="21" data-track="purchase" data-search="integration test mockmvc 발주 전체 흐름 테스트 concurrency 동시성 mysql"><input type="checkbox" aria-label="21 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">21</span> 발주 통합 테스트</h4><span class="badge core">핵심</span></div><p>전체 흐름과 두 스레드 채번·최초 입고 경합을 증명합니다.</p><div class="module-links"><a href="practice/starter/21-test-flow/PurchaseFlowTest.java">Starter</a><a href="src/test/java/com/example/scm/service/PurchaseOrderFlowIntegrationTest.java">흐름</a><a href="src/test/java/com/example/scm/service/PurchaseOrderConcurrencyIntegrationTest.java">동시성</a></div></div></article>
+              <article class="module" data-module="29" data-track="purchase" data-search="purchase my cancel detail access 발주 내목록 취소 권한"><input type="checkbox" aria-label="29 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">29</span> 내 발주 · 취소</h4><span class="badge core">핵심</span></div><p>작성자 소유권과 상태별 취소 가능 범위를 검증합니다.</p><div class="module-links"><a href="practice/starter/29-purchase-my-cancel/PurchaseOrderService.my.java">Starter</a><a href="src/test/java/com/example/scm/service/PurchaseOrderServiceTest.java">테스트</a></div></div></article>
+            </div>
+          </section>
+
+          <section class="track" data-track-section="master">
+            <div class="track-head"><div><h3>3. 인증과 마스터·화면</h3><p>세션 보안, 거래처·카테고리·품목과 Thymeleaf를 연결합니다.</p></div></div>
+            <div class="module-grid">
+              <article class="module" data-module="20" data-track="master" data-search="security session csrf interceptor 보안 세션"><input type="checkbox" aria-label="20 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">20</span> 보안 흐름</h4><span class="badge core">핵심</span></div><p>세션 인증·Service 인가·CSRF의 역할을 구분합니다.</p><div class="module-links"><a href="practice/starter/20-security-session/SecurityFlow.md">Starter</a><a href="src/main/java/com/example/scm/config/SecurityConfig.java">참조</a></div></div></article>
+              <article class="module" data-module="23" data-track="master" data-search="auth login controller service bcrypt 로그인"><input type="checkbox" aria-label="23 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">23</span> 인증 · 로그인</h4><span class="badge core">핵심</span></div><p>BCrypt 검증, 세션 교체와 로그인 응답을 구현합니다.</p><div class="module-links"><a href="practice/starter/23-auth-login/AuthService.login.java">Starter</a><a href="src/main/java/com/example/scm/service/AuthService.java">참조</a></div></div></article>
+              <article class="module" data-module="24" data-track="master" data-search="partner category service 거래처 카테고리 unique"><input type="checkbox" aria-label="24 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">24</span> 거래처 · 카테고리 Service</h4><span class="badge core">핵심</span></div><p>중복, 삭제 제한, 비활성화와 관리자 권한을 구현합니다.</p><div class="module-links"><a href="practice/starter/24-partner-service/PartnerService.java">Starter</a><a href="src/main/java/com/example/scm/service/PartnerService.java">참조</a></div></div></article>
+              <article class="module" data-module="25" data-track="master" data-search="partner category controller 거래처 카테고리 api web"><input type="checkbox" aria-label="25 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">25</span> 마스터 Controller</h4><span class="badge core">핵심</span></div><p>REST와 Web 폼의 입력·오류 흐름을 비교합니다.</p><div class="module-links"><a href="practice/starter/25-partner-controller/PartnerController.java">Starter</a><a href="src/main/java/com/example/scm/controller/web/PartnerWebController.java">참조</a></div></div></article>
+              <article class="module" data-module="28" data-track="master" data-search="item detail update discontinue 품목 상세 수정 단종"><input type="checkbox" aria-label="28 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">28</span> 품목 상세 · 수정</h4><span class="badge core">핵심</span></div><p>불변 코드와 수정 가능 필드, 단종 정책을 구분합니다.</p><div class="module-links"><a href="practice/starter/28-item-detail-update/ItemService.detail.java">Starter</a><a href="src/main/java/com/example/scm/service/ItemService.java">참조</a></div></div></article>
+              <article class="module" data-module="31" data-track="master" data-search="repositories all jpa repository 전체"><input type="checkbox" aria-label="31 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">31</span> 전체 Repository</h4><span class="badge core">핵심</span></div><p>도메인별 조회 책임과 잠금 쿼리를 한 번에 점검합니다.</p><div class="module-links"><a href="practice/starter/31-repositories-all/AllRepositories.java">Starter</a><a href="src/main/java/com/example/scm/repository/PurchaseOrderRepository.java">참조</a></div></div></article>
+              <article class="module" data-module="32" data-track="master" data-search="response dto mapping 응답 변환 osiv n+1"><input type="checkbox" aria-label="32 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">32</span> 응답 DTO 변환</h4><span class="badge core">핵심</span></div><p>OSIV off 환경에서 표시값을 Service 안에서 해소합니다.</p><div class="module-links"><a href="practice/starter/32-response-dto-mapping/ResponseDtoMapping.java">Starter</a><a href="docs/TROUBLESHOOTING.md">설계 노트</a></div></div></article>
+              <article class="module" data-module="33" data-track="master" data-search="config bean password encoder auditing 설정"><input type="checkbox" aria-label="33 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">33</span> 설정 Bean</h4><span class="badge core">핵심</span></div><p>PasswordEncoder, JPA Auditing과 MVC 구성을 점검합니다.</p><div class="module-links"><a href="practice/starter/33-config-beans/ConfigBeans.java">Starter</a><a href="src/main/java/com/example/scm/config/PasswordConfig.java">참조</a></div></div></article>
+              <article class="module" data-module="34" data-track="master" data-search="current user interceptor argument resolver 현재 사용자"><input type="checkbox" aria-label="34 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">34</span> 현재 사용자 주입</h4><span class="badge core">핵심</span></div><p>Interceptor와 ArgumentResolver의 책임을 분리합니다.</p><div class="module-links"><a href="practice/starter/34-current-user-interceptor/CurrentUserAndInterceptor.java">Starter</a><a href="src/main/java/com/example/scm/common/auth/CurrentUserArgumentResolver.java">참조</a></div></div></article>
+              <article class="module" data-module="35" data-track="master" data-search="thymeleaf view html 화면 csrf form"><input type="checkbox" aria-label="35 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">35</span> Thymeleaf 화면</h4><span class="badge core">핵심</span></div><p>목록·상세·폼·CSRF·권한별 버튼 노출을 연결합니다.</p><div class="module-links"><a href="practice/starter/35-thymeleaf-views/ThymeleafViews.md">Starter</a><a href="src/main/resources/templates/dashboard.html">화면</a></div></div></article>
+            </div>
+          </section>
+
+          <section class="track" data-track-section="review">
+            <div class="track-head"><div><h3>4. 설계 회고와 면접</h3><p>작성한 코드를 취업용 설명과 증거로 바꿉니다.</p></div></div>
+            <div class="module-grid">
+              <article class="module" data-module="22" data-track="review" data-search="documentation portfolio readme 문서화 포트폴리오"><input type="checkbox" aria-label="22 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">22</span> 포트폴리오 문서화</h4><span class="badge review">회고</span></div><p>프로젝트 소개, 실행, 기술 선택과 한계를 정리합니다.</p><div class="module-links"><a href="practice/starter/22-documentation/PortfolioDocs.md">Starter</a><a href="docs/PORTFOLIO_GUIDE.md">가이드</a></div></div></article>
+              <article class="module" data-module="36" data-track="review" data-search="package architecture 계층 패키지 아키텍처"><input type="checkbox" aria-label="36 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">36</span> 패키지 아키텍처</h4><span class="badge review">회고</span></div><p>Controller·Service·Domain·Repository의 의존 방향을 설명합니다.</p><div class="module-links"><a href="practice/starter/36-package-architecture/PackageArchitecture.md">Starter</a><a href="practice/DESIGN_DECISIONS.md">결정</a></div></div></article>
+              <article class="module" data-module="37" data-track="review" data-search="business rules checklist 권한 상태 규칙"><input type="checkbox" aria-label="37 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">37</span> 비즈니스 규칙표</h4><span class="badge review">회고</span></div><p>상태×역할×행위×실패 코드 매트릭스를 작성합니다.</p><div class="module-links"><a href="practice/starter/37-business-rules/BusinessRulesChecklist.md">Starter</a><a href="docs/STATE_MACHINE.md">상태표</a></div></div></article>
+              <article class="module" data-module="38" data-track="review" data-search="troubleshooting 장애 원인 해결 검증"><input type="checkbox" aria-label="38 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">38</span> 트러블슈팅</h4><span class="badge review">회고</span></div><p>증상→원인→해결→검증을 재현 가능한 기록으로 만듭니다.</p><div class="module-links"><a href="practice/starter/38-troubleshooting/Troubleshooting.md">Starter</a><a href="docs/TROUBLESHOOTING.md">사례</a></div></div></article>
+              <article class="module" data-module="39" data-track="review" data-search="interview commit 면접 git 이력서"><input type="checkbox" aria-label="39 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">39</span> 면접 · 커밋</h4><span class="badge review">회고</span></div><p>작은 커밋과 1분 답변으로 학습 결과를 증명합니다.</p><div class="module-links"><a href="practice/starter/39-interview-and-commit/InterviewAndCommit.md">Starter</a><a href="docs/PORTFOLIO_GUIDE.md">면접</a></div></div></article>
+            </div>
+          </section>
+
+          <section class="track" data-track-section="extension">
+            <div class="track-head"><div><h3>5. 확장 설계</h3><p>현재 제품 코드에 정답 구현이 없는 수주·공지 과제입니다.</p></div></div>
+            <div class="module-grid">
+              <article class="module" data-module="05" data-track="extension" data-search="notice entity 공지 중요 조회수"><input type="checkbox" aria-label="05 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">05</span> Notice 엔티티</h4><span class="badge extension">확장</span></div><p>공지 본문, 중요 표시와 조회수 정책을 설계합니다.</p><div class="module-links"><a href="practice/starter/05-notice-entity/Notice.entity.java">Starter</a><a href="scm_system_PRD_TRD.md">요구사항</a></div></div></article>
+              <article class="module" data-module="06" data-track="extension" data-search="sales order entity 수주 header line 상태"><input type="checkbox" aria-label="06 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">06</span> SalesOrder 엔티티</h4><span class="badge extension">확장</span></div><p>수주 헤더-라인과 출고·완료 상태를 설계합니다.</p><div class="module-links"><a href="practice/starter/06-sales-order-entity/SalesOrder.entity.java">Starter</a><a href="scm_system_PRD_TRD.md">요구사항</a></div></div></article>
+              <article class="module" data-module="12" data-track="extension" data-search="notice service 공지 crud important"><input type="checkbox" aria-label="12 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">12</span> Notice Service</h4><span class="badge extension">확장</span></div><p>관리자 CRUD와 중요 공지 정렬 계약을 먼저 만듭니다.</p><div class="module-links"><a href="practice/starter/12-notice-service/NoticeService.java">Starter</a><a href="practice/feature-implementation-workbook.md">워크북</a></div></div></article>
+              <article class="module" data-module="13" data-track="extension" data-search="sales order create service 수주 작성 확정"><input type="checkbox" aria-label="13 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">13</span> 수주서 작성</h4><span class="badge extension">확장</span></div><p>고객사 검증과 수주 금액·채번 정책을 결정합니다.</p><div class="module-links"><a href="practice/starter/13-sales-order-create/SalesOrderService.create.java">Starter</a><a href="practice/feature-implementation-workbook.md">워크북</a></div></div></article>
+              <article class="module" data-module="14" data-track="extension" data-search="sales order ship complete cancel 수주 출고 완료 취소"><input type="checkbox" aria-label="14 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">14</span> 수주 상태 결정</h4><span class="badge extension">확장</span></div><p>확정→출고→완료와 취소 상태 전이를 설계합니다.</p><div class="module-links"><a href="practice/starter/14-sales-order-decision/SalesOrderService.decision.java">Starter</a><a href="scm_system_PRD_TRD.md">요구사항</a></div></div></article>
+              <article class="module" data-module="26" data-track="extension" data-search="notice controller dto 공지 api"><input type="checkbox" aria-label="26 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">26</span> Notice Controller</h4><span class="badge extension">확장</span></div><p>공지 API 계약과 권한 실패 테스트를 먼저 작성합니다.</p><div class="module-links"><a href="practice/starter/26-notice-controller/NoticeController.java">Starter</a><a href="docs/API_SPEC.md">API 형식</a></div></div></article>
+              <article class="module" data-module="27" data-track="extension" data-search="sales controller 수주 api pending ship"><input type="checkbox" aria-label="27 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">27</span> SalesOrder Controller</h4><span class="badge extension">확장</span></div><p>작성자·매니저 API와 상태 변경 경로를 설계합니다.</p><div class="module-links"><a href="practice/starter/27-sales-controller/SalesOrderController.java">Starter</a><a href="scm_system_PRD_TRD.md">요구사항</a></div></div></article>
+              <article class="module" data-module="30" data-track="extension" data-search="sales list detail pending 수주 목록 상세 권한"><input type="checkbox" aria-label="30 모듈 완료"><div><div class="module-top"><h4 class="module-title"><span class="num">30</span> 수주 목록 · 상세</h4><span class="badge extension">확장</span></div><p>내 목록, 처리 대기와 상세 소유권을 설계합니다.</p><div class="module-links"><a href="practice/starter/30-sales-lists/SalesOrderService.lists.java">Starter</a><a href="practice/feature-implementation-workbook.md">워크북</a></div></div></article>
+            </div>
+          </section>
+        </section>
+
+        <section class="section" id="documents">
+          <p class="section-kicker">Documentation Map</p>
+          <h2 class="section-title">설계와 구현 증거</h2>
+          <p class="section-intro">문서가 다르면 테스트와 현재 구현을 먼저 확인하고, 결정 이유를 기록합니다.</p>
+          <div class="grid">
+            <article class="card"><h3>문서 지도</h3><p>처음 읽는 순서와 문서별 갱신 시점을 확인합니다.</p><a class="card-link" href="docs/INDEX.md">INDEX 열기 →</a></article>
+            <article class="card"><h3>API 명세</h3><p>실제 제공하는 REST 경로, 권한, 요청·응답과 에러 계약입니다.</p><a class="card-link" href="docs/API_SPEC.md">API_SPEC 열기 →</a></article>
+            <article class="card"><h3>ERD · Flyway</h3><p>엔티티 관계와 MySQL 버전 스키마·검증 규칙을 확인합니다.</p><a class="card-link" href="docs/ERD.md">ERD 열기 →</a></article>
+            <article class="card"><h3>상태 머신</h3><p>발주의 정상 전이, 금지 전이, 역할과 부수효과를 확인합니다.</p><a class="card-link" href="docs/STATE_MACHINE.md">STATE_MACHINE 열기 →</a></article>
+            <article class="card"><h3>설계 결정</h3><p>참조 구현이 선택한 정책과 의도적인 대안을 확인합니다.</p><a class="card-link" href="practice/DESIGN_DECISIONS.md">결정 기록 열기 →</a></article>
+            <article class="card"><h3>트러블슈팅</h3><p>OSIV, 낙관적 락, 채번과 재고 원자성 해결 과정을 읽습니다.</p><a class="card-link" href="docs/TROUBLESHOOTING.md">사례 열기 →</a></article>
+          </div>
+        </section>
+
+        <section class="section" id="portfolio">
+          <p class="section-kicker">Career Evidence</p>
+          <h2 class="section-title">코드를 취업 증거로 바꾸기</h2>
+          <p class="section-intro">각 기능을 구현한 뒤 설명, 테스트, 데모까지 연결해야 포트폴리오가 됩니다.</p>
+          <div class="evidence">
+            <article class="card"><span class="number">01</span><h3>3분 데모</h3><p>발주 작성부터 승인·입고 후 재고 화면의 현재고와 부족 상태까지 한 흐름으로 보여줍니다.</p></article>
+            <article class="card"><span class="number">02</span><h3>1분 설계 답변</h3><p>트랜잭션, 상태 전이, 권한과 동시성 선택을 문제→대안→검증 순서로 설명합니다.</p></article>
+            <article class="card"><span class="number">03</span><h3>실패 증거</h3><p>정상 화면만 보여주지 않고 잘못된 상태·역할·입력을 테스트가 막는 장면을 제시합니다.</p></article>
+          </div>
+          <div class="callout" style="margin-top:14px">
+            <strong>이번 주의 마무리</strong>
+            완료한 모듈 하나를 골라 3분 데모와 핵심 질문 5개를 녹화하거나 말로 설명해 보세요.
+            <a href="docs/PORTFOLIO_GUIDE.md"> 면접 체크리스트 보기 →</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      SCM Career Workbook · Java 17 / Spring Boot · <a href="history.html">프로젝트 구현 히스토리</a><br>
+      진도 정보는 서버로 전송되지 않고 현재 브라우저의 localStorage에만 저장됩니다.
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const storageKey = 'scm-workbook-progress-v1';
+      const modules = [...document.querySelectorAll('.module')];
+      const filters = [...document.querySelectorAll('.filter[data-filter]')];
+      const search = document.querySelector('#moduleSearch');
+      const progressText = document.querySelector('#progressText');
+      const progressBar = document.querySelector('#progressBar');
+      const progressTrack = document.querySelector('.progress-track');
+      let activeFilter = 'all';
+
+      const readProgress = () => {
+        try { return new Set(JSON.parse(localStorage.getItem(storageKey) || '[]')); }
+        catch (_) { return new Set(); }
+      };
+
+      const saved = readProgress();
+      modules.forEach((card) => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        checkbox.checked = saved.has(card.dataset.module);
+        card.classList.toggle('done', checkbox.checked);
+      });
+
+      function updateProgress() {
+        const completed = modules.filter(card => card.querySelector('input').checked).length;
+        const percent = Math.round((completed / modules.length) * 100);
+        progressText.textContent = `${completed} / ${modules.length} · ${percent}%`;
+        progressBar.style.width = `${percent}%`;
+        progressTrack.setAttribute('aria-valuenow', String(completed));
+      }
+
+      function persistProgress() {
+        const completed = modules
+          .filter(card => card.querySelector('input').checked)
+          .map(card => card.dataset.module);
+        try { localStorage.setItem(storageKey, JSON.stringify(completed)); }
+        catch (_) { /* 제한된 브라우저에서도 현재 탭의 진도 표시는 유지한다. */ }
+        updateProgress();
+      }
+
+      function applyFilters() {
+        const query = search.value.trim().toLocaleLowerCase('ko');
+        modules.forEach((card) => {
+          const matchesTrack = activeFilter === 'all' || card.dataset.track === activeFilter;
+          const haystack = `${card.textContent} ${card.dataset.search || ''}`.toLocaleLowerCase('ko');
+          card.hidden = !(matchesTrack && haystack.includes(query));
+        });
+        document.querySelectorAll('.track').forEach((track) => {
+          track.hidden = ![...track.querySelectorAll('.module')].some(card => !card.hidden);
+        });
+      }
+
+      modules.forEach((card) => {
+        card.querySelector('input').addEventListener('change', (event) => {
+          card.classList.toggle('done', event.currentTarget.checked);
+          persistProgress();
+        });
+      });
+
+      filters.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeFilter = button.dataset.filter;
+          filters.forEach(item => item.classList.toggle('active', item === button));
+          applyFilters();
+        });
+      });
+
+      search.addEventListener('input', applyFilters);
+      document.querySelector('#resetProgress').addEventListener('click', () => {
+        if (!window.confirm('저장된 40개 모듈 진도를 모두 초기화할까요?')) return;
+        modules.forEach((card) => {
+          card.querySelector('input').checked = false;
+          card.classList.remove('done');
+        });
+        try { localStorage.removeItem(storageKey); }
+        catch (_) { /* 저장소를 사용할 수 없어도 화면 초기화는 완료한다. */ }
+        updateProgress();
+      });
+
+      updateProgress();
+    })();
+  </script>
+</body>
+</html>

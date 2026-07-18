@@ -1,6 +1,6 @@
 # 보안 흐름 워크북
 
-TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다. 아래 빈칸과 질문에 한 줄씩 답을 적어 두면, 면접에서 "이 시스템의 보안은 어떻게 진화시킬 수 있나요?"에 자연스럽게 답할 수 있습니다.
+TRD 3.11의 보안 선택지를 직접 비교합니다. 현재 참조 구현은 세션 Interceptor/ArgumentResolver/Service 인가와 Spring Security의 CSRF·보안 헤더를 조합한 하이브리드입니다. 아래의 "전체 Spring Security 인증"과 JWT는 대안 진화 경로이며 현재 코드와 동시에 그대로 켜는 설정이 아닙니다.
 
 ---
 
@@ -34,7 +34,7 @@ TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다
 
 ---
 
-## 2차: Spring Security + BCrypt + Role 기반 접근 제어
+## 대안: Spring Security가 인증·인가까지 담당
 
 ### 핵심 구성요소
 
@@ -49,6 +49,7 @@ TRD 3.11 에서 정의한 1차/2차/3차 보안 진화를 직접 채워봅니다
 ### 빈칸 채우기
 
 ```java
+// 대안 구성 예시. 현재 src의 SecurityConfig와 역할이 다릅니다.
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
@@ -78,7 +79,7 @@ public PasswordEncoder passwordEncoder() {
 ### 학습 질문
 
 - Q. `hasRole("ADMIN")` 과 `hasAuthority("ROLE_ADMIN")` 의 차이는?
-- Q. CSRF 보호를 disable 해도 되는 조건은?
+- Q. CSRF 보호를 disable 해도 되는 조건은? "REST API라서"만으로 충분한 답인가?
 - Q. `@PreAuthorize` 가 동작하려면 어떤 어노테이션이 Config 에 필요한가?
 - Q. BCrypt 가 SHA-256 보다 안전한 두 가지 이유는? (힌트: salt, work factor)
 
@@ -126,8 +127,8 @@ public PasswordEncoder passwordEncoder() {
 | 품목 관리 | ____ | 가능 | ____ |
 | 거래처 / 품목 조회 | 가능 | 가능 | 가능 |
 | 발주 작성 | 가능 | 가능 | 가능 |
-| 발주 승인 / 반려 | ____ | 가능 | ____ |
-| 발주 입고 처리 | ____ | 가능 | ____ |
+| 발주 승인 / 반려 | ____ | 가능 | 가능 |
+| 발주 입고 처리 | ____ | 가능 | 가능 |
 | 공지 조회 | 가능 | 가능 | 가능 |
 | 공지 등록 / 수정 / 삭제 | ____ | 가능 | ____ |
 | 수주 작성 | 가능 | 가능 | 가능 |
@@ -139,7 +140,7 @@ public PasswordEncoder passwordEncoder() {
 
 ## 다층 방어 (Defense in Depth)
 
-같은 권한 검증을 여러 곳에 두면 한 곳이 뚫려도 다음 단계가 막는다.
+같은 규칙의 검증을 여러 계층에 두되 각 계층의 책임을 구분합니다. 아래는 Spring Security가 URL/메서드 인가까지 맡는 대안 구성입니다. 현재 참조 구현에서는 1~2단계 대신 LoginInterceptor와 Service `Authz`가 인증·인가를 담당합니다.
 
 ```text
 [1] Spring Security FilterChain

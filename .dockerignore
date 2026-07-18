@@ -1,6 +1,5 @@
 # VCS / IDE
 .git
-.gitignore
 .idea
 .vscode
 *.iml
@@ -8,16 +7,19 @@
 # Gradle / 빌드 산출물 (빌드는 gradle 이미지에서 수행 → wrapper/local build 불필요)
 .gradle
 build
+output
+.playwright-cli
+tmp
+temp
+.omc
+build-report.json
 gradle
 gradlew
 gradlew.bat
 
-# 학습 워크북 · 설계 산출물 · 문서 — 런타임 이미지에 불필요
-practice
+# SDLC 중간 산출물 — 빌드·테스트에 불필요
 _workspace
 _workspace_prev
-docs
-*.md
 
 # 루트 임시 파일 (탐색/진단 스크립트 등) — 컨텍스트에서 제외
 /_*.py

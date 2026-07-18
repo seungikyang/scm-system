@@ -1,5 +1,6 @@
 package com.example.scm.common.exception;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.ui.Model;
@@ -16,8 +17,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class WebExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public String handleBusiness(BusinessException e, Model model) {
+    public String handleBusiness(BusinessException e, Model model, HttpServletResponse response) {
         ErrorCode errorCode = e.getErrorCode();
+        response.setStatus(errorCode.getHttpStatus().value());
         model.addAttribute("status", errorCode.getHttpStatus().value());
         model.addAttribute("code", errorCode.getCode());
         model.addAttribute("errorMessage", e.getMessage());
@@ -25,8 +27,10 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
-    public String handleOptimisticLock(OptimisticLockingFailureException e, Model model) {
+    public String handleOptimisticLock(OptimisticLockingFailureException e, Model model,
+                                       HttpServletResponse response) {
         log.warn("Optimistic lock conflict (web): {}", e.getMessage());
+        response.setStatus(ErrorCode.INVALID_STATUS.getHttpStatus().value());
         model.addAttribute("status", ErrorCode.INVALID_STATUS.getHttpStatus().value());
         model.addAttribute("code", ErrorCode.INVALID_STATUS.getCode());
         model.addAttribute("errorMessage", "다른 사용자가 먼저 처리했습니다. 다시 확인해 주세요.");
@@ -34,8 +38,9 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleException(Exception e, Model model) {
+    public String handleException(Exception e, Model model, HttpServletResponse response) {
         log.error("Unhandled exception (web)", e);
+        response.setStatus(ErrorCode.INTERNAL_ERROR.getHttpStatus().value());
         model.addAttribute("status", ErrorCode.INTERNAL_ERROR.getHttpStatus().value());
         model.addAttribute("code", ErrorCode.INTERNAL_ERROR.getCode());
         model.addAttribute("errorMessage", ErrorCode.INTERNAL_ERROR.getMessage());

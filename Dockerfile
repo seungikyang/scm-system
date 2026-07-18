@@ -11,9 +11,13 @@ WORKDIR /workspace
 COPY settings.gradle build.gradle ./
 RUN gradle dependencies --no-daemon > /dev/null 2>&1 || true
 
-# 2) 소스 복사 후 실행 가능 jar 빌드 (테스트는 스킵 — 필요 시 -x test 제거)
+# 2) 제품 코드와 워크북을 복사해 구조·기능 테스트 후 실행 가능 jar 빌드
 COPY src ./src
-RUN gradle bootJar --no-daemon -x test
+COPY practice ./practice
+COPY index.html ./index.html
+COPY docs ./docs
+COPY README.md .gitignore ./
+RUN gradle portfolioCheck --no-daemon
 
 # =========================================================================
 # Runtime stage — 슬림 JRE 17 로 실행.

@@ -36,6 +36,7 @@
         <!-- 발주: 로그인 사용자 전원 -->
         <a th:if="${currentUser != null}" th:href="@{/purchase-orders/new}">발주작성</a>
         <a th:if="${currentUser != null}" th:href="@{/purchase-orders/my}">내 발주</a>
+        <a th:if="${currentUser != null}" th:href="@{/stocks}">재고</a>
 
         <!-- 관리자 발주(승인관리): ADMIN, MANAGER -->
         <a th:if="${role == 'ADMIN' or role == 'MANAGER'}" th:href="@{/admin/purchase-orders}">관리자발주</a>

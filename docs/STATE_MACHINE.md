@@ -1,5 +1,7 @@
 # 발주 상태 전이 (State Machine)
 
+> [HTML 학습 목차](../index.html) · [문서 지도](./INDEX.md) · [루프 엔지니어링](./LOOP_ENGINEERING.md) · [실행 README](../README.md)
+
 발주(PurchaseOrder)의 상태 전이 규칙입니다. **실제 도메인 메서드(`PurchaseOrder.submit/approve/reject/receive/cancel`)와 서비스(`PurchaseOrderService`) 구현을 기준**으로 작성했습니다.
 
 - 상태 가드는 **엔티티 도메인 메서드 내부**(`requireStatus`/`requireCancelable`)에서 검증하며, 위반 시 `INVALID_STATUS`(400)를 던집니다.
@@ -111,9 +113,10 @@ private void requireCancelable() {
 
 1. `findByIdWithLines(poId)`로 발주 + 라인을 fetch join 조회.
 2. `po.receive()` — 상태 `APPROVED` 검증 후 `RECEIVED` + `receivedAt` 기록.
-3. 라인별로 `Stock`을 조회(없으면 생성)해 `quantity`를 증가.
+3. 관련 `Item` 행을 ID 순서로 비관적 잠금해 품목별 재고 처리를 직렬화.
+4. 라인별로 `Stock`을 조회(없으면 생성)해 `quantity`를 증가.
 
-상태 전이와 모든 라인의 재고 증가가 같은 트랜잭션이므로, 한 라인이라도 실패하면 상태 변경을 포함해 전체 롤백됩니다. `RECEIVED` 상태는 재진입 시 `requireStatus(APPROVED)`에 막혀 이중 재고 증가가 방지됩니다.
+상태 전이와 모든 라인의 재고 증가가 같은 트랜잭션이므로, 한 라인이라도 실패하면 상태 변경을 포함해 전체 롤백됩니다. 품목 잠금은 서로 다른 발주가 같은 품목의 최초 재고 행을 동시에 생성할 때 발생하는 UNIQUE 충돌을 방지합니다. `RECEIVED` 상태는 재진입 시 `requireStatus(APPROVED)`에 막혀 이중 재고 증가가 방지됩니다.
 
 ---
 

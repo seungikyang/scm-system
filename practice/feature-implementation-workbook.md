@@ -11,6 +11,8 @@
 3. 마지막으로 `테스트 TODO`를 Given/When/Then 으로 한 줄씩 적는다.
 4. 막히면 PRD/TRD 절 번호와 `practice/starter` 파일을 다시 본다.
 
+핵심 구현(사용자·마스터·품목·발주·입고 재고)은 현재 테스트와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 비교합니다. 공지·수주는 현재 `src/`에 없는 확장 설계 과제이므로 요구사항, 상태 표, 실패 테스트를 먼저 작성합니다.
+
 ## 공통 구현 지도
 
 아래 빈칸을 먼저 채우면 모든 기능의 구현 방향이 흔들리지 않습니다.
@@ -56,11 +58,11 @@
 | FR-PO-001 | 발주서 작성 | 헤더 + 라인 원자적 저장 | `10-purchase-order-create` |
 | FR-PO-002 | 발주 요청 | DRAFT → REQUESTED | `10-purchase-order-create`, `19-controller-purchase` |
 | FR-PO-003 | 내 발주서 목록 | writerId 조건 | `29-purchase-my-cancel` |
-| FR-PO-004 | 발주서 상세 조회 | 작성자/ADMIN 권한 분기 | `29-purchase-my-cancel` |
-| FR-PO-005 | 발주서 취소 | 본인 + DRAFT/REQUESTED 상태만 | `29-purchase-my-cancel` |
-| FR-PO-006 | 발주 승인 | ADMIN, REQUESTED → APPROVED | `11-purchase-order-approval` |
-| FR-PO-007 | 발주 반려 | ADMIN, 반려 사유 필수 | `11-purchase-order-approval` |
-| FR-PO-008 | 입고 처리 | APPROVED → RECEIVED | `11-purchase-order-approval` |
+| FR-PO-004 | 발주서 상세 조회 | 작성자/ADMIN/MANAGER 권한 분기 | `29-purchase-my-cancel` |
+| FR-PO-005 | 발주서 취소 | 본인 + DRAFT/REQUESTED/APPROVED | `29-purchase-my-cancel` |
+| FR-PO-006 | 발주 승인 | ADMIN/MANAGER, REQUESTED → APPROVED | `11-purchase-order-approval` |
+| FR-PO-007 | 발주 반려 | ADMIN/MANAGER, 반려 사유 필수 | `11-purchase-order-approval` |
+| FR-PO-008 | 입고 처리 | ADMIN/MANAGER, 상태 변경 + 재고 증가 원자성 | `11-purchase-order-approval` |
 | FR-PO-009 | 관리자 발주 목록 | 상태/거래처 조건별 전체 조회 | `19-controller-purchase`, `29-purchase-my-cancel` |
 | FR-NOTICE-001 | 공지 등록 | ADMIN 만 작성 | `12-notice-service`, `26-notice-controller` |
 | FR-NOTICE-002 | 공지 목록 조회 | 중요 공지 우선 정렬 | `12-notice-service`, `26-notice-controller` |
@@ -598,7 +600,7 @@
 - Request DTO: `partnerId`, `orderDate`, `dueDate`, `lines: List<LineDto>`
   - LineDto: `itemId`, `quantity`, `unitPrice`
 - Service:
-  - 현재 사용자 조회 (writer)
+  - 현재 사용자 ID 확인 (`writerId`)
   - 거래처 조회 + 유형 검증
   - 라인 검증:
     - 라인 ≥ 1 (`EMPTY_ORDER_LINES`)
@@ -607,9 +609,9 @@
   - 라인별 `lineAmount = quantity × unitPrice`
   - 헤더 `totalAmount = sum(lineAmount)`
   - 발주번호 채번
-  - `PurchaseOrder.create(partner, writer, orderDate, dueDate)`
-  - 라인 추가 `po.addLine(item, quantity, unitPrice)`
-  - 헤더 + 라인 저장 (cascade)
+  - 참조 구현은 `PurchaseOrder`에 다른 aggregate의 `partnerId`, `writerId` 저장
+  - 참조 구현은 라인에 `itemId`를 저장하고 헤더-라인만 연관관계/cascade 사용
+  - starter의 `@ManyToOne` 대안과 차이는 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)에 따라 비교
 - Controller: `POST /api/purchase-orders`
 
 테스트 TODO:
@@ -660,7 +662,7 @@
 
 개념 빈칸:
 
-- 상세 조회는 본인 또는 ADMIN 만 가능하도록 ____ 검증을 한다.
+- 상세 조회는 본인 또는 ADMIN/MANAGER만 가능하도록 ____ 검증을 한다.
 - 응답에 헤더와 라인을 함께 담을 때 nested DTO 구조를 쓰면 ____ 한 번에 끝낼 수 있다.
 
 구현 TODO:
@@ -668,20 +670,20 @@
 - Repository: `findById(poId)` 또는 라인까지 fetch join.
 - Service:
   - 발주 없으면 `PURCHASE_ORDER_NOT_FOUND`
-  - 본인 여부(`writerId == currentUserId`) 또는 ADMIN 여부 확인
+  - 본인 여부(`writerId == currentUserId`) 또는 ADMIN/MANAGER 여부 확인
 - Controller: `GET /api/purchase-orders/{poId}`
 
 테스트 TODO:
 
 - 작성자가 아닌 USER 는 HTTP ____.
-- ADMIN 은 다른 사용자의 발주도 조회 가능하다.
+- ADMIN/MANAGER는 다른 사용자의 발주도 조회 가능하다.
 - 응답에 lines 배열이 헤더와 함께 포함된다.
 
 ## FR-PO-005 발주서 취소
 
 개념 빈칸:
 
-- 취소는 본인의 ____, ____ 상태 발주만 허용한다.
+- 취소는 본인의 ____, ____, ____ 상태 발주만 허용한다.
 - 취소를 별도 상태로 둘 경우 enum 에 ____ 를 추가한다.
 
 구현 TODO:
@@ -689,12 +691,13 @@
 - Entity: `po.cancelByOwner(currentUserId)`
 - Service:
   - 본인 여부 확인 (도메인 메서드 내부에서)
-  - 상태 검증 (DRAFT/REQUESTED)
+  - 상태 검증 (`DRAFT`, `REQUESTED`, `APPROVED`)
 - Controller: `PATCH /api/purchase-orders/{poId}/cancel`
 
 테스트 TODO:
 
-- APPROVED 발주를 본인이 취소 시도하면 HTTP ____.
+- APPROVED 발주를 본인이 취소하면 상태가 ____가 된다.
+- RECEIVED 발주를 본인이 취소 시도하면 HTTP ____.
 - 타인의 DRAFT 발주 취소 시도는 HTTP ____.
 
 ## FR-PO-006 ~ 007 발주 승인/반려
@@ -708,7 +711,7 @@
 구현 TODO:
 
 - Service:
-  - ADMIN 권한 확인
+  - ADMIN 또는 MANAGER 권한 확인
   - 발주 조회
   - `po.approve(approverUserId)` 또는 `po.reject(approverUserId, reason)`
 - Controller:
@@ -731,11 +734,12 @@
 구현 TODO:
 
 - Service:
-  - ADMIN 권한 확인
+  - ADMIN 또는 MANAGER 권한 확인
   - 발주 조회
   - 상태 APPROVED 검증
   - `po.receive()`, `receivedAt = now()`
-  - (확장) 라인별 재고 +quantity
+  - 같은 트랜잭션에서 라인별 재고 +quantity
+  - 같은 품목의 최초 재고 생성 경합을 막기 위한 잠금 순서 결정
 - Controller: `PATCH /api/admin/purchase-orders/{poId}/receive`
 
 테스트 TODO:
@@ -752,7 +756,7 @@
 
 - Controller: `GET /api/admin/purchase-orders`
 - Query param: `status`, `partnerId`, `from`, `to`
-- 권한: `@PreAuthorize("hasRole('____')")`
+- 권한: `@PreAuthorize("hasAnyRole('____', '____')")`
 - Service:
   - status + partnerId 조합 분기
   - 조건이 없으면 `findAll(pageable)`

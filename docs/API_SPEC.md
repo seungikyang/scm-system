@@ -1,5 +1,7 @@
 # API 명세서 (API_SPEC)
 
+> [HTML 학습 목차](../index.html) · [문서 지도](./INDEX.md) · [루프 엔지니어링](./LOOP_ENGINEERING.md) · [실행 README](../README.md)
+
 SCM 시스템 REST API 명세입니다. **실제 컨트롤러(`controller.api`) 구현을 기준**으로 작성했으며, 설계 계약(`_workspace/02_architect_contracts.md`)과 1:1로 대조해 일치를 확인했습니다.
 
 - 모든 JSON 필드는 camelCase, URL은 소문자 + kebab-case입니다.
@@ -17,7 +19,8 @@ SCM 시스템 REST API 명세입니다. **실제 컨트롤러(`controller.api`) 
 5. [품목 API](#5-품목-api)
 6. [발주 API (사용자 영역)](#6-발주-api-사용자-영역)
 7. [발주 API (관리자/매니저 영역)](#7-발주-api-관리자매니저-영역)
-8. [에러 코드 표](#8-에러-코드-표)
+8. [재고 API](#8-재고-api)
+9. [에러 코드 표](#9-에러-코드-표)
 
 ---
 
@@ -26,9 +29,12 @@ SCM 시스템 REST API 명세입니다. **실제 컨트롤러(`controller.api`) 
 ### 1.1 인증 / 권한
 
 - **세션 기반** 인증입니다. `POST /api/auth/login` 성공 시 세션에 로그인 사용자(`LoginUser{id, name, email, role}`)가 저장됩니다.
-- 화이트리스트(`/login`, `/logout`, `/api/auth/login`, `/css/**`, `/js/**`, `/images/**`, `/favicon.ico`, `/h2-console/**`, `/error`)를 제외한 모든 요청은 세션이 필요합니다.
+- 화이트리스트(`/login`, `/logout`, `/api/auth/login`, `/css/**`, `/js/**`, `/images/**`, `/favicon.ico`, `/error`)를 제외한 모든 요청은 세션이 필요합니다.
 - 세션이 없는 `/api/**` 요청은 `LoginInterceptor`가 **401 `AUTHENTICATION_REQUIRED`** (JSON)로 응답합니다.
 - 권한 등급: `USER`, `ADMIN`, `MANAGER`.
+- 로그인 성공 시 세션 ID를 교체해 session fixation을 방지합니다.
+- Thymeleaf의 상태 변경 폼은 Spring Security CSRF 토큰을 요구합니다. JSON API는 기존 클라이언트 호환성을 위해 CSRF 검사 대상에서 제외하며, CORS 기본 차단과 JSON 본문 요구를 유지합니다.
+- H2 콘솔은 기본 비활성이고, 명시적으로 활성화해도 애플리케이션 `ADMIN` 세션만 접근할 수 있습니다.
 
 ### 1.2 공통 에러 응답 형식
 
@@ -63,7 +69,7 @@ SCM 시스템 REST API 명세입니다. **실제 컨트롤러(`controller.api`) 
 
 목록 API는 Spring `Pageable`을 사용하며 응답은 `PageResponse<T>`로 감쌉니다.
 
-- 쿼리 파라미터: `page`(0-base, 기본 0), `size`(기본 **20**). 기본 정렬은 `createdAt,desc`로 고정됩니다(`@PageableDefault`).
+- 쿼리 파라미터: `page`(0-base, 기본 0), `size`(기본 **20**). 일반 목록은 `createdAt,desc`, 재고 목록은 `itemCode,asc`가 기본 정렬입니다(`@PageableDefault`).
 - 응답 메타 필드: `content[]`, `page`, `size`, `totalElements`, `totalPages`, `first`, `last`.
 
 ```json
@@ -113,7 +119,8 @@ Response `200` (`UserResponse`) + 세션 생성:
 
 ### 2.2 로그아웃 — `POST /api/auth/logout`
 
-- 권한: 로그인. 세션 무효화. Response `204 No Content`.
+- 권한: 로그인. `Content-Type: application/json` 필수(본문은 없음). 세션 무효화. Response `204 No Content`.
+- JSON content type 요구로 교차 출처의 단순 HTML form을 통한 로그아웃 CSRF를 차단합니다.
 
 ### 2.3 내 정보 — `GET /api/users/me`
 
@@ -524,7 +531,58 @@ Request (`PurchaseOrderRejectRequest`):
 
 ---
 
-## 8. 에러 코드 표
+## 8. 재고 API
+
+기준 경로 `/api/stocks`. 모든 엔드포인트는 로그인 사용자가 조회할 수 있습니다. 재고 행이 아직 없는 운영 품목도 `quantity=0`으로 포함하며 단종 품목은 제외합니다.
+
+### 8.1 현재고 목록 — `GET /api/stocks`
+
+- 쿼리: `keyword`(품목코드/품목명 부분일치), `lowOnly`(기본 `false`), `page`, `size`.
+- `lowOnly=true`는 `quantity <= safetyStock`인 품목만 반환합니다.
+- Response `200` (`PageResponse<StockListView>`):
+
+```json
+{
+  "content": [
+    {
+      "itemId": 1,
+      "itemCode": "ITM-001",
+      "itemName": "볼트 M6",
+      "unit": "EA",
+      "quantity": 0,
+      "safetyStock": 100,
+      "shortageQuantity": 100,
+      "level": "OUT_OF_STOCK"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 1,
+  "totalPages": 1,
+  "first": true,
+  "last": true
+}
+```
+
+재고 상태는 `quantity == 0 → OUT_OF_STOCK`, `0 < quantity <= safetyStock → LOW`, 그 외 `NORMAL`입니다. 부족수량은 `max(0, safetyStock - quantity)`로 계산합니다.
+
+### 8.2 재고 요약 — `GET /api/stocks/summary`
+
+Response `200` (`StockSummaryView`):
+
+```json
+{
+  "activeItemCount": 7,
+  "totalQuantity": 0,
+  "lowStockCount": 7
+}
+```
+
+주요 에러: 두 API 모두 `AUTHENTICATION_REQUIRED`(401).
+
+---
+
+## 9. 에러 코드 표
 
 `ErrorCode` enum(`common.exception`)에 정의된 코드입니다. 메시지는 기본값이며, 일부 케이스는 Service가 커스텀 메시지로 덮어씁니다.
 
