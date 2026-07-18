@@ -505,6 +505,17 @@ footer a{color:var(--indigo-d);text-decoration:none;font-weight:600}
             <div class="sec"><span class="sec-h work">작업 과정</span><p>.omc·.playwright-cli·output·build·.gradle·build-report.json의 파일 종류와 Git 무시 상태를 감사. AGENTS.md와 CLAUDE.md에 루트 규칙을 명시하고, 경계 검증 스크립트·버전 관리 pre-commit hook·Gradle 품질 게이트·GitHub Actions 검사를 추가. tmp/temp도 Git·Docker 컨텍스트에서 제외.</p></div>
             <div class="sec"><span class="sec-h result">성과 · 결과</span><p>임시 영역에는 세션 상태·브라우저 검증 자료·빌드 캐시만 있고 정식 소스는 없음을 확인했으며 경계 검사는 통과. 현재 격리 환경은 .git 쓰기, GitHub DNS, 재인증 Keychain 접근이 차단되어 commit/push는 수행되지 않았고, 인증된 호스트에서 hook 활성화 후 게시할 수 있는 상태.</p></div>
           </div></div></article>
+      <article class="card"><div class="rail"><span class="rail-num">39</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;22:59 KST</span>
+            <span class="chip" style="color:#16a34a;background:#dcfce7">임시 산출물 정리 완료</span></div>
+          <h3 class="card-title">감사된 임시 파일 삭제</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>추가로 임시 폴더의 파일은 삭제해줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>앞서 확인한 저장소 내부의 재생성 가능한 세션 상태·브라우저 로그·빌드 캐시·검증 이미지를 정식 소스와 분리해 삭제.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>삭제 직전 Git 비추적·무시 상태를 다시 확인하고 .omc·.playwright-cli·.gradle·build·bin·output·build-report.json만 경로별로 제거. 개인 풀이 46개가 있는 practice/workspace는 사용자 데이터 보호를 위해 보존.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>총 403개의 재생성 가능한 파일과 관련 빈 폴더 삭제 완료. Git 추적 프로그램 파일은 삭제되지 않았으며, 개인 워크북 풀이 공간은 그대로 유지.</p></div>
+          </div></div></article>
 </div>
-<footer>업데이트 · 2026-07-18 22:55 KST<br>GitHub: <a href="https://github.com/seungikyang/scm-system">github.com/seungikyang/scm-system</a></footer>
+<footer>업데이트 · 2026-07-18 22:59 KST<br>GitHub: <a href="https://github.com/seungikyang/scm-system">github.com/seungikyang/scm-system</a></footer>
 </div></body></html>

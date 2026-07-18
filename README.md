@@ -42,7 +42,7 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 ./gradlew verifyRepositoryBoundary        # Gradle/CI 검사
 ```
 
-`.omc/`, `.playwright-cli/`, `.gradle/`, `build/`, `bin/`, `out/`, `output/`, `_workspace*`, `practice/workspace/`, `tmp/`, `temp/`는 로그·캐시·스크린샷 같은 재생성 가능한 임시 산출물 전용입니다. 이 경로의 파일은 Git에서 제외되며, 보존할 결과만 검토 후 `src/`, `docs/`, `practice/`, `.github/` 또는 루트 설정 파일로 옮깁니다. 에이전트 세부 규칙은 [`AGENTS.md`](AGENTS.md)를 따릅니다.
+`.omc/`, `.playwright-cli/`, `.gradle/`, `build/`, `bin/`, `out/`, `output/`, `_workspace*`, `tmp/`, `temp/`는 로그·캐시·스크린샷 같은 재생성 가능한 임시 산출물 전용입니다. 이 경로의 파일은 Git에서 제외되며, 보존할 결과만 검토 후 `src/`, `docs/`, `practice/`, `.github/` 또는 루트 설정 파일로 옮깁니다. `practice/workspace/`는 Git에서 제외된 개인 풀이 공간이므로 자동 정리하지 않습니다. 에이전트 세부 규칙은 [`AGENTS.md`](AGENTS.md)를 따릅니다.
 
 ---
 
