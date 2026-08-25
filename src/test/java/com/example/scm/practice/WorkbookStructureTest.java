@@ -144,6 +144,24 @@ class WorkbookStructureTest {
     }
 
     @Test
+    @DisplayName("기능 워크북은 공통 계약을 한 번만 설명하고 기능별 차이만 참조한다")
+    void featureWorkbook_avoidsDuplicatedCommonContracts() throws IOException {
+        String workbook = Files.readString(
+                Path.of("practice", "feature-implementation-workbook.md"));
+
+        assertThat(workbook)
+                .containsOnlyOnce("| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 |")
+                .containsOnlyOnce("Spring Data 의 `Page` 는 content 뿐 아니라")
+                .containsOnlyOnce("### 기능별 구현 증거 기록표")
+                .containsOnlyOnce("### 8.4.1 릴리스 스테이징 공통 절차")
+                .contains("[FR-PARTNER-007 페이징](#fr-partner-007-페이징)")
+                .contains("[8.4.1 릴리스 스테이징 공통 절차](#841-릴리스-스테이징-공통-절차)");
+
+        assertThat(workbook.indexOf("## FR-PARTNER-007 페이징"))
+                .isLessThan(workbook.indexOf("# 3. 카테고리 / 품목 관리 기능"));
+    }
+
+    @Test
     @DisplayName("발주 핵심 정책이 워크북 전반에서 현재 참조 구현과 일치한다")
     void purchaseOrderDecisions_matchReferenceImplementation() throws IOException {
         String decisions = Files.readString(Path.of("practice", "DESIGN_DECISIONS.md"));

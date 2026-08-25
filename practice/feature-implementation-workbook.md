@@ -10,6 +10,7 @@
 2. 이어서 `구현 TODO`의 계층별 빈칸을 채운다.
 3. 마지막으로 `테스트 TODO`를 Given/When/Then 으로 한 줄씩 적는다.
 4. 막히면 PRD/TRD 절 번호와 `practice/starter` 파일을 다시 본다.
+5. 공통 계층·검색·페이징 계약은 한 절만 기준으로 삼고, 기능별 절에는 차이점과 증거만 적는다.
 
 핵심 구현(사용자·마스터·품목·발주·입고 재고)은 현재 테스트와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 비교합니다. 공지·수주는 현재 `src/`에 없는 확장 설계 과제이므로 요구사항, 상태 표, 실패 테스트를 먼저 작성합니다.
 
@@ -17,15 +18,15 @@
 
 아래 빈칸을 먼저 채우면 모든 기능의 구현 방향이 흔들리지 않습니다.
 
-| 계층 | 책임 | 빈칸 |
-|---|---|---|
-| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 | Controller 는 Repository 를 직접 호출하지 않고 ____ 를 호출한다. |
-| Service | 비즈니스 규칙, 트랜잭션, 권한/소유자 검증 | 상태 전이는 주로 ____ 계층 또는 도메인 메서드에서 검증한다. |
-| Repository | DB 조회/저장, 조건 검색, 페이징 | 복잡한 조건은 메서드 이름이 길어지면 ____ 로 옮긴다. |
-| Entity | 식별자, 연관관계, 상태값, 도메인 메서드 | 상태값은 String 대신 ____ 으로 관리한다. |
-| DTO | 요청/응답 계약, Validation | Entity 를 그대로 응답하지 않고 ____ DTO 로 변환한다. |
-| Exception | 공통 에러 응답 | 예외 응답은 status, code, message, ____ 를 포함한다. |
-| Test | 성공/실패/권한/상태 전이 검증 | 승인/반려 기능은 ____ 상태가 아닌 경우를 반드시 테스트한다. |
+| 계층 | 책임 | 경계: 넣지 말아야 할 것 | 빈칸 |
+|---|---|---|---|
+| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 | 중복 조회, 상태 전이, 직접 SQL/Repository 호출 | Controller 는 Repository 를 직접 호출하지 않고 ____ 를 호출한다. |
+| Service | 비즈니스 규칙, 트랜잭션, 권한/소유자 검증 | Servlet 응답 조작, 화면 HTML 생성 | 상태 전이는 주로 ____ 계층 또는 도메인 메서드에서 검증한다. |
+| Repository | DB 조회/저장, 조건 검색, 페이징 | HTTP status와 사용자 메시지 결정 | 복잡한 조건은 메서드 이름이 길어지면 ____ 로 옮긴다. |
+| Entity | 식별자, 연관관계, 상태값, 도메인 메서드 | Controller DTO 의존, 세션 접근 | 상태값은 String 대신 ____ 으로 관리한다. |
+| DTO | 요청/응답 계약, Validation | 영속성 생명주기와 비즈니스 상태 변경 | Entity 를 그대로 응답하지 않고 ____ DTO 로 변환한다. |
+| Exception | 공통 에러 응답 | 기능마다 제각각인 오류 형식 | 예외 응답은 status, code, message, ____ 를 포함한다. |
+| Test | 성공/실패/권한/상태 전이 검증 | 구현 세부사항에만 묶인 검증 | 승인/반려 기능은 ____ 상태가 아닌 경우를 반드시 테스트한다. |
 
 ## Spring Framework 상세 이해
 
@@ -133,14 +134,11 @@ Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 �
 - Entity가 연관관계를 가진다는 사실만으로 API 응답 계약이 되지는 않습니다. Controller 응답은 전용 DTO로 변환하여 비밀번호 노출, 순환 참조, LAZY 로딩, API 스키마 결합을 막습니다.
 - 운영형 MySQL 프로필에서 Flyway가 스키마 변경 이력을 관리하고 Hibernate의 `ddl-auto=validate`가 Entity 매핑과 실제 스키마의 일치 여부를 검사합니다.
 
-### 디버깅할 때 계층을 따라가는 순서
+### Spring 흐름에서 관찰할 지점
 
-1. 요청 URL·HTTP method·status와 Controller 매핑을 확인합니다.
-2. Filter/Interceptor가 요청을 막았는지, 세션에 `USER_ID`와 `USER_ROLE`이 있는지 확인합니다.
-3. DTO Validation 실패인지 `BusinessException`인지 공통 오류 코드로 구분합니다.
-4. Service 진입 여부와 트랜잭션 경계를 확인합니다.
-5. Repository 조건, 실행 SQL, 바인딩 값, 실제 DB 프로필을 확인합니다.
-6. 응답 직렬화 또는 Thymeleaf 렌더링 단계에서 LAZY 접근이 발생하지 않았는지 확인합니다.
+- 요청마다 URL·HTTP method·status와 Controller 매핑을 먼저 기록합니다.
+- Filter → DispatcherServlet → Interceptor → Controller → Service → Repository 순서에서 마지막으로 확인된 지점을 찾으면 실패 범위를 빠르게 줄일 수 있습니다.
+- 세션 ID·비밀번호 같은 비밀은 로그에 남기지 않고, 오류 증상별 점검 위치는 아래 [11단계: 오류를 계층별로 추적하기](#11단계-오류를-계층별로-추적하기)의 단일 진단표를 사용합니다.
 
 공식 참고 자료:
 
@@ -216,15 +214,13 @@ Entity 전체를 먼저 만들고 모든 Repository, 모든 Service를 차례로
 
 ### 3단계: 계층의 경계를 코드로 지키기
 
-| 계층 | 넣어야 하는 것 | 넣지 말아야 하는 것 |
-|---|---|---|
-| Controller | URL, HTTP status, 요청 바인딩, `@Valid`, 현재 사용자 주입 | 중복 조회, 상태 전이, 직접 SQL/Repository 호출 |
-| Service | 권한·소유자 검증, 중복·상태 규칙, 트랜잭션, Entity/DTO 조합 | Servlet 응답 조작, 화면 HTML 생성 |
-| Repository | 저장, 단건/조건 조회, 페이징, 잠금 | HTTP status 결정, 사용자 메시지 결정 |
-| Entity | 불변 조건, 상태값, 의미 있는 상태 변경 메서드 | Controller DTO 의존, 세션 접근 |
-| DTO | 외부 입력·출력 모양, 형식/범위 Validation | 영속성 생명주기와 비즈니스 상태 변경 |
+계층별 책임과 금지 항목은 문서 앞부분의 [공통 구현 지도](#공통-구현-지도)를 단일 기준으로 사용합니다. 경계는 “파일을 나누는 규칙”이 아니라 변경 이유를 분리하는 기술입니다. HTTP 응답 형식이 바뀌어도 Entity 규칙은 유지되고, DB 조회 방식이 바뀌어도 Controller 계약은 불필요하게 흔들리지 않아야 합니다.
 
-경계는 “파일을 나누는 규칙”이 아니라 변경 이유를 분리하는 기술입니다. HTTP 응답 형식이 바뀌어도 Entity 규칙은 유지되고, DB 조회 방식이 바뀌어도 Controller 계약은 불필요하게 흔들리지 않아야 합니다.
+코드 리뷰에서는 다음 세 질문으로 경계를 확인합니다.
+
+- 이 로직은 HTTP, 비즈니스 규칙, 영속성 중 무엇 때문에 바뀌는가?
+- 하위 계층이 상위 계층의 DTO·세션·status code를 알고 있지는 않은가?
+- Controller 없이 Service를, 실제 DB 없이 도메인 규칙을 각각 테스트할 수 있는가?
 
 ### 4단계: 입력 검증과 비즈니스 검증을 분리하기
 
@@ -385,21 +381,19 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 - [ ] 설계 선택이 문서와 현재 참조 구현에 반영되어 있다.
 - [ ] 다른 사람이 1분 안에 “왜 이렇게 구현했는지” 설명을 따라갈 수 있다.
 
-### 기능별 반복 기록표
+### 기능별 구현 증거 기록표
 
-| 구현 단계 | 내 기록 |
+1단계 구현 카드는 코딩 전 계약을 정하는 양식이고, 아래 표는 구현 후 증거만 기록합니다. 같은 설계 질문을 다시 쓰지 말고 실제 파일·명령·결과를 연결합니다.
+
+| 완료 증거 | 내 기록 |
 |---|---|
-| FR과 사용자 가치 | ____ |
-| API 입력/출력 계약 | ____ |
-| Entity 불변 조건/상태 전이 | ____ |
-| Service 검증 순서 | ____ |
-| Repository 쿼리/제약 | ____ |
-| 트랜잭션·동시성 위험 | ____ |
-| 권한·소유권 | ____ |
-| 정상 테스트 | ____ |
-| 실패 테스트 3개 | ____ |
-| 실제 실행 증거 | ____ |
-| 선택한 설계와 대안 | ____ |
+| 변경한 프로그램 파일 | ____ |
+| 추가한 정상/실패 테스트 | ____ |
+| 실행한 검증 명령과 결과 | ____ |
+| 실제 HTTP 요청·응답 | ____ |
+| 확인한 SQL·트랜잭션·로그 | ____ |
+| 설계 결정 문서와 선택하지 않은 대안 | ____ |
+| 남은 위험과 다음 작업 | ____ |
 
 ## 전체 기능 추적표
 
@@ -645,7 +639,7 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 구현 TODO:
 
-- Request DTO: `name`, `businessNumber`, `partnerType`, `contactName`, `phone`, `email`, `address`
+- Request DTO: 등록 계약을 재사용하되 `PUT`이면 전체 필드, `PATCH`이면 변경 허용 필드만 받는 정책을 ____ 에 기록한다.
 - Service:
   - 거래처 조회
   - 사업자번호가 바뀌었다면 중복 재검사
@@ -697,10 +691,6 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 - 이름 일부로 검색하면 해당 거래처만 나온다.
 
----
-
-# 3. 카테고리 / 품목 관리 기능
-
 ## FR-PARTNER-007 페이징
 
 개념 빈칸:
@@ -720,6 +710,8 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 - 허용하지 않는 sort 컬럼은 ____.
 
 ---
+
+# 3. 카테고리 / 품목 관리 기능
 
 ## FR-CAT-001 카테고리 등록
 
@@ -928,7 +920,7 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 - Controller: `GET /api/items?keyword=usb&categoryId=3`
 - Repository:
   - 단순 버전: `findByNameContainingOrItemCodeContaining(...)`
-  - 확장 버전: `@Query` 또는 Specification/Querydsl
+  - 확장 전략은 [FR-PARTNER-006 거래처 검색](#fr-partner-006-거래처-검색)의 `@Query` 또는 Specification/Querydsl 선택 기준을 재사용
 - Service:
   - keyword 가 blank 면 전체 조회
   - keyword 를 trim 한다.
@@ -940,21 +932,18 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 ## FR-ITEM-007 페이징
 
-개념 빈칸:
-
-- Spring Data 의 `Page` 는 content 뿐 아니라 totalElements, totalPages 같은 ____ 정보를 가진다.
-- `Page.map` 을 쓰면 페이징 메타 정보가 ____ 된다.
+공통 `Page` 개념, `Pageable` 파라미터, 기본값, 허용하지 않는 sort 검증은 [FR-PARTNER-007 페이징](#fr-partner-007-페이징)을 단일 기준으로 사용합니다. 여기에는 품목에만 다른 계약을 적습니다.
 
 구현 TODO:
 
-- Controller 파라미터: `Pageable pageable`
-- 기본값: `@PageableDefault(size = ____, sort = "id")`
-- 정렬 허용 컬럼을 제한하는 정책을 적는다: ____
+- 허용 sort 컬럼: `id`, `itemCode`, `name`, ____
+- 검색 조건과 `Pageable`을 같은 Repository 호출에 전달하는 방법: ____
+- `Page<Item>`을 `PageResponse<ItemSummary>`로 변환하는 위치: ____
 
 테스트 TODO:
 
-- `page=1, size=10` 요청 시 두 번째 페이지가 조회된다.
-- 허용하지 않는 sort 컬럼은 ____.
+- keyword·categoryId 필터 후에도 `totalElements`와 `totalPages`가 필터 결과를 기준으로 계산된다.
+- 품목에서 허용하지 않는 sort 컬럼은 공통 오류 계약으로 거절된다.
 
 ---
 
@@ -1210,7 +1199,7 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 구현 TODO:
 
-- Request DTO: `title`, `content`, `important`
+- Request DTO: 등록 DTO의 `title`, `content`, `important` 계약을 재사용
 - Service:
   - ADMIN 권한 확인
   - 공지 조회
@@ -1416,13 +1405,7 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 | 도메인 규칙 | 거래처 유형/품목 상태 검증을 어디서 하는가? | ____ |
 | 헤더-라인 | 라인 검증을 헤더 저장 전/후 중 어디서 하는가? | ____ |
 
-## 마무리 자가 점검
-
-- 이 기능은 PRD 의 어떤 FR ID 를 만족하는가? ____
-- 이 기능의 핵심 비즈니스 규칙은 무엇인가? ____
-- 이 기능에서 Controller 가 하면 안 되는 일은 무엇인가? ____
-- 이 기능에서 Service 가 반드시 검증해야 하는 것은 무엇인가? ____
-- 이 기능의 실패 케이스 테스트 2개는 무엇인가? ____
+공통 매트릭스를 작성한 뒤에는 같은 질문을 다시 반복하지 않고 [12단계: 완료 정의로 끝내기](#12단계-완료-정의로-끝내기)의 체크리스트로 누락 여부를 최종 확인합니다.
 
 ---
 
@@ -1548,7 +1531,9 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/login
 lsof -nP -iTCP:8080 -sTCP:LISTEN
 ```
 
-`Ctrl-C`로 정상 종료한 뒤 JAR를 버전별 릴리스 폴더로 복사합니다. 릴리스 ID에는 생성 시각과 commit SHA를 함께 넣어 소스와 산출물을 다시 연결할 수 있게 합니다.
+### 8.4.1 릴리스 스테이징 공통 절차
+
+`Ctrl-C`로 정상 종료한 뒤 JAR를 버전별 릴리스 폴더로 복사합니다. 릴리스 ID에는 생성 시각과 commit SHA를 함께 넣어 소스와 산출물을 다시 연결할 수 있게 합니다. 이 블록은 최초 설치와 8.9 업데이트에서 함께 사용하는 단일 스테이징 절차입니다.
 
 ```bash
 export RELEASE_ID="$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
@@ -1557,6 +1542,13 @@ cp "$JAR_PATH" \
   "$SCM_HOME/releases/$RELEASE_ID/scm-system.jar"
 (cd "$SCM_HOME/releases/$RELEASE_ID" && \
   shasum -a 256 scm-system.jar > scm-system.jar.sha256)
+```
+
+### 8.4.2 최초 릴리스 활성화
+
+최초 설치에서만 아래처럼 `current` 링크를 만듭니다. 업데이트에서는 기존 `current`를 `previous`로 보존한 뒤 전환해야 하므로 8.9 절을 따릅니다.
+
+```bash
 ln -sfn "$SCM_HOME/releases/$RELEASE_ID" "$SCM_HOME/current.next"
 mv -h "$SCM_HOME/current.next" "$SCM_HOME/current"
 readlink "$SCM_HOME/current"
@@ -1829,13 +1821,11 @@ git show -s --format='%H %cI %s' "$DEPLOY_COMMIT"
 
 export JAR_PATH="$(find build/libs -maxdepth 1 -type f -name '*.jar' -print -quit)"
 test -n "$JAR_PATH"
-export RELEASE_ID="$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
-mkdir -p "$SCM_HOME/releases/$RELEASE_ID"
-cp "$JAR_PATH" \
-  "$SCM_HOME/releases/$RELEASE_ID/scm-system.jar"
-(cd "$SCM_HOME/releases/$RELEASE_ID" && \
-  shasum -a 256 scm-system.jar > scm-system.jar.sha256)
+```
 
+이어서 [8.4.1 릴리스 스테이징 공통 절차](#841-릴리스-스테이징-공통-절차)의 명령 블록을 같은 셸에서 실행합니다. `RELEASE_ID`와 새 JAR checksum이 만들어진 것을 확인한 뒤에만 아래 링크 전환을 진행합니다.
+
+```bash
 export PREVIOUS_RELEASE="$(readlink "$SCM_HOME/current")"
 test -f "$PREVIOUS_RELEASE/scm-system.jar"
 ln -sfn "$PREVIOUS_RELEASE" "$SCM_HOME/previous.next"
