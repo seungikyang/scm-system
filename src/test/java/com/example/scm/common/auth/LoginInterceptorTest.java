@@ -2,17 +2,17 @@ package com.example.scm.common.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import tools.jackson.databind.json.JsonMapper;
 
 @DisplayName("LoginInterceptor 테스트")
 class LoginInterceptorTest {
 
     private final LoginInterceptor interceptor =
-            new LoginInterceptor(new ObjectMapper().findAndRegisterModules());
+            new LoginInterceptor(JsonMapper.builder().findAndAddModules().build());
 
     @Test
     @DisplayName("context path가 있는 미인증 API도 JSON 401로 응답한다")

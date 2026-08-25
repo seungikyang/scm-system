@@ -27,6 +27,380 @@
 | Exception | 공통 에러 응답 | 예외 응답은 status, code, message, ____ 를 포함한다. |
 | Test | 성공/실패/권한/상태 전이 검증 | 승인/반려 기능은 ____ 상태가 아닌 경우를 반드시 테스트한다. |
 
+## Spring Framework 상세 이해
+
+이 프로젝트에서 Spring을 단순히 "어노테이션을 붙이면 실행되는 도구"로 외우지 말고, **객체 생성과 연결을 담당하는 컨테이너**, **HTTP 요청을 객체 호출로 바꾸는 MVC**, **공통 기능을 앞뒤에 끼우는 프록시/AOP**, **DB 작업 경계를 관리하는 트랜잭션 추상화**로 나누어 이해합니다.
+
+### Spring Framework와 Spring Boot의 관계
+
+- **Spring Framework**는 IoC/DI, Spring MVC, Validation 연동, AOP, 트랜잭션 같은 핵심 프로그래밍 모델을 제공합니다.
+- **Spring Boot**는 Spring Framework 위에서 자동 설정, starter 의존성, 내장 Tomcat, 외부 설정, 실행 가능한 JAR 패키징을 제공합니다.
+- `@SpringBootApplication`은 구성 클래스 선언, 컴포넌트 스캔, 자동 설정 활성화를 묶은 시작점입니다. `ScmApplication`의 패키지 아래에 있는 `@Controller`, `@Service`, `@Repository`, `@Configuration` 등이 스캔 대상이 됩니다.
+- starter는 기능 묶음입니다. 예를 들어 `spring-boot-starter-webmvc`는 Spring MVC와 내장 웹 서버를, `spring-boot-starter-data-jpa`는 Spring Data JPA와 Hibernate 연동을 준비합니다. starter 자체가 비즈니스 로직을 대신 작성해 주지는 않습니다.
+
+### 현재 기준 버전과 호환성 경계
+
+이 워크북의 기준일은 **2026-08-25**이며, 현재 기준은 **Spring Boot 4.1.1, Spring Framework 7.0.x, Gradle Wrapper 9.7.1**입니다. 버전은 설명에 흩어 쓰지 않고 루트 `build.gradle`과 `gradle/wrapper/gradle-wrapper.properties`를 최종 기준으로 삼습니다.
+
+| 항목 | 현재 기준 | 구현에서의 의미 |
+|---|---|---|
+| Java 컴파일 대상 | 17 | 기존 배포 호환성을 유지하며 Boot 4 최소 요구사항을 만족 |
+| macOS 운영 JVM | 21 | Java 17 대상 JAR를 LTS JVM으로 직접 실행 |
+| Spring Boot | 4.1.1 | 자동 설정, 의존성 BOM, 실행 가능한 JAR, 운영 설정 제공 |
+| Spring Framework | 7.0.x | Boot가 관리하는 IoC/MVC/AOP/트랜잭션 기반 |
+| Gradle Wrapper | 9.7.1 | 저장소의 재현 가능한 정식 빌드 도구 |
+| dependency-management plugin | 1.1.7 | Boot BOM의 관리 버전을 Gradle 의존성에 적용 |
+| JSON | Jackson 3 | `ObjectMapper` 패키지가 `tools.jackson.databind`로 이동 |
+
+Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 작성 가능한 문법, `targetCompatibility`는 생성되는 bytecode 수준, 실제 `java -jar`의 JVM은 실행 환경입니다. 이 저장소는 source/target 17이므로 Java 21에서 실행할 수 있지만, 반대로 Java 21 bytecode를 Java 17 JVM에서 실행할 수는 없습니다.
+
+### Spring Boot 4에서 반드시 이해할 변경
+
+1. **Spring Framework 7과 Jakarta EE 11**: Servlet, Validation, Persistence API는 `jakarta.*` 이름 공간을 사용합니다. 오래된 `javax.*` 예제를 그대로 복사하면 컴파일되지 않습니다.
+2. **Jackson 3 기본화**: JSON mapper의 대표 패키지가 `com.fasterxml.jackson.databind`에서 `tools.jackson.databind`로 이동했습니다. 애플리케이션 코드의 `ObjectMapper` 타입도 Boot가 자동 구성하는 Jackson 3 타입과 맞춰야 합니다.
+3. **builder 기반 mapper 구성**: Jackson 2의 `new ObjectMapper().findAndRegisterModules()` 대신 Jackson 3에서는 `JsonMapper.builder().findAndAddModules().build()`처럼 구성 후 불변 mapper를 만드는 방식을 사용합니다.
+4. **starter 모듈화**: 기존 `spring-boot-starter-web` 대신 `spring-boot-starter-webmvc`를 사용하고, MVC 테스트는 `spring-boot-starter-webmvc-test`를 별도로 선언합니다. `@AutoConfigureMockMvc`의 패키지도 `org.springframework.boot.webmvc.test.autoconfigure`로 이동했습니다.
+5. **자동 설정 패키지 재구성**: Boot 모듈별로 자동 설정 package가 나뉘었습니다. 예를 들어 기본 보안 사용자 자동 설정 제외 대상은 `org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration`입니다.
+6. **BOM 우선**: Jackson, Hibernate, Spring Data 같은 하위 라이브러리 버전을 임의로 각각 올리지 않습니다. Boot 4.1.1이 검증한 BOM 조합을 사용하고, 꼭 override해야 한다면 회귀 테스트와 이유를 문서화합니다.
+
+업그레이드 완료 조건은 컴파일 성공만이 아닙니다. `./gradlew clean portfolioCheck`, JAR 직접 실행, `/login` HTTP 200, DB 프로필의 Flyway/JPA 검증, 로그와 종료 동작까지 확인해야 자동 설정·직렬화·Servlet·DB 드라이버의 런타임 호환성을 증명할 수 있습니다.
+
+### IoC, DI, Bean
+
+- **IoC(Inversion of Control)**: 애플리케이션이 필요한 객체를 직접 생성·관리하는 대신 `ApplicationContext`가 객체의 생성, 연결, 생명주기를 맡습니다.
+- **Bean**: Spring 컨테이너가 관리하는 객체입니다. 컴포넌트 스캔으로 발견되거나 `@Configuration`의 `@Bean` 메서드가 반환한 객체가 Bean이 됩니다.
+- **DI(Dependency Injection)**: 한 객체가 필요로 하는 협력 객체를 외부에서 넣어 주는 방식입니다. 이 프로젝트는 Lombok의 `@RequiredArgsConstructor`와 `final` 필드를 이용한 생성자 주입을 주로 사용합니다.
+- 생성자 주입은 필수 의존성을 빠뜨린 객체 생성을 막고, 테스트에서 가짜 협력 객체를 전달하기 쉽고, 필드를 불변으로 유지할 수 있습니다.
+- 같은 타입의 Bean이 둘 이상이면 이름만 믿지 말고 `@Qualifier` 또는 대표 Bean인 `@Primary`로 선택 기준을 명시합니다.
+
+이 프로젝트에서 직접 찾아 적기:
+
+| 확인 대상 | Spring이 하는 일 | 이 저장소의 예 |
+|---|---|---|
+| `ScmApplication` | `ApplicationContext` 시작과 자동 설정 | `src/main/java/com/example/scm/ScmApplication.java` |
+| `PasswordConfig` | 외부 라이브러리 객체를 `@Bean`으로 등록 | 등록되는 타입: ____ |
+| `WebMvcConfig` | MVC 확장 지점에 Interceptor와 ArgumentResolver 연결 | 보호 경로와 제외 경로: ____ |
+| `ItemService` | 생성자 주입으로 Repository 등 협력 객체를 받음 | 주입되는 필드: ____ |
+| `ItemRepository` | 런타임 프록시가 Repository 구현을 제공 | 직접 구현 클래스가 없어도 호출 가능한 이유: ____ |
+
+### HTTP 요청이 DB까지 가는 흐름
+
+```text
+브라우저
+  → 내장 Tomcat
+  → Spring Security FilterChain
+  → DispatcherServlet
+  → HandlerMapping / HandlerAdapter
+  → LoginInterceptor 또는 AdminOnlyInterceptor
+  → CurrentUserArgumentResolver + Bean Validation
+  → Controller
+  → Service의 트랜잭션 프록시
+  → Spring Data Repository 프록시
+  → JPA(EntityManager) / Hibernate
+  → DataSource / DB
+  → DTO 변환 → View 또는 JSON 응답
+```
+
+1. **Filter**는 Servlet 계층에서 먼저 실행됩니다. 현재 `SecurityConfig`는 CSRF와 기본 보안 헤더를 담당하며, 세션 로그인·역할 인가 전체를 Spring Security에 맡긴 구조는 아닙니다.
+2. **DispatcherServlet**은 모든 MVC 요청의 중앙 진입점입니다. `HandlerMapping`으로 Controller 메서드를 찾고 `HandlerAdapter`로 호출합니다.
+3. **Interceptor**는 Controller 전후에서 세션 로그인과 관리자 접근을 확인합니다. Filter보다 Spring MVC에 가까우므로 어떤 Controller가 호출될지도 활용할 수 있습니다.
+4. **ArgumentResolver**는 `@CurrentUser` 같은 사용자 정의 파라미터를 실제 값으로 바꿉니다. `@Valid`/`@Validated`는 DTO의 `jakarta.validation` 제약을 검사합니다.
+5. **Controller**는 HTTP 계약에 집중합니다. 요청 파싱, 검증 결과, 상태 코드, View/응답 DTO를 다루고 비즈니스 규칙은 Service에 위임합니다.
+6. **Service**는 권한·소유자·상태 전이·중복 같은 규칙과 트랜잭션 경계를 책임집니다.
+7. **Repository**는 조회와 저장을 추상화합니다. Spring Data JPA가 인터페이스의 프록시 구현을 만들고 Hibernate가 Entity 상태 변경을 SQL로 변환합니다.
+8. **예외 처리기**는 Controller 밖으로 나온 예외를 공통 응답 또는 오류 화면으로 바꿉니다. 이 프로젝트는 API와 Web 예외 처리기를 구분합니다.
+
+### 프록시, AOP, `@Transactional`
+
+- Spring은 대상 Service Bean 앞에 **프록시**를 두고 메서드 호출 전 트랜잭션을 시작하고, 정상 반환 시 commit, 실패 시 rollback한 뒤 연결을 정리합니다.
+- 기본 rollback 대상은 `RuntimeException`과 `Error`입니다. checked exception까지 rollback해야 한다면 `rollbackFor` 정책을 명시하고 그 이유를 테스트로 고정합니다.
+- 프록시를 거쳐야 부가기능이 적용됩니다. 같은 클래스 안에서 `this.someTransactionalMethod()`처럼 호출하는 **self-invocation**은 기본 프록시 방식에서 새 트랜잭션 설정을 적용하지 못할 수 있습니다.
+- 트랜잭션 범위 안에서 조회한 Entity는 변경 감지(dirty checking) 대상입니다. setter를 무조건 늘리는 대신 의미 있는 도메인 메서드로 상태를 바꾸고, 트랜잭션 종료 시 SQL이 실행되는지 확인합니다.
+- `readOnly = true`는 읽기 의도를 드러내고 일부 최적화에 도움을 주지만, DB 권한처럼 쓰기를 절대 차단하는 보안 경계로 오해하면 안 됩니다.
+- LAZY 연관관계를 트랜잭션 밖의 View에서 처음 읽으면 초기화 예외나 추가 쿼리 문제가 생길 수 있습니다. 이 저장소는 `open-in-view: false`이므로 Service 안에서 필요한 값을 DTO로 변환합니다.
+- 발주 입고는 상태 변경과 모든 재고 증가가 한 트랜잭션이어야 합니다. 한 라인이라도 실패하면 일부 재고만 반영되지 않도록 전체가 rollback되어야 합니다.
+
+프록시 동작을 확인하는 질문:
+
+- `new ItemService(...)`로 직접 만든 객체와 Spring에서 주입받은 `ItemService`의 차이는 무엇인가? ____
+- `@Transactional` 메서드를 같은 객체 내부에서 직접 호출하면 어떤 문제가 생길 수 있는가? ____
+- 입고 처리 중 세 번째 라인에서 예외가 나면 발주 상태와 앞선 두 라인의 재고는 어떻게 되어야 하는가? ____
+
+### JPA와 Spring Data JPA의 역할 구분
+
+- **JPA**는 Entity 매핑과 영속성 컨텍스트 같은 표준 API/규약이고, **Hibernate**는 이 프로젝트가 사용하는 JPA 구현체입니다.
+- **Spring Data JPA**는 Repository 인터페이스, 메서드 이름 쿼리, `Pageable`, `Specification` 같은 편의 추상화를 제공합니다.
+- Entity가 연관관계를 가진다는 사실만으로 API 응답 계약이 되지는 않습니다. Controller 응답은 전용 DTO로 변환하여 비밀번호 노출, 순환 참조, LAZY 로딩, API 스키마 결합을 막습니다.
+- 운영형 MySQL 프로필에서 Flyway가 스키마 변경 이력을 관리하고 Hibernate의 `ddl-auto=validate`가 Entity 매핑과 실제 스키마의 일치 여부를 검사합니다.
+
+### 디버깅할 때 계층을 따라가는 순서
+
+1. 요청 URL·HTTP method·status와 Controller 매핑을 확인합니다.
+2. Filter/Interceptor가 요청을 막았는지, 세션에 `USER_ID`와 `USER_ROLE`이 있는지 확인합니다.
+3. DTO Validation 실패인지 `BusinessException`인지 공통 오류 코드로 구분합니다.
+4. Service 진입 여부와 트랜잭션 경계를 확인합니다.
+5. Repository 조건, 실행 SQL, 바인딩 값, 실제 DB 프로필을 확인합니다.
+6. 응답 직렬화 또는 Thymeleaf 렌더링 단계에서 LAZY 접근이 발생하지 않았는지 확인합니다.
+
+공식 참고 자료:
+
+- https://docs.spring.io/spring-framework/reference/core.html
+- https://docs.spring.io/spring-framework/reference/core/beans/annotation-config.html
+- https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html
+- https://docs.spring.io/spring-boot/system-requirements.html
+- https://docs.spring.io/spring-boot/reference/web/index.html
+- https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide
+- https://docs.gradle.org/9.7.1/release-notes.html
+
+## 워크북 요구사항을 프로그램으로 만드는 기술
+
+워크북의 빈칸을 채우는 것과 실행 가능한 프로그램을 만드는 것은 다릅니다. 프로그램 구현은 **요구사항을 관찰 가능한 계약으로 바꾸고, 계약을 지키는 최소 수직 흐름을 만든 뒤, 실패 사례로 경계를 검증하는 작업**입니다. 아래 순서를 기능마다 반복합니다.
+
+```text
+FR 읽기
+→ 입력·출력·권한·상태·실패 조건 결정
+→ 테스트 가능한 계약 작성
+→ Entity/DTO/Repository/Service/Controller 구현
+→ 단위·통합 테스트
+→ 실제 실행과 로그 확인
+→ 문서·설계 결정 동기화
+```
+
+### 1단계: 요구사항을 구현 카드로 바꾸기
+
+기능 이름만 보고 바로 Controller부터 만들지 않습니다. 먼저 하나의 FR을 다음 카드로 바꿉니다.
+
+| 항목 | 결정할 질문 | 품목 등록 예시 |
+|---|---|---|
+| 행위자 | 누가 실행할 수 있는가? | `ADMIN` |
+| 진입점 | HTTP method와 URL은? | `POST /api/items` |
+| 입력 | 필수값, 형식, 범위는? | 코드·이름·카테고리·단위·단가·안전재고 |
+| 출력 | status와 응답 DTO는? | `201 Created`, `ItemDetailView` |
+| 비즈니스 규칙 | 단순 형식 검사를 넘어 무엇을 확인하는가? | 품목코드 중복 금지, 카테고리 존재 |
+| 상태 변화 | Entity가 어떻게 변하는가? | 새 품목은 `ACTIVE` |
+| 트랜잭션 | 함께 성공·실패해야 하는 작업은? | 검증 후 품목 저장 |
+| 실패 계약 | 어떤 ErrorCode/status를 반환하는가? | 권한 없음, 중복 코드, 카테고리 없음 |
+| 증거 | 어떤 테스트가 완료를 증명하는가? | 성공·검증·권한·중복·참조 무결성 테스트 |
+
+요구사항이 모호하면 코딩으로 숨기지 말고 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)에 선택과 이유를 기록합니다. 예를 들어 “삭제”가 실제 행 삭제인지 `INACTIVE`/`DISCONTINUED` 전환인지 먼저 정해야 Repository와 API가 흔들리지 않습니다.
+
+구현 카드 빈칸:
+
+- 대상 FR ID: ____
+- 행위자와 권한: ____
+- 정상 입력/출력: ____
+- 지켜야 할 규칙 3개: ____
+- 실패 사례 3개와 ErrorCode: ____
+- 하나의 트랜잭션으로 묶을 범위: ____
+
+### 2단계: 수직 슬라이스로 작게 완성하기
+
+Entity 전체를 먼저 만들고 모든 Repository, 모든 Service를 차례로 만드는 수평식 구현은 기능이 실제로 연결되는 시점이 늦습니다. 워크북에서는 기능 하나를 아래처럼 끝까지 연결하는 **수직 슬라이스**를 우선합니다.
+
+```text
+요청 DTO → Controller → Service → Repository → Entity/DB
+          ← 응답 DTO  ← 결과/예외 ←
+```
+
+권장 구현 순서:
+
+1. 성공과 실패를 설명하는 테스트 이름을 먼저 적습니다.
+2. Entity의 필드, 상태, 도메인 메서드를 만듭니다.
+3. 저장·조회에 꼭 필요한 Repository 계약만 추가합니다.
+4. Request/Response DTO로 HTTP 계약을 고정합니다.
+5. Service에 권한, 비즈니스 규칙, 트랜잭션을 구현합니다.
+6. Controller를 얇게 연결하고 공통 예외 응답을 확인합니다.
+7. 통합 테스트와 실제 요청으로 전체 흐름을 검증합니다.
+
+한 번에 여러 FR을 구현하지 않습니다. 예를 들어 `FR-ITEM-001 품목 등록`의 성공·실패 흐름을 끝낸 뒤 목록, 상세, 수정으로 이동하면 어느 변경이 어느 실패를 만들었는지 추적하기 쉽습니다.
+
+### 3단계: 계층의 경계를 코드로 지키기
+
+| 계층 | 넣어야 하는 것 | 넣지 말아야 하는 것 |
+|---|---|---|
+| Controller | URL, HTTP status, 요청 바인딩, `@Valid`, 현재 사용자 주입 | 중복 조회, 상태 전이, 직접 SQL/Repository 호출 |
+| Service | 권한·소유자 검증, 중복·상태 규칙, 트랜잭션, Entity/DTO 조합 | Servlet 응답 조작, 화면 HTML 생성 |
+| Repository | 저장, 단건/조건 조회, 페이징, 잠금 | HTTP status 결정, 사용자 메시지 결정 |
+| Entity | 불변 조건, 상태값, 의미 있는 상태 변경 메서드 | Controller DTO 의존, 세션 접근 |
+| DTO | 외부 입력·출력 모양, 형식/범위 Validation | 영속성 생명주기와 비즈니스 상태 변경 |
+
+경계는 “파일을 나누는 규칙”이 아니라 변경 이유를 분리하는 기술입니다. HTTP 응답 형식이 바뀌어도 Entity 규칙은 유지되고, DB 조회 방식이 바뀌어도 Controller 계약은 불필요하게 흔들리지 않아야 합니다.
+
+### 4단계: 입력 검증과 비즈니스 검증을 분리하기
+
+두 종류의 검증을 섞지 않습니다.
+
+- **입력 검증**은 값 하나의 모양을 확인합니다. `@NotBlank`, `@Size`, `@PositiveOrZero`, `@Digits`처럼 요청을 해석하자마자 판단할 수 있으며 DTO에 둡니다.
+- **비즈니스 검증**은 DB나 현재 상태가 필요합니다. 품목코드 중복, 카테고리 존재, 작성자 본인, `REQUESTED` 상태 여부처럼 다른 객체와 정책을 알아야 하므로 Service/도메인에 둡니다.
+- **DB 제약**은 마지막 안전망입니다. 애플리케이션의 사전 중복 검사만으로 동시 요청을 완전히 막을 수 없으므로 unique/FK 제약을 함께 둡니다.
+
+예를 들어 `ItemCreateRequest`는 단가가 0 이상인지 검사하지만, 품목코드가 이미 존재하는지는 알 수 없습니다. `ItemService.create()`가 `existsByItemCode`로 사용자 친화적인 오류를 만들고, `items.item_code`의 unique 제약이 경합 상황의 최종 무결성을 보장합니다.
+
+### 5단계: 도메인 상태를 데이터가 아닌 규칙으로 다루기
+
+Entity의 status를 아무 곳에서나 setter로 바꾸면 금지된 전이를 막기 어렵습니다. 상태 변경은 의도가 드러나는 메서드로 표현합니다.
+
+```java
+public void discontinue() {
+    this.status = ItemStatus.DISCONTINUED;
+}
+```
+
+현재 참조 구현은 같은 요청을 다시 받아도 최종 상태가 동일한 멱등 동작을 선택했습니다. 반복 요청을 오류로 거절하고 싶다면 `INVALID_STATUS` 검증을 추가하되 API 계약, 테스트, 설계 결정 문서를 함께 바꿉니다. 구현 전에 다음을 판단합니다.
+
+- 동일 상태 재요청을 멱등 성공으로 볼 것인가, 잘못된 상태로 거절할 것인가?
+- 규칙을 Entity에 둘 것인가 Service에 둘 것인가?
+- 어떤 예외 코드가 API 사용자에게 가장 안정적인 계약인가?
+- 그 선택을 어떤 테스트로 고정할 것인가?
+
+발주처럼 상태가 많은 기능은 먼저 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md) 또는 [STATE_MACHINE.md](../docs/STATE_MACHINE.md)의 전이 표를 보고, **허용 목록 방식**으로 구현합니다. 현재 상태별 허용 동작을 명시하면 새 상태가 추가됐을 때 의도치 않게 모든 동작이 허용되는 문제를 줄일 수 있습니다.
+
+### 6단계: Service 메서드를 규칙의 실행 순서로 작성하기
+
+Service 코드는 단순 Repository 호출 모음이 아니라 유스케이스의 순서를 표현해야 합니다. 변경 기능은 보통 아래 순서를 따릅니다.
+
+```text
+인증 확인
+→ 역할/소유자 권한 확인
+→ 입력이 가리키는 Entity 조회
+→ 현재 상태와 중복 규칙 검증
+→ 계산 또는 상태 변경
+→ 저장
+→ 결과 식별자/DTO 반환
+```
+
+품목 등록의 실제 흐름은 다음과 같습니다.
+
+```java
+@Transactional
+public Long create(ItemCreateRequest request, LoginUser loginUser) {
+    Authz.requireRole(loginUser, UserRole.ADMIN);
+    validateItemCodeUnique(request.getItemCode());
+    validateCategoryExists(request.getCategoryId());
+
+    Item item = Item.builder()
+            .itemCode(request.getItemCode())
+            .name(request.getName())
+            .categoryId(request.getCategoryId())
+            .unit(request.getUnit())
+            .unitPrice(request.getUnitPrice())
+            .safetyStock(request.getSafetyStock())
+            .status(ItemStatus.ACTIVE)
+            .build();
+    return itemRepository.save(item).getId();
+}
+```
+
+이 코드에서 학습할 것은 문법보다 순서입니다. 권한 없는 사용자가 DB 중복 여부를 탐색하지 못하게 권한을 먼저 확인하고, 저장 전에 참조 카테고리를 검증하며, 성공한 변경 전체를 하나의 트랜잭션으로 묶습니다.
+
+### 7단계: DTO로 외부 계약을 보호하기
+
+Entity를 요청·응답에 직접 사용하지 않습니다.
+
+- Request DTO는 클라이언트가 설정할 수 있는 필드만 엽니다. `id`, `status`, `createdAt`, 작성자처럼 서버가 정해야 하는 값은 받지 않습니다.
+- Response DTO는 화면/API에 필요한 값만 노출합니다. 비밀번호, 내부 토큰, 영속성 프록시를 포함하지 않습니다.
+- Entity 필드명이 바뀌어도 외부 API 계약을 유지할 수 있도록 `from(entity)` 같은 변환 지점을 둡니다.
+- 금액은 `double`이 아니라 `BigDecimal`을 사용하고, 합계는 클라이언트 값을 믿지 않고 서버에서 다시 계산합니다.
+- 목록 응답은 Entity `Page`를 그대로 노출하지 않고 `PageResponse<T>`처럼 프로젝트가 통제하는 형식으로 변환합니다.
+
+### 8단계: 트랜잭션과 동시성을 별도로 설계하기
+
+`@Transactional`은 여러 DB 작업의 원자성을 보장하지만 모든 동시성 문제를 해결하지는 않습니다.
+
+| 문제 | 필요한 기술 | 이 프로젝트의 예 |
+|---|---|---|
+| 중간 실패 시 일부만 저장 | 트랜잭션 rollback | 발주 상태 변경 + 모든 재고 증가 |
+| 같은 요청을 두 번 처리 | 현재 상태 재검증, 멱등성 정책 | `RECEIVED` 재진입 차단 |
+| 두 요청이 같은 최초 재고 행 생성 | 잠금 + DB unique 제약 | `findAllByIdForUpdate` |
+| 중복 코드 동시 등록 | 사전 검사 + DB unique 제약 | `item_code`, `business_number` |
+| 서로 다른 순서로 여러 행 잠금 | 잠금 순서 통일 | 품목 ID 정렬 후 잠금 |
+
+동시성 기능은 “한 번 실행하면 성공”만으로 완료하지 않습니다. 두 개 이상의 요청을 동시에 보내 최종 상태, 행 개수, 수량 합계가 보존되는지 테스트합니다.
+
+### 9단계: 인증·인가·소유권을 각각 검증하기
+
+- **인증**: 로그인한 사용자인가?
+- **역할 인가**: `USER`, `ADMIN`, `MANAGER` 중 이 기능을 실행할 역할인가?
+- **소유권**: 해당 역할이라도 이 데이터의 작성자 또는 담당자인가?
+
+URL의 `userId`나 요청 본문의 역할을 신뢰하지 않습니다. 현재 사용자는 세션과 `@CurrentUser`에서 얻고, 대상 데이터의 작성자 ID와 서버에서 비교합니다. 화면에서 버튼을 숨기는 것은 사용성일 뿐 보안 경계가 아니므로 API/Service에서도 반드시 거절해야 합니다.
+
+최소 권한 테스트:
+
+- 인증 없음 → 보호 기능 실패
+- 로그인했지만 역할 부족 → 실패
+- 역할은 맞지만 다른 사용자의 데이터 → 실패
+- 올바른 역할과 소유자 → 성공
+
+### 10단계: 테스트를 구현 순서와 함께 설계하기
+
+테스트는 마지막 확인 작업이 아니라 구현 방향을 고정하는 계약입니다.
+
+1. **도메인 단위 테스트**: 상태 전이와 계산을 빠르게 검증합니다.
+2. **Service 단위 테스트**: 권한, 호출 순서보다 결과와 예외, 저장 여부를 검증합니다.
+3. **Repository 테스트**: 메서드 이름 쿼리, `Specification`, 잠금, unique 제약처럼 DB 의미가 있는 부분을 검증합니다.
+4. **Controller/MockMvc 테스트**: URL, JSON, Validation, HTTP status, 세션/CSRF를 검증합니다.
+5. **통합 테스트**: 실제 Spring Context와 H2/MySQL에서 트랜잭션·매핑·전체 흐름을 검증합니다.
+
+Given/When/Then을 구체적으로 씁니다.
+
+```text
+Given ADMIN과 존재하는 카테고리, 중복되지 않은 품목코드
+When POST /api/items를 호출
+Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
+```
+
+“정상 동작한다” 같은 이름은 피하고 `USER가_품목을_등록하면_FORBIDDEN`, `중복_품목코드는_DUPLICATE_ITEM_CODE`처럼 실패 원인과 기대 결과가 드러나게 작성합니다.
+
+### 11단계: 오류를 계층별로 추적하기
+
+기능이 실패했을 때 코드를 무작정 바꾸지 말고 관찰 지점을 좁힙니다.
+
+| 관찰 결과 | 먼저 볼 위치 |
+|---|---|
+| 404 또는 잘못된 method | Controller 매핑, URL |
+| 400과 필드 오류 | Request DTO Validation, JSON 이름/타입 |
+| 401/403 | 세션, Interceptor, CSRF, Service 권한 |
+| 예상과 다른 ErrorCode | Service 검증 순서, ExceptionHandler |
+| SQL/제약 오류 | Repository 쿼리, Entity 매핑, migration |
+| 응답 시 LAZY 오류 | 트랜잭션 안 DTO 변환, 조회 전략 |
+| 일부 데이터만 변경 | 트랜잭션 경계, 예외 삼킴 여부 |
+| 동시 실행에서만 실패 | 잠금, unique 제약, 재시도/멱등성 |
+
+실패 로그에는 “무슨 예외인가”뿐 아니라 입력 조건, 현재 상태, 트랜잭션 범위, 최종 DB 상태를 함께 기록합니다. 비밀번호나 세션 ID 같은 비밀정보는 기록하지 않습니다.
+
+### 12단계: 완료 정의로 끝내기
+
+기능은 컴파일만 되거나 정상 사례 하나가 성공했다고 완료되지 않습니다.
+
+- [ ] FR ID와 구현 파일·테스트가 연결되어 있다.
+- [ ] 정상 입력과 응답 status/DTO가 계약과 일치한다.
+- [ ] Validation, 권한, 소유권, 잘못된 상태 실패가 검증된다.
+- [ ] DB unique/FK와 애플리케이션 규칙이 서로 보완한다.
+- [ ] 트랜잭션 실패 시 일부 데이터가 남지 않는다.
+- [ ] Entity를 직접 외부 응답으로 노출하지 않는다.
+- [ ] 목록 조회의 페이징·정렬과 N+1 가능성을 확인했다.
+- [ ] 단위 테스트와 관련 통합 테스트가 통과한다.
+- [ ] 실제 실행에서 요청·응답·SQL·로그를 확인했다.
+- [ ] 설계 선택이 문서와 현재 참조 구현에 반영되어 있다.
+- [ ] 다른 사람이 1분 안에 “왜 이렇게 구현했는지” 설명을 따라갈 수 있다.
+
+### 기능별 반복 기록표
+
+| 구현 단계 | 내 기록 |
+|---|---|
+| FR과 사용자 가치 | ____ |
+| API 입력/출력 계약 | ____ |
+| Entity 불변 조건/상태 전이 | ____ |
+| Service 검증 순서 | ____ |
+| Repository 쿼리/제약 | ____ |
+| 트랜잭션·동시성 위험 | ____ |
+| 권한·소유권 | ____ |
+| 정상 테스트 | ____ |
+| 실패 테스트 3개 | ____ |
+| 실제 실행 증거 | ____ |
+| 선택한 설계와 대안 | ____ |
+
 ## 전체 기능 추적표
 
 | FR ID | 기능 | 구현 핵심 | 관련 starter |
@@ -1049,3 +1423,511 @@
 - 이 기능에서 Controller 가 하면 안 되는 일은 무엇인가? ____
 - 이 기능에서 Service 가 반드시 검증해야 하는 것은 무엇인가? ____
 - 이 기능의 실패 케이스 테스트 2개는 무엇인가? ____
+
+---
+
+# 8. macOS 단일 호스트 배포·운영 워크북
+
+목표 흐름:
+
+```text
+폴더 준비 → Homebrew → Java 21 + Maven → JAR 빌드·직접 실행
+→ launchd LaunchAgent 등록 → 파일 로그 확인 → DB 연결
+→ 업데이트·롤백 → 최종 점검
+```
+
+이 절은 macOS 로그인 사용자 한 명이 학습·포트폴리오용 SCM 서버를 운영하는 시나리오입니다. `LaunchAgent`는 **그 사용자가 로그인한 뒤** 실행됩니다. 로그인 전부터 항상 떠 있어야 하는 서버라면 시스템 관리자 권한과 별도 보안 설계가 필요한 `LaunchDaemon` 영역이므로 이 절의 범위를 벗어납니다.
+
+> 빌드 도구 구분: Java 21은 Java 17 대상으로 빌드된 현재 JAR를 실행할 수 있습니다. Maven은 요청한 개발 도구 체인을 익히기 위해 설치·검증하지만, **이 저장소에는 `pom.xml`이 없고 Gradle Wrapper가 정식 빌드 도구**입니다. 따라서 이 저장소에서 `mvn package`를 실행하지 말고 `./gradlew bootJar`를 사용합니다. Maven 프로젝트라면 `mvn -B clean verify package`가 대응 명령입니다.
+
+## 8.1 폴더 준비
+
+소스 저장소와 배포 산출물을 분리합니다. 아래 `$HOME/Library/Application Support/scm-system`은 운영 호스트의 예시 경로이며 Git에 추가하지 않습니다. 새 터미널을 열 때마다 먼저 공통 변수를 다시 선언합니다.
+
+```bash
+export REPO_HOME="$HOME/Documents/scm-system"
+export SCM_HOME="$HOME/Library/Application Support/scm-system"
+export AGENT_PLIST="$HOME/Library/LaunchAgents/com.example.scm.plist"
+export USER_DOMAIN="gui/$(id -u)"
+
+mkdir -p "$SCM_HOME"/{backups,bin,config,logs,releases}
+mkdir -p "$HOME/Library/LaunchAgents"
+chmod 700 "$SCM_HOME" "$SCM_HOME/backups" "$SCM_HOME/config"
+
+git clone <REPOSITORY_URL> "$REPO_HOME" # 최초 1회만 실행
+cd "$REPO_HOME"
+git rev-parse --show-toplevel
+git status --short
+```
+
+폴더 역할:
+
+| 경로 | 역할 | 보존 정책 |
+|---|---|---|
+| `~/Documents/scm-system` | 소스, 테스트, 빌드 입력 | Git으로 관리 |
+| `$SCM_HOME/releases/<버전>/` | 버전별 실행 JAR | 최근 정상 버전 최소 1개 유지 |
+| `$SCM_HOME/current` | 현재 릴리스 심볼릭 링크 | 업데이트 시 원자적으로 교체 |
+| `$SCM_HOME/config/scm.env` | DB 등 비밀 환경변수 | `chmod 600`, Git 금지 |
+| `$SCM_HOME/bin/run-scm.sh` | LaunchAgent 실행 래퍼 | 절대 경로 사용 |
+| `$SCM_HOME/logs/` | 표준 출력·오류 로그 | 용량/보존 기간 관리 |
+| `$SCM_HOME/backups/` | 업데이트 전 DB dump와 checksum | 권한 제한, 복구 시험 후 보존 |
+
+체크:
+
+- [ ] 소스와 실행 JAR가 같은 폴더에 뒤섞이지 않았다.
+- [ ] 공백이 있는 경로를 항상 큰따옴표로 감쌌다.
+- [ ] DB 비밀번호 파일이 Git 추적 대상이 아니다.
+
+## 8.2 Homebrew 설치와 확인
+
+먼저 Command Line Tools와 기존 Homebrew를 확인합니다.
+
+```bash
+xcode-select -p || xcode-select --install
+command -v brew || true
+```
+
+Homebrew가 없다면 `https://brew.sh/`의 현재 공식 설치 명령을 직접 확인한 뒤 실행합니다. 설치 프로그램이 마지막에 출력하는 `brew shellenv` 명령을 `~/.zprofile`에 반영해야 새 터미널에서도 `brew`를 찾을 수 있습니다. 기본 prefix는 Apple Silicon이 `/opt/homebrew`, Intel Mac이 `/usr/local`이므로 경로를 하드코딩하기보다 아래처럼 확인합니다.
+
+```bash
+brew --version
+brew --prefix
+brew doctor
+```
+
+## 8.3 Java 21 + Maven 준비
+
+```bash
+brew update
+brew install openjdk@21 maven
+
+export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+java -version
+javac -version
+mvn -version
+./gradlew --version
+```
+
+`/usr/libexec/java_home -v 21`이 JDK를 찾지 못하면 Homebrew formula 안내에 나온 JDK 심볼릭 링크 명령을 확인합니다. 현재 formula는 다음 형태를 안내하지만, 실제 `$HOMEBREW_PREFIX`는 `brew --prefix`로 확인합니다.
+
+```bash
+sudo ln -sfn "$(brew --prefix)/opt/openjdk@21/libexec/openjdk.jdk" \
+  /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+```
+
+셸을 다시 열어도 Java 21을 사용하려면 `~/.zprofile`에 `JAVA_HOME`과 `PATH` 설정을 추가합니다. LaunchAgent는 대화형 셸 설정을 자동으로 읽는다고 가정하지 않으므로, 뒤의 실행 래퍼에서도 `JAVA_HOME`을 명시합니다.
+
+확인 기준:
+
+- [ ] `java -version`과 `javac -version`의 major가 21이다.
+- [ ] `mvn -version`의 Java home도 JDK 21을 가리킨다.
+- [ ] `./gradlew --version`의 JVM도 JDK 21이다.
+- [ ] 이 저장소의 `build.gradle`은 source/target 17이며, 이는 실행 JDK 21과 모순되지 않음을 설명할 수 있다.
+
+## 8.4 JAR 빌드와 직접 실행
+
+배포 전에 테스트와 저장소 경계 검증을 통과시킵니다.
+
+```bash
+cd "$REPO_HOME"
+./scripts/verify-repository-boundary.sh
+./gradlew clean portfolioCheck
+
+ls -lh build/libs/*.jar
+export JAR_PATH="$(find build/libs -maxdepth 1 -type f -name '*.jar' -print -quit)"
+test -n "$JAR_PATH"
+env -u SPRING_PROFILES_ACTIVE java -jar "$JAR_PATH"
+```
+
+다른 터미널에서 직접 실행 상태를 확인합니다.
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/login
+lsof -nP -iTCP:8080 -sTCP:LISTEN
+```
+
+`Ctrl-C`로 정상 종료한 뒤 JAR를 버전별 릴리스 폴더로 복사합니다. 릴리스 ID에는 생성 시각과 commit SHA를 함께 넣어 소스와 산출물을 다시 연결할 수 있게 합니다.
+
+```bash
+export RELEASE_ID="$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
+mkdir -p "$SCM_HOME/releases/$RELEASE_ID"
+cp "$JAR_PATH" \
+  "$SCM_HOME/releases/$RELEASE_ID/scm-system.jar"
+(cd "$SCM_HOME/releases/$RELEASE_ID" && \
+  shasum -a 256 scm-system.jar > scm-system.jar.sha256)
+ln -sfn "$SCM_HOME/releases/$RELEASE_ID" "$SCM_HOME/current.next"
+mv -h "$SCM_HOME/current.next" "$SCM_HOME/current"
+readlink "$SCM_HOME/current"
+test -f "$SCM_HOME/current/scm-system.jar"
+```
+
+`current`가 특정 릴리스를 가리키게 하면 plist를 매번 수정하지 않고도 업데이트·롤백할 수 있습니다.
+
+## 8.5 LaunchAgent 실행 파일과 설정 준비
+
+먼저 `$SCM_HOME/config/scm.env`를 만듭니다. 최초 LaunchAgent 검증은 요청 순서에 맞춰 외부 DB 없이 H2로 실행합니다. 값은 `zsh`가 읽을 수 있는 `KEY=value` 형식으로 작성하고, 공백이나 셸 특수문자는 안전하게 인용합니다. 이 파일은 실행 코드이므로 소유자 외에는 읽거나 수정할 수 없게 합니다.
+
+```bash
+SPRING_PROFILES_ACTIVE=
+SCM_SEED_ENABLED=true
+SERVER_PORT=8080
+HIBERNATE_SQL_LOG_LEVEL=warn
+```
+
+빈 `SPRING_PROFILES_ACTIVE`는 로그인 셸에 남아 있을 수 있는 `mysql` 값을 덮어써 최초 검증이 H2로 실행되게 합니다. MySQL 전환은 8.8에서 연결과 schema 계약을 확인한 뒤 수행합니다.
+
+```bash
+chmod 600 "$SCM_HOME/config/scm.env"
+```
+
+다음 내용으로 `$SCM_HOME/bin/run-scm.sh`를 준비합니다. 문서의 `__USER__`는 `whoami` 결과로 바꾸며 plist와 스크립트에는 `$HOME`이나 `~` 대신 절대 경로를 사용합니다.
+
+```bash
+#!/bin/zsh
+set -eu
+set -a
+source "/Users/__USER__/Library/Application Support/scm-system/config/scm.env"
+set +a
+
+export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+exec "$JAVA_HOME/bin/java" \
+  -Duser.timezone=Asia/Seoul \
+  -jar "/Users/__USER__/Library/Application Support/scm-system/current/scm-system.jar"
+```
+
+```bash
+chmod 700 "$SCM_HOME/bin/run-scm.sh"
+zsh -n "$SCM_HOME/bin/run-scm.sh"
+```
+
+다음 plist를 `$HOME/Library/LaunchAgents/com.example.scm.plist`에 준비합니다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.example.scm</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/__USER__/Library/Application Support/scm-system/bin/run-scm.sh</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/__USER__/Library/Application Support/scm-system/current</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>/Users/__USER__/Library/Application Support/scm-system/logs/scm.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/__USER__/Library/Application Support/scm-system/logs/scm.err.log</string>
+</dict>
+</plist>
+```
+
+```bash
+chmod 600 "$AGENT_PLIST"
+plutil -lint "$AGENT_PLIST"
+```
+
+`KeepAlive.SuccessfulExit=false`는 비정상 종료 때 재시작하되 정상 종료를 무한 재시작하지 않게 합니다. 반복 실패하면 로그가 빠르게 커질 수 있으므로 먼저 직접 실행에 성공한 JAR만 등록합니다.
+
+## 8.6 launchd LaunchAgent 등록
+
+```bash
+plutil -lint "$AGENT_PLIST"
+if launchctl print "$USER_DOMAIN/com.example.scm" >/dev/null 2>&1; then
+  launchctl bootout "$USER_DOMAIN/com.example.scm"
+fi
+launchctl enable "$USER_DOMAIN/com.example.scm"
+launchctl bootstrap "$USER_DOMAIN" "$AGENT_PLIST"
+launchctl print "$USER_DOMAIN/com.example.scm"
+
+for attempt in {1..30}; do
+  curl -fsS -o /dev/null http://127.0.0.1:8080/login && break
+  sleep 1
+done
+curl -fsS -o /dev/null http://127.0.0.1:8080/login
+```
+
+`RunAtLoad=true`이므로 `bootstrap` 뒤에 프로세스가 시작됩니다. 수정한 plist가 반영되지 않으면 `bootout → bootstrap` 순서로 다시 등록합니다. 설정 파일이나 JAR만 바꾼 경우에는 `kickstart -k`로 재시작할 수 있지만, 현재 프로세스를 종료하므로 요청을 받는 사용자가 없는지 먼저 확인합니다.
+
+체크:
+
+- [ ] plist의 모든 경로가 실제 절대 경로다.
+- [ ] `plutil -lint`가 `OK`다.
+- [ ] `launchctl print`에 label, program, last exit status가 보인다.
+- [ ] 로그인 사용자 세션에서 실행된다는 LaunchAgent의 한계를 이해한다.
+
+## 8.7 파일 로그 확인
+
+```bash
+tail -n 100 "$SCM_HOME/logs/scm.out.log"
+tail -n 100 "$SCM_HOME/logs/scm.err.log"
+tail -F "$SCM_HOME/logs/scm.out.log" "$SCM_HOME/logs/scm.err.log"
+
+grep -En "Started ScmApplication|ERROR|Exception|Caused by" \
+  "$SCM_HOME/logs/scm.out.log" "$SCM_HOME/logs/scm.err.log"
+du -h "$SCM_HOME/logs/"*.log
+```
+
+확인할 순서:
+
+1. Java 경로 또는 권한 오류가 `scm.err.log`에 있는지 확인합니다.
+2. `Started ScmApplication`과 실제 시작 시간을 확인합니다.
+3. 포트 충돌(`Address already in use`) 여부를 확인합니다.
+4. DB 연결, Flyway migration, Hibernate validate 오류를 확인합니다.
+5. 비밀번호·세션 ID 같은 비밀값이 로그에 출력되지 않는지 확인합니다.
+
+launchd의 stdout/stderr 파일은 자동 회전 정책이 아닙니다. 학습 호스트에서도 파일 크기를 주기적으로 확인하고, 운영 환경에서는 별도 로그 회전·수집 정책을 설계합니다.
+
+## 8.8 DB 연결
+
+앞 단계까지는 재시작 시 데이터가 사라지는 H2 in-memory로 LaunchAgent 자체를 검증했습니다. 이제 MySQL 서버를 준비하고 연결 시험을 통과한 뒤 `mysql` 프로필로 전환합니다. DB가 준비되기 전에 프로필부터 바꾸면 `KeepAlive`가 실패한 앱을 반복 재시작할 수 있습니다.
+
+학습용 DB는 저장소의 Compose에서 `db` 서비스만 실행할 수 있습니다. Docker Desktop이 필요하며 `scm/scm`은 로컬 데모 전용 계정이므로 외부에 노출되는 운영 환경에서 사용하지 않습니다.
+
+```bash
+cd "$REPO_HOME"
+docker compose config --quiet
+docker compose up -d --wait db
+docker compose ps db
+docker compose exec db mysql -uscm -p -e \
+  "SELECT VERSION(), CURRENT_USER(), DATABASE();" scm
+```
+
+외부 MySQL 8.0을 사용한다면 DBA가 DB와 최소 권한 계정을 먼저 만들고, 호스트에서 MySQL 8.0 client를 준비해 연결합니다. 비밀번호는 명령 인자에 쓰지 말고 `-p` 프롬프트로 입력합니다.
+
+```bash
+brew install mysql-client@8.0
+export PATH="$(brew --prefix mysql-client@8.0)/bin:$PATH"
+
+mysql -h <DB_HOST> -P <DB_PORT> -u <DB_USER> -p -e \
+  "SELECT VERSION(), CURRENT_USER(), DATABASE();" <DB_NAME>
+```
+
+연결이 성공하면 `$SCM_HOME/config/scm.env`를 아래처럼 교체합니다. `<...>` 값은 실제 접속 정보로 바꾸고 유효한 `zsh` 문자열로 인용합니다. Compose의 `db`만 사용한다면 host는 `127.0.0.1`, user/password는 데모 설정인 `scm`/`scm`입니다.
+
+```bash
+SPRING_PROFILES_ACTIVE=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=scm
+DB_USER=scm
+DB_PASSWORD='<DB_PASSWORD>'
+SCM_SEED_ENABLED=false
+SERVER_PORT=8080
+HIBERNATE_SQL_LOG_LEVEL=warn
+```
+
+애플리케이션을 전환하기 전에 같은 환경변수로 MySQL 전용 schema 계약 테스트를 실행합니다. `source`하는 파일은 신뢰하는 소유자만 수정할 수 있어야 합니다.
+
+```bash
+chmod 600 "$SCM_HOME/config/scm.env"
+set -a
+source "$SCM_HOME/config/scm.env"
+set +a
+
+cd "$REPO_HOME"
+./gradlew mysqlSchemaTest
+
+launchctl kickstart -k "$USER_DOMAIN/com.example.scm"
+for attempt in {1..30}; do
+  curl -fsS -o /dev/null http://127.0.0.1:8080/login && break
+  sleep 1
+done
+curl -fsS -o /dev/null http://127.0.0.1:8080/login
+grep -En "mysql|Flyway|Started ScmApplication|ERROR|Exception" \
+  "$SCM_HOME/logs/scm.out.log" "$SCM_HOME/logs/scm.err.log"
+```
+
+설정 연결:
+
+| 환경변수 | Spring 설정 | 의미 |
+|---|---|---|
+| `SPRING_PROFILES_ACTIVE=mysql` | `application-mysql.yml` 활성화 | MySQL/Flyway 사용 |
+| `DB_HOST`, `DB_PORT` | JDBC URL | DB 주소와 포트 |
+| `DB_NAME` | JDBC URL | 스키마 이름 |
+| `DB_USER`, `DB_PASSWORD` | datasource 인증 | 최소 권한 계정 사용 |
+| `SCM_SEED_ENABLED=false` | 시드 설정 | 운영형 기본 계정 생성 방지 |
+
+MySQL 프로필에서는 Flyway가 `src/main/resources/db/migration/mysql`의 버전 SQL을 적용하고 Hibernate는 `ddl-auto=validate`로 매핑을 검증합니다. 애플리케이션 계정에는 필요한 DML과 승인된 migration 권한만 부여하고 root 계정을 넣지 않습니다. 조직에서는 migration 계정과 런타임 DML 계정을 분리하는 방안도 검토합니다. 비밀번호는 plist나 저장소가 아니라 권한이 제한된 `scm.env`에 둡니다.
+
+DB 실패를 구분하는 질문:
+
+- `Connection refused`인가, 인증 실패인가, DB 이름 오류인가? ____
+- Flyway checksum/version 충돌인가, Hibernate schema validation 실패인가? ____
+- H2로 잘못 기동되어 데이터가 사라진 것처럼 보이는가? ____
+
+## 8.9 업데이트와 롤백
+
+업데이트는 **DB 백업·복구 가능성 확인 → 배포 commit 고정 → 빌드·테스트 → 새 릴리스 생성 → 링크 전환 → 재시작 → smoke test** 순서로 진행합니다. 실행 중인 `current/scm-system.jar`를 덮어쓰지 않습니다.
+
+먼저 DB dump를 만들고 빈 파일이 아닌지와 checksum을 확인합니다. `<BACKUP_USER>`는 백업에 필요한 읽기 권한을 가진 계정입니다. 비밀번호는 `-p` 프롬프트로 입력합니다.
+
+```bash
+set -a
+source "$SCM_HOME/config/scm.env"
+set +a
+export PATH="$(brew --prefix mysql-client@8.0)/bin:$PATH"
+
+export BACKUP_FILE="$SCM_HOME/backups/scm-$(date +%Y%m%d-%H%M%S).sql"
+mysqldump -h "$DB_HOST" -P "$DB_PORT" -u <BACKUP_USER> -p \
+  --single-transaction --routines --triggers "$DB_NAME" > "$BACKUP_FILE"
+test -s "$BACKUP_FILE"
+chmod 600 "$BACKUP_FILE"
+shasum -a 256 "$BACKUP_FILE"
+```
+
+Compose 데모 DB라면 컨테이너 안의 `mysqldump`를 사용할 수도 있습니다.
+
+```bash
+cd "$REPO_HOME"
+export BACKUP_FILE="$SCM_HOME/backups/scm-$(date +%Y%m%d-%H%M%S).sql"
+docker compose exec -T db sh -c \
+  'exec mysqldump -uscm -p"$MYSQL_PASSWORD" --single-transaction scm' \
+  > "$BACKUP_FILE"
+test -s "$BACKUP_FILE"
+chmod 600 "$BACKUP_FILE"
+shasum -a 256 "$BACKUP_FILE"
+```
+
+백업은 생성 성공만으로 충분하지 않습니다. 운영 DB가 아닌 격리된 복구용 DB에서 아래 형태로 import하고 핵심 테이블의 행 수와 애플리케이션 기동을 확인합니다.
+
+```bash
+mysql -h <RESTORE_HOST> -P <RESTORE_PORT> -u <RESTORE_USER> -p \
+  <RESTORE_DB> < "$BACKUP_FILE"
+```
+
+그다음 배포할 tag 또는 commit을 정확히 고정합니다. 배포 호스트의 작업 트리가 더러우면 임의로 stash/reset하지 말고 중단합니다.
+
+```bash
+cd "$REPO_HOME"
+if test -n "$(git status --porcelain)"; then
+  echo "배포 중단: 작업 트리에 미커밋 변경이 있습니다." >&2
+  exit 1
+fi
+
+git fetch --all --tags --prune
+export DEPLOY_REF="<TAG_OR_COMMIT>"
+git switch --detach "$DEPLOY_REF"
+export DEPLOY_COMMIT="$(git rev-parse HEAD)"
+git show -s --format='%H %cI %s' "$DEPLOY_COMMIT"
+
+./scripts/verify-repository-boundary.sh
+./gradlew clean portfolioCheck
+
+export JAR_PATH="$(find build/libs -maxdepth 1 -type f -name '*.jar' -print -quit)"
+test -n "$JAR_PATH"
+export RELEASE_ID="$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)"
+mkdir -p "$SCM_HOME/releases/$RELEASE_ID"
+cp "$JAR_PATH" \
+  "$SCM_HOME/releases/$RELEASE_ID/scm-system.jar"
+(cd "$SCM_HOME/releases/$RELEASE_ID" && \
+  shasum -a 256 scm-system.jar > scm-system.jar.sha256)
+
+export PREVIOUS_RELEASE="$(readlink "$SCM_HOME/current")"
+test -f "$PREVIOUS_RELEASE/scm-system.jar"
+ln -sfn "$PREVIOUS_RELEASE" "$SCM_HOME/previous.next"
+mv -h "$SCM_HOME/previous.next" "$SCM_HOME/previous"
+
+ln -sfn "$SCM_HOME/releases/$RELEASE_ID" "$SCM_HOME/current.next"
+mv -h "$SCM_HOME/current.next" "$SCM_HOME/current"
+launchctl kickstart -k "$USER_DOMAIN/com.example.scm"
+```
+
+업데이트 후 `/login`, 로그인, 핵심 조회, DB 쓰기 한 건을 smoke test하고 로그와 Flyway 상태를 확인합니다. 실패하면 자동으로 계속 진행하지 말고 `previous`가 가리키는 직전 정상 릴리스로 링크를 되돌립니다.
+
+```bash
+curl -fsS -o /dev/null http://127.0.0.1:8080/login
+grep -En "Started ScmApplication|ERROR|Exception|Flyway" \
+  "$SCM_HOME/logs/scm.out.log" "$SCM_HOME/logs/scm.err.log"
+
+export ROLLBACK_RELEASE="$(readlink "$SCM_HOME/previous")"
+test -f "$ROLLBACK_RELEASE/scm-system.jar"
+ln -sfn "$ROLLBACK_RELEASE" "$SCM_HOME/current.next"
+mv -h "$SCM_HOME/current.next" "$SCM_HOME/current"
+launchctl kickstart -k "$USER_DOMAIN/com.example.scm"
+curl -fsS -o /dev/null http://127.0.0.1:8080/login
+```
+
+중요한 한계:
+
+- JAR 롤백과 DB 롤백은 같은 일이 아닙니다. 이미 적용한 Flyway migration이 구버전 JAR와 호환되지 않으면 JAR만 되돌려도 복구되지 않습니다.
+- 운영 migration은 가능하면 이전·새 애플리케이션이 모두 동작하는 **하위 호환 확장 → 데이터 이행 → 나중에 제거** 순서로 설계합니다.
+- 파괴적 DDL 전에 DB 백업과 격리 환경 복구 리허설을 수행합니다. Flyway 이력 행이나 checksum을 임의 수정하지 않습니다.
+- 애플리케이션 기동이 migration을 적용한 뒤 실패할 수도 있습니다. 배포 전에 하위 호환성을 검증하고, 실패 시 어떤 DB 복구가 필요한지 별도로 판단합니다.
+- 배포 호스트에서는 exact tag/commit만 빌드하고 임의 코드를 수정하지 않습니다.
+
+## 8.10 최종 점검
+
+```bash
+launchctl print "$USER_DOMAIN/com.example.scm"
+readlink "$SCM_HOME/current"
+if test -f "$SCM_HOME/current/scm-system.jar.sha256"; then
+  (cd "$SCM_HOME/current" && shasum -a 256 -c scm-system.jar.sha256)
+else
+  shasum -a 256 "$SCM_HOME/current/scm-system.jar"
+fi
+
+export APP_PID="$(launchctl print "$USER_DOMAIN/com.example.scm" | \
+  awk '/pid =/{print $3; exit}')"
+test -n "$APP_PID"
+export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+"$JAVA_HOME/bin/jcmd" "$APP_PID" VM.version
+
+curl -sS -o /dev/null -w 'login=%{http_code}\n' \
+  http://127.0.0.1:8080/login
+lsof -nP -iTCP:8080 -sTCP:LISTEN
+
+tail -n 50 "$SCM_HOME/logs/scm.out.log"
+tail -n 50 "$SCM_HOME/logs/scm.err.log"
+```
+
+최종 체크리스트:
+
+- [ ] `current`가 의도한 commit의 릴리스를 가리킨다.
+- [ ] 현재 JAR checksum이 배포 시 기록한 값과 일치한다.
+- [ ] LaunchAgent 상태와 last exit status가 정상이다.
+- [ ] LaunchAgent PID의 JVM이 Java 21이며 8080 포트가 한 프로세스만 사용한다.
+- [ ] `/login`이 정상 HTTP 응답을 반환한다.
+- [ ] MySQL 프로필, DB 이름, 사용자, Flyway 상태가 의도와 일치한다.
+- [ ] 로그인, 목록 조회, 발주 핵심 흐름의 smoke test가 성공한다.
+- [ ] stdout/stderr 로그에 반복 예외와 비밀값 노출이 없다.
+- [ ] 직전 정상 릴리스와 DB 백업 위치를 알고 실제 롤백 명령을 설명할 수 있다.
+- [ ] 격리된 DB에서 최근 백업의 복구 시험을 완료했다.
+- [ ] 재로그인 또는 재부팅 이후 LaunchAgent 동작 조건을 확인했다.
+
+운영 실습 기록:
+
+| 항목 | 내 기록 |
+|---|---|
+| 배포 commit / release ID | ____ |
+| JAR SHA-256 (`shasum -a 256`) | ____ |
+| 실행 Java / 빌드 도구 버전 | ____ |
+| 활성 profile / DB endpoint | ____ |
+| smoke test 결과 | ____ |
+| 직전 정상 release | ____ |
+| DB backup / 복구 확인 | ____ |
+| 발견한 장애와 해결 근거 | ____ |
+
+공식 참고 자료:
+
+- https://docs.brew.sh/Installation
+- https://formulae.brew.sh/formula/openjdk@21
+- https://formulae.brew.sh/formula/maven
+- https://formulae.brew.sh/formula/mysql-client@8.0
+- https://docs.spring.io/spring-boot/3.5/system-requirements.html
+- https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html
+- https://docs.docker.com/reference/cli/docker/compose/up/
+- https://dev.mysql.com/doc/refman/8.0/en/using-mysqldump.html

@@ -58,7 +58,8 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 | 구분 | 기술 |
 |---|---|
 | Language | Java 17 |
-| Framework | Spring Boot 3.5.14 |
+| Framework | Spring Boot 4.1.1 / Spring Framework 7.0.x |
+| JSON | Jackson 3 (`tools.jackson`) |
 | ORM | Spring Data JPA (Hibernate) |
 | View | Thymeleaf (순수 프래그먼트, layout-dialect 미사용) |
 | DB | H2 (기본, in-memory) / MySQL + Flyway (프로필) |
@@ -89,8 +90,8 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 
 ### 4.1 요구사항 (로컬 실행 시)
 
-- **JDK 17 이상** (Spring Boot 3.5.14의 최소 요구사항)
-- 저장소에 포함된 Gradle Wrapper 8.5 (`./gradlew`)
+- **JDK 17 이상** (Spring Boot 4.1.1의 최소 요구사항, macOS 배포 워크북은 Java 21 사용)
+- 저장소에 포함된 Gradle Wrapper 9.7.1 (`./gradlew`)
 - Docker로 실행할 경우 위 요구사항 없이 Docker Desktop만 있으면 됩니다.
 
 ### 4.2 빌드 및 테스트
@@ -123,7 +124,7 @@ gradlew.bat bootRun      # Windows
 
 ### 4.4 Docker로 실행 (JDK 설치 불필요)
 
-JDK 17/Gradle이 없어도 됩니다. **Docker Desktop만 실행**되어 있으면 멀티스테이지 Dockerfile이 `gradle:8.5-jdk17` 이미지에서 빌드하고 슬림 JRE 17로 구동합니다.
+JDK 17/Gradle이 없어도 됩니다. **Docker Desktop만 실행**되어 있으면 멀티스테이지 Dockerfile이 `gradle:9.7.1-jdk17-noble` 이미지에서 빌드하고 슬림 JRE 17로 구동합니다.
 
 **(A) H2 in-memory — 가장 간단 (외부 DB 불필요)**
 

@@ -83,6 +83,67 @@ class WorkbookStructureTest {
     }
 
     @Test
+    @DisplayName("코드와 워크북이 최신 안정 빌드 기준을 함께 사용한다")
+    void buildAndWorkbook_useCurrentStableBaseline() throws IOException {
+        String build = Files.readString(Path.of("build.gradle"));
+        String wrapper = Files.readString(
+                Path.of("gradle", "wrapper", "gradle-wrapper.properties"));
+        String workbook = Files.readString(
+                Path.of("practice", "feature-implementation-workbook.md"));
+
+        assertThat(build)
+                .contains("id 'org.springframework.boot' version '4.1.1'")
+                .contains("id 'io.spring.dependency-management' version '1.1.7'")
+                .contains("spring-boot-starter-webmvc")
+                .contains("spring-boot-starter-webmvc-test");
+        assertThat(wrapper).contains("gradle-9.7.1-bin.zip");
+        assertThat(workbook)
+                .contains("Spring Boot 4.1.1")
+                .contains("Gradle Wrapper 9.7.1")
+                .contains("Jackson 3");
+    }
+
+    @Test
+    @DisplayName("기능 워크북이 Spring 상세 흐름과 macOS 배포 운영 절차를 제공한다")
+    void featureWorkbook_coversSpringAndMacDeployment() throws IOException {
+        String workbook = Files.readString(
+                Path.of("practice", "feature-implementation-workbook.md"));
+
+        assertThat(workbook)
+                .contains("Spring Framework 상세 이해")
+                .contains("현재 기준 버전과 호환성 경계")
+                .contains("Spring Boot 4.1.1")
+                .contains("Spring Framework 7.0.x")
+                .contains("Gradle Wrapper 9.7.1")
+                .contains("Spring Boot 4에서 반드시 이해할 변경")
+                .contains("Jackson 3")
+                .contains("spring-boot-starter-webmvc-test")
+                .contains("ApplicationContext")
+                .contains("DispatcherServlet")
+                .contains("self-invocation")
+                .contains("워크북 요구사항을 프로그램으로 만드는 기술")
+                .contains("요구사항을 구현 카드로 바꾸기")
+                .contains("수직 슬라이스")
+                .contains("입력 검증과 비즈니스 검증을 분리하기")
+                .contains("트랜잭션과 동시성을 별도로 설계하기")
+                .contains("인증·인가·소유권을 각각 검증하기")
+                .contains("완료 정의로 끝내기")
+                .contains("폴더 준비 → Homebrew → Java 21 + Maven → JAR 빌드·직접 실행")
+                .contains("launchd LaunchAgent 등록 → 파일 로그 확인 → DB 연결")
+                .contains("업데이트·롤백 → 최종 점검")
+                .contains("./gradlew bootJar")
+                .contains("com.example.scm.plist")
+                .contains("SCM_SEED_ENABLED=true")
+                .contains("SPRING_PROFILES_ACTIVE=mysql")
+                .contains("docker compose up -d --wait db")
+                .contains("./gradlew mysqlSchemaTest")
+                .contains("mysqldump")
+                .contains("scm-system.jar.sha256")
+                .contains("ROLLBACK_RELEASE")
+                .contains("Flyway migration");
+    }
+
+    @Test
     @DisplayName("발주 핵심 정책이 워크북 전반에서 현재 참조 구현과 일치한다")
     void purchaseOrderDecisions_matchReferenceImplementation() throws IOException {
         String decisions = Files.readString(Path.of("practice", "DESIGN_DECISIONS.md"));

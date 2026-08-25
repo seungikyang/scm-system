@@ -6,15 +6,17 @@
 
 ## 0. 빌드와 설정
 
-- `spring-boot-starter-web` 은 Tomcat + Spring MVC + Jackson 을 묶어 REST API 와 Thymeleaf 렌더링을 가능하게 한다.
+- `spring-boot-starter-webmvc` 는 Tomcat + Spring MVC + Jackson 을 묶어 REST API 와 Thymeleaf 렌더링을 가능하게 한다. Boot 4에서 기존 `spring-boot-starter-web`은 이 starter를 권장하는 방향으로 deprecated 되었다.
 - `spring-boot-starter-data-jpa` 는 EntityManager 와 Hibernate, Repository 인터페이스 자동 구현을 제공한다.
 - `spring-boot-starter-validation` 은 `@Valid` 와 Hibernate Validator(jakarta.validation) 를 활성화한다.
 - `h2` 는 인메모리/파일 DB 로, 로컬과 테스트에서 별도 설치 없이 빠르게 띄울 수 있다.
 - `spring-boot-starter-thymeleaf` 는 서버 렌더링용. 화면 요구사항(2.7) 을 위해 사용한다.
 - `spring-boot-starter-security` 는 현재 참조 구현에서 웹 폼 CSRF와 기본 보안 헤더를 담당한다.
-- 참조 구현은 Java 17과 Spring Boot 3.5.14를 사용한다. 학습 시에는 `build.gradle`을 단일 버전 기준으로 삼는다.
+- 참조 구현은 Java 17과 Spring Boot 4.1.1, Spring Framework 7.0.x, Gradle 9.7.1을 사용한다. macOS 운영 워크북은 이 Java 17 대상 JAR를 Java 21로 실행한다. 학습 시에는 `build.gradle`과 Wrapper 설정을 단일 버전 기준으로 삼는다.
 - `ddl-auto: create` 는 시작할 때마다 스키마를 새로 만들기 때문에 로컬 학습용에 가깝다. 운영은 `validate` 또는 `none` 이 안전하다.
-- Spring Boot 3.x 부터 패키지가 `javax.*` → `jakarta.*` 로 바뀌었다. 검증 어노테이션도 `jakarta.validation.constraints` 를 쓴다.
+- Spring Boot 3.x부터 `javax.*` → `jakarta.*` 전환이 시작되었고 Boot 4는 Spring Framework 7/Jakarta EE 11 기준이다. 검증 어노테이션도 `jakarta.validation.constraints`를 쓴다.
+- Spring Boot 4의 기본 JSON 스택은 Jackson 3이다. `ObjectMapper`는 `tools.jackson.databind.ObjectMapper`를 사용하며, 테스트에서 모듈 자동 검색이 필요하면 `JsonMapper.builder().findAndAddModules().build()`를 사용한다.
+- Boot 4는 기술별 main/test starter를 세분화했다. MVC 통합 테스트에는 `spring-boot-starter-webmvc-test`를 명시하고 `AutoConfigureMockMvc`도 `org.springframework.boot.webmvc.test.autoconfigure` 패키지에서 가져온다.
 - H2 console은 `${H2_CONSOLE_ENABLED:false}`처럼 기본 비활성화하고 필요할 때만 켠다. 활성화 상태에서도 인증과 ADMIN 접근 제한이 필요하다.
 
 ## 1. User

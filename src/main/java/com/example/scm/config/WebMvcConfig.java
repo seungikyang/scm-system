@@ -3,7 +3,7 @@ package com.example.scm.config;
 import com.example.scm.common.auth.AdminOnlyInterceptor;
 import com.example.scm.common.auth.CurrentUserArgumentResolver;
 import com.example.scm.common.auth.LoginInterceptor;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

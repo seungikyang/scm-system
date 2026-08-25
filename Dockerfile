@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
 
 # =========================================================================
-# Build stage — JDK 17 + Gradle 8.5 이미지에서 빌드.
+# Build stage — JDK 17 + Gradle 9.7.1 이미지에서 빌드.
 # 로컬에 JDK 17 / Gradle / gradle-wrapper.jar 가 없어도 컨테이너 안에서 빌드된다.
 # =========================================================================
-FROM gradle:8.5-jdk17 AS build
+FROM gradle:9.7.1-jdk17-noble AS build
 WORKDIR /workspace
 
 # 1) 의존성 레이어 캐시: 빌드 스크립트만 먼저 복사해 의존성 워밍업

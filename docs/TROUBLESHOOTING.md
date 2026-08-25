@@ -24,9 +24,13 @@
 ### 문제
 - 초기 저장소는 JDK 17 빌드와 Gradle Wrapper 실행이 검증되지 않은 상태였습니다.
 - Spring Boot 3.2 계열의 오픈소스 지원이 종료되어 관리 의존성의 보안/버그 수정이 더 이상 제공되지 않습니다.
+- Spring Boot 4는 Jackson 3와 모듈화된 starter를 기본으로 사용하므로 버전 번호만 올리면 import와 테스트 의존성이 깨집니다.
 
 ### 해결 / 대응
-- Gradle Wrapper 8.5 전체 파일을 복구하고 Spring Boot를 Java 17 호환 유지보수 계열인 3.5.14로 갱신했습니다.
+- 1차로 Gradle Wrapper 8.5 전체 파일을 복구하고 Spring Boot 3.5.14에서 빌드를 정상화했습니다.
+- 2026-08-25에 최신 안정판인 Spring Boot 4.1.1과 Gradle Wrapper 9.7.1로 다시 갱신했습니다. Java source/target은 Boot 4의 최소 요구사항이자 기존 코드 계약인 17을 유지하고, macOS 배포 워크북에서는 Java 21 런타임을 사용합니다.
+- 웹 starter를 Boot 4 권장 이름인 `spring-boot-starter-webmvc`로 교체하고 MVC 테스트용 `spring-boot-starter-webmvc-test`를 명시했습니다.
+- JSON 코드는 Jackson 3의 `tools.jackson.databind.ObjectMapper`로, 테스트의 모듈 탐색은 `JsonMapper.builder().findAndAddModules()`로 전환했습니다. `AutoConfigureMockMvc`와 보안 자동 설정 import도 Boot 4의 모듈별 패키지로 변경했습니다.
 - 단위 테스트, Spring Context/MockMvc 보안 테스트, H2/JPA 발주 전체 흐름 통합 테스트를 추가하고 실제 빌드를 통과시켰습니다.
 
 ```bash
@@ -35,6 +39,7 @@
 
 ### 배운 점
 - 빌드 환경(JDK 버전, wrapper jar)은 코드만큼이나 인수인계에 중요하다. 제약은 숨기지 말고 README/문서에 명시한다.
+- 메이저 업그레이드는 관리 의존성, package 이동, 직렬화 동작, test starter까지 함께 검증해야 한다. `clean test`뿐 아니라 실행 가능한 JAR의 직접 기동과 HTTP 응답도 완료 조건에 넣는다.
 
 ---
 

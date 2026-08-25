@@ -2,7 +2,7 @@ package com.example.scm.common.auth;
 
 import com.example.scm.common.exception.ErrorCode;
 import com.example.scm.common.response.ErrorResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
