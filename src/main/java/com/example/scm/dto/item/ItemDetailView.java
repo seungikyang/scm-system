@@ -9,6 +9,7 @@ import lombok.Getter;
 
 /**
  * 품목 상세 View DTO. categoryName 은 Service 가 채운다(OSIV off).
+ * 학습 모듈 32에서 ItemListView와 필드 차이를 비교하고 같은 변환 패턴을 확인한다.
  */
 @Getter
 @Builder

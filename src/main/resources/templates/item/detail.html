@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- 학습 모듈 35-4: Model 값 출력과 권한별 수정·단종 버튼 노출을 확인한다. -->
 <head th:replace="~{fragments/layout :: head('품목 상세 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -26,7 +27,7 @@
             <dt>품목명</dt><dd th:text="${item.name}">품목명</dd>
             <dt>카테고리</dt><dd th:text="${item.categoryName} ?: '-'">카테고리명</dd>
             <dt>단위</dt><dd th:text="${item.unit}">EA</dd>
-            <dt>단가</dt><dd th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</dd>
+            <dt>단가</dt><dd th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'COMMA', 2, 'POINT')}">0.00</dd>
             <dt>안전재고</dt><dd th:text="${item.safetyStock}">0</dd>
             <dt>상태</dt>
             <dd><span class="badge" th:classappend="'badge-' + ${item.status}" th:text="${item.status}">ACTIVE</span></dd>

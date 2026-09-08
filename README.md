@@ -62,7 +62,7 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 | JSON | Jackson 3 (`tools.jackson`) |
 | ORM | Spring Data JPA (Hibernate) |
 | View | Thymeleaf (순수 프래그먼트, layout-dialect 미사용) |
-| DB | H2 (기본, in-memory) / MySQL + Flyway (프로필) |
+| DB | H2 (기본, in-memory) / MySQL 8.4 LTS + Flyway (프로필) |
 | 인증/보안 | 세션 + 인터셉터 인가, Spring Security CSRF/보안 헤더, BCrypt |
 | Build | Gradle |
 | Test | JUnit 5 + Mockito |
@@ -90,6 +90,8 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 
 ### 4.1 요구사항 (로컬 실행 시)
 
+> **처음 설치부터 차근차근** 하고 싶다면 [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)를 먼저 여세요.
+
 - **JDK 17 이상** (Spring Boot 4.1.1의 최소 요구사항, macOS 배포 워크북은 Java 21 사용)
 - 저장소에 포함된 Gradle Wrapper 9.7.1 (`./gradlew`)
 - Docker로 실행할 경우 위 요구사항 없이 Docker Desktop만 있으면 됩니다.
@@ -103,6 +105,9 @@ Gradle Wrapper가 포함되어 있어 시스템 Gradle 설치 없이 빌드할 �
 ./gradlew portfolioCheck   # 전체 테스트 + 실행 가능한 bootJar 품질 게이트
 ./gradlew mysqlSchemaTest  # 실행 중인 MySQL에서 Flyway + JPA validate 검증
 ```
+
+기본 테스트에는 H2의 MySQL 호환 모드로 Flyway V1 자동 적용 → JPA 스키마 검증 순서를
+확인하는 테스트도 포함됩니다. 실제 MySQL 고유 동작은 `mysqlSchemaTest`로 별도 확인합니다.
 
 ### 4.3 애플리케이션 실행
 
@@ -248,7 +253,9 @@ com.example.scm
 | 문서 | 내용 |
 |---|---|
 | [`index.html`](index.html) | 40개 모듈 HTML 목차, 검색·필터, 브라우저 진도 관리 |
+| [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) | 처음 시작하는 사람용 설치 → 실행 → 화면 투어 가이드 |
 | [`docs/INDEX.md`](docs/INDEX.md) | 처음 읽는 순서와 문서 동기화 규칙 |
+| [`docs/GLOSSARY.md`](docs/GLOSSARY.md) | SCM 도메인·Spring 용어 사전(구현 기준) |
 | [`docs/LOOP_ENGINEERING.md`](docs/LOOP_ENGINEERING.md) | 학습·기능·문서·포트폴리오 반복 루프와 완료 조건 |
 | [`docs/PORTFOLIO_GUIDE.md`](docs/PORTFOLIO_GUIDE.md) | 3분 데모, 이력서 문장, 면접 질문과 제출 체크리스트 |
 | [`docs/API_SPEC.md`](docs/API_SPEC.md) | REST API 명세(인증/사용자/마스터/발주/재고), 공통 에러 형식, ErrorCode 표 |

@@ -206,7 +206,7 @@
 
 - 목표: 운영 MySQL이 Hibernate의 암묵적 DDL에 의존하지 않게 한다.
 - 실패 조건: `ddl-auto=update`, 변경 이력 부재, H2만 통과하는 스키마.
-- 변경: Flyway 기준 마이그레이션, `ddl-auto=validate`, MySQL 8 CI 서비스와 `mysqlSchemaTest`.
+- 변경: Flyway 기준 마이그레이션, `ddl-auto=validate`, MySQL 8.4 LTS CI 서비스와 `mysqlSchemaTest`.
 - 검증: 마이그레이션 전체 SQL을 H2 MySQL 모드에서 실행했다. 실제 MySQL 적용과 JPA 검증은 CI 전용 테스트가 수행한다.
 - 1분 답변: “Flyway가 변경 이력을, Hibernate validate가 엔티티와 실제 스키마의 현재 일치를 검증하도록 책임을 분리했습니다.”
 

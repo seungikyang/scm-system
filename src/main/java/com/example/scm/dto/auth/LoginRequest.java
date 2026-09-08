@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * 로그인 REST 요청 (PRD 3.7.1).
- */
+/** 로그인 REST API의 JSON 본문을 받는 DTO. 이메일 형식과 필수 입력을 먼저 검증한다. */
 @Getter
 @Setter
 @NoArgsConstructor

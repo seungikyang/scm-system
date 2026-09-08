@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- 학습 모듈 35-5: Item 폼을 이해한 뒤 중첩 List 바인딩과 동적 라인 템플릿을 읽는다. -->
 <head th:replace="~{fragments/layout :: head('발주서 작성 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -81,7 +82,8 @@
                               th:errors="*{lines[__${st.index}__].quantity}"></span>
                     </td>
                     <td>
-                        <input type="number" data-name="unitPrice" min="0" step="1"
+                        <!-- 최초 행과 아래 추가 행 템플릿 모두 소수 둘째 자리까지 허용한다. -->
+                        <input type="number" data-name="unitPrice" min="0" step="0.01"
                                placeholder="미입력 시 표준단가 적용"
                                th:field="*{lines[__${st.index}__].unitPrice}"
                                th:classappend="${#fields.hasErrors('lines[' + st.index + '].unitPrice')} ? 'invalid'">
@@ -119,7 +121,7 @@
                 </select>
             </td>
             <td><input type="number" data-name="quantity" min="1" step="1"></td>
-            <td><input type="number" data-name="unitPrice" min="0" step="1" placeholder="미입력 시 표준단가 적용"></td>
+            <td><input type="number" data-name="unitPrice" min="0" step="0.01" placeholder="미입력 시 표준단가 적용"></td>
             <td><button type="button" class="btn btn-ghost btn-sm po-remove-line">삭제</button></td>
         </tr>
     </template>

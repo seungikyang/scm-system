@@ -6,14 +6,20 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * REST(api) 계층 전용 예외 처리. 공통 ErrorResponse(JSON) 로 변환한다.
+ * 학습 모듈 16에서 BusinessException → Validation 오류 → 동시성 충돌 → 예상하지 못한
+ * 예외 순으로 메서드를 읽는다. Spring은 선언 순서가 아니라 발생한 예외와 가장 가까운
+ * 타입의 매핑을 선택한다.
  */
 @Slf4j
 @RestControllerAdvice(basePackages = "com.example.scm.controller.api")
@@ -36,6 +42,15 @@ public class ApiExceptionHandler {
         }
         return ResponseEntity.status(ErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, message));
+    }
+
+    // JSON 파싱과 URL 타입 변환은 @Valid보다 먼저 실패할 수 있다. 입력 오류로 응답하고,
+    // 원본 예외에 포함된 요청 본문·내부 타입 정보는 클라이언트에 노출하지 않는다.
+    @ExceptionHandler({HttpMessageNotReadableException.class,
+            MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidRequest(Exception e) {
+        return ResponseEntity.status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT));
     }
 
     /**

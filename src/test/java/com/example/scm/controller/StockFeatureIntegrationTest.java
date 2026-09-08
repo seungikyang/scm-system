@@ -18,6 +18,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * 학습 모듈 21의 세 번째 테스트.
+ * Service 통합 흐름과 동시성 검증 다음에 읽고, 사용자가 관찰하는 웹 화면과 JSON API에도
+ * 입고 전 0 재고·부족수량·요약 계산이 동일하게 노출되는지 확인한다.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

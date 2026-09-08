@@ -13,18 +13,22 @@ tmp
 temp
 .omc
 build-report.json
-gradle
+# Wrapper 실행 파일은 필요 없지만 워크북 테스트의 버전 확인 파일은 포함한다.
+gradle/**
+!gradle/wrapper/
+!gradle/wrapper/gradle-wrapper.properties
 gradlew
 gradlew.bat
 
 # SDLC 중간 산출물 — 빌드·테스트에 불필요
 _workspace
 _workspace_prev
+practice/workspace
 
 # 루트 임시 파일 (탐색/진단 스크립트 등) — 컨텍스트에서 제외
 /_*.py
 /_*.txt
-/history.html
+# history.html은 HTML 목차의 링크 검증에 필요하므로 빌드 컨텍스트에 포함한다.
 
 # Claude 하네스 설정
 .claude

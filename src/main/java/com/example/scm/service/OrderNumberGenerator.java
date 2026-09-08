@@ -9,9 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * 발주번호 채번 (OQ-14, datamodel §7). 형식: PO-YYYYMMDD-#### (일자별 4자리 시퀀스, 0001부터).
- * 시퀀스 산출: 당일 최대 번호의 suffix + 1. 중간 번호가 삭제돼도 중복 번호를 반복하지 않는다.
- * 동시성 최종 방어선은 order_number UNIQUE 제약 + Service 의 재채번 재시도 루프.
+ * 사람이 읽기 쉬운 발주번호를 만드는 컴포넌트(채번기).
+ *
+ * <p>학습 모듈 10: PurchaseOrderService의 작성 흐름에서 generate 호출을 먼저 찾은 뒤
+ * 이 파일로 들어온다. 동시 요청 검증은 모듈 21의 통합 테스트에서 다시 확인한다.</p>
+ *
+ * <p>형식은 {@code PO-YYYYMMDD-####}이고 날짜마다 0001부터 시작한다. 당일 저장된 가장 큰
+ * 번호에 1을 더하므로 중간 번호가 비어도 재사용하지 않는다. 동시 요청이 같은 다음 번호를
+ * 계산할 수 있으므로 최종 중복 방지는 DB UNIQUE 제약과 Service의 재시도가 담당한다.</p>
  */
 @Component
 @RequiredArgsConstructor

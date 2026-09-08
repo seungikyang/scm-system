@@ -25,6 +25,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * 거래처 목록·상세·등록·수정 화면을 연결하는 MVC 컨트롤러.
+ * 학습 모듈 25에서 PartnerApiController 다음에 읽어 JSON 응답과 Model/뷰 반환의 차이를
+ * 비교한다.
+ * 폼 오류 때는 입력값을 유지한 채 같은 템플릿을 다시 렌더링하고, 성공 때는 redirect와
+ * flash 메시지를 사용한다. flash 값은 다음 요청에서 한 번 표시된 뒤 사라진다.
+ */
 @Controller
 @RequestMapping("/partners")
 @RequiredArgsConstructor

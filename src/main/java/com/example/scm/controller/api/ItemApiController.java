@@ -27,6 +27,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 품목 CRUD를 JSON으로 제공하는 REST 컨트롤러.
+ *
+ * <p>학습 모듈 18: create → list → detail → update → discontinue 순서로 HTTP 메서드,
+ * DTO, Service 호출, 응답 상태를 한 줄씩 대응시킨다.</p>
+ *
+ * <p>매핑 애너테이션은 HTTP 메서드와 URL을 Java 메서드에 연결한다. 컨트롤러는 요청을
+ * DTO로 받고 응답 상태를 정하며, ADMIN 권한·중복·단종 같은 업무 규칙은 ItemService에
+ * 맡긴다.</p>
+ */
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
@@ -46,6 +56,7 @@ public class ItemApiController {
             @ModelAttribute ItemSearchForm searchForm,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable) {
+        // query string은 searchForm에, page/size/sort는 Pageable에 자동 바인딩된다.
         Page<ItemListView> page = itemService.search(searchForm, pageable);
         return ResponseEntity.ok(PageResponse.of(page));
     }

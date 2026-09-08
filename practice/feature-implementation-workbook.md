@@ -2,15 +2,20 @@
 
 이 문서는 `scm_system_PRD_TRD.md` 의 모든 기능 요구사항을 구현 단위로 다시 쪼개는 학습용 워크북입니다.
 
-기존 `practice/problems.md` 와 `practice/starter/` 가 코드 조각 중심이라면, 이 문서는 **FR ID → 화면/API → Controller → Service → Repository → Entity/DTO → 테스트** 흐름을 직접 채워보게 합니다.
+기존 `practice/problems.md` 와 `practice/starter/` 가 코드 조각 중심이라면, 이 문서는
+요구사항을 구현 카드로 바꾼 뒤 **계약 → Entity/DTO → Repository → Service → Controller
+→ 테스트** 순서로 작은 기능 하나를 완성하게 합니다. 완성한 뒤에는 실제 요청이 흐르는
+**화면/API → Controller → Service → Repository → Entity/DB** 순서로 다시 추적합니다.
+구현 순서와 실행 순서를 섞지 않는 것이 이 워크북의 핵심입니다.
 
 ## 사용 규칙
 
-1. 각 기능의 `개념 빈칸`을 먼저 채운다.
-2. 이어서 `구현 TODO`의 계층별 빈칸을 채운다.
-3. 마지막으로 `테스트 TODO`를 Given/When/Then 으로 한 줄씩 적는다.
-4. 막히면 PRD/TRD 절 번호와 `practice/starter` 파일을 다시 본다.
-5. 공통 계층·검색·페이징 계약은 한 절만 기준으로 삼고, 기능별 절에는 차이점과 증거만 적는다.
+1. [권장 학습 트랙](./README.md#학습-트랙)에서 현재 진행할 모듈을 하나 고른다.
+2. 해당 기능의 `개념 빈칸`과 입력·출력·권한·실패 계약을 먼저 채운다.
+3. `구현 TODO`는 Entity/DTO → Repository → Service → Controller 순서로 연결한다.
+4. `테스트 TODO`를 Given/When/Then으로 적고, 완성 후 요청 실행 순서로 역추적한다.
+5. 막히면 PRD/TRD 절 번호와 `practice/starter` 파일을 다시 본다.
+6. 공통 계층·검색·페이징 계약은 한 절만 기준으로 삼고, 기능별 절에는 차이점과 증거만 적는다.
 
 핵심 구현(사용자·마스터·품목·발주·입고 재고)은 현재 테스트와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 비교합니다. 공지·수주는 현재 `src/`에 없는 확장 설계 과제이므로 요구사항, 상태 표, 실패 테스트를 먼저 작성합니다.
 

@@ -11,6 +11,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * 화이트리스트 외 모든 요청에 세션 LoginUser 를 요구한다.
+ * 학습 모듈 34에서 세션 값의 존재 확인 → API/Web 실패 응답 분기 → false 반환 순으로
+ * preHandle을 읽는다. 다음에는 CurrentUserArgumentResolver로 이동한다.
  * - 미인증 web 요청: /login 으로 redirect
  * - 미인증 api(/api/**) 요청: 401 AUTHENTICATION_REQUIRED (JSON)
  */

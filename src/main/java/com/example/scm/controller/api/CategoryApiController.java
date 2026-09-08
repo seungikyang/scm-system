@@ -21,6 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 카테고리 CRUD를 JSON으로 제공하는 REST 컨트롤러.
+ * 학습 모듈 25에서 CategoryService 다음에 읽고, Partner API와 달리 목록이 Page가 아닌
+ * List인 이유와 실제 삭제를 사용하는 조건을 비교한다.
+ * {@code @RequestBody}는 JSON을 DTO로, {@code @PathVariable}은 URL의 ID를 메서드 인자로
+ * 변환한다. 요청 형식은 여기서 검증하고 권한·중복·삭제 가능 여부는 Service가 판단한다.
+ */
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor

@@ -16,8 +16,13 @@ COPY src ./src
 COPY practice ./practice
 COPY index.html ./index.html
 COPY docs ./docs
-COPY README.md .gitignore ./
-RUN gradle portfolioCheck --no-daemon
+# HTML 목차의 로컬 링크를 검사하는 테스트에 필요한 루트 문서도 함께 제공한다.
+COPY README.md .gitignore history.html scm_system_PRD_TRD.md ./
+# 워크북 테스트가 읽는 버전 계약 파일도 동일한 경로로 제공한다.
+COPY gradle/wrapper/gradle-wrapper.properties ./gradle/wrapper/gradle-wrapper.properties
+# .git이 없는 이미지에서는 테스트와 JAR 빌드를 실행한다.
+# Git 추적 경계 검사는 저장소 루트의 portfolioCheck 및 CI verify 단계에서 수행한다.
+RUN gradle test bootJar --no-daemon
 
 # =========================================================================
 # Runtime stage — 슬림 JRE 17 로 실행.

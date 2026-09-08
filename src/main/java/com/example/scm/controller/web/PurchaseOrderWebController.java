@@ -25,8 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * 발주(사용자 영역) 화면. 뷰: purchaseorder/form, purchaseorder/my-list, purchaseorder/detail.
- * Model 속성/폼/버튼 플래그는 02_contracts §3.1~3.3 계약 그대로.
+ * 일반 사용자의 발주 작성·목록·상세 화면을 연결하는 MVC 컨트롤러.
+ *
+ * <p>학습 모듈 35에서 단순 Item 화면을 이해한 뒤 읽는다. newForm/create와 form.html을
+ * 먼저 연결하고, 그다음 목록 → 상세 → 상태 변경 POST 순으로 이동한다.</p>
+ *
+ * <p>상태 변경 POST가 끝나면 상세 화면으로 redirect해 중복 제출을 막고, 결과 메시지는
+ * 한 번만 유지되는 flash 속성으로 전달한다. 상세 화면의 버튼 노출 여부는 Service가
+ * 계산한 boolean 값만 사용하며, 실제 권한도 Service에서 다시 검사한다.</p>
  */
 @Controller
 @RequestMapping("/purchase-orders")

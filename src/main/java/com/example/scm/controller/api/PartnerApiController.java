@@ -28,6 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 거래처 CRUD를 JSON으로 제공하는 REST 컨트롤러.
+ * 학습 모듈 25에서 PartnerService를 읽은 뒤 create → list → detail → update → deactivate
+ * 순으로 Service 메서드와 일대일 대응시킨다.
+ * 생성은 201, 조회·수정은 200, 본문이 필요 없는 비활성화는 204를 반환한다. 실제 ADMIN
+ * 권한과 업무 규칙은 모든 진입 경로에 공통 적용되도록 PartnerService가 검사한다.
+ */
 @RestController
 @RequestMapping("/api/partners")
 @RequiredArgsConstructor
@@ -69,6 +76,7 @@ public class PartnerApiController {
     @DeleteMapping("/{partnerId}")
     public ResponseEntity<Void> deactivate(@PathVariable Long partnerId,
                                            @CurrentUser LoginUser loginUser) {
+        // URL 의미는 DELETE지만 이력을 위해 DB 행은 지우지 않고 INACTIVE로 바꾼다.
         partnerService.deactivate(partnerId, loginUser);
         return ResponseEntity.noContent().build();
     }

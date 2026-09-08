@@ -11,7 +11,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 /**
- * 거래처 검색 동적 조건. 모든 필터는 선택(null/blank 무시).
+ * 거래처 검색 폼에서 값이 들어온 조건만 WHERE 절에 추가한다.
+ * 문자열은 부분 일치(like), enum은 정확히 일치(equal)시키고 모든 조건을 AND로 묶는다.
+ * 학습 모듈 31에서 ItemSpecs와 구조를 비교하며 반복되는 동적 검색 패턴을 찾는다.
  */
 public final class PartnerSpecs {
 
@@ -38,6 +40,7 @@ public final class PartnerSpecs {
                     predicates.add(cb.equal(root.get("status"), status));
                 }
             }
+            // 아무 필터도 선택하지 않으면 전체 거래처를 반환한다.
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }

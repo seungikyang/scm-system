@@ -48,7 +48,7 @@
             <td><a th:href="@{/purchase-orders/{id}(id=${o.purchaseOrderId})}" th:text="${o.orderNumber}">PO-20260530-0001</a></td>
             <td th:text="${o.partnerName} ?: '-'">공급사</td>
             <td th:text="${o.orderDate}">2026-05-30</td>
-            <td class="num" th:text="${#numbers.formatDecimal(o.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+            <td class="num" th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'COMMA', 2, 'POINT')}">0.00</td>
             <td><span class="badge" th:classappend="'badge-' + ${o.status}" th:text="${o.status}">DRAFT</span></td>
         </tr>
         </tbody>

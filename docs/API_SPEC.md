@@ -62,6 +62,8 @@ SCM 시스템 REST API 명세입니다. **실제 컨트롤러(`controller.api`) 
 |---|---|
 | `BusinessException` | 해당 ErrorCode의 HTTP status + code/message |
 | `MethodArgumentNotValidException` / `BindException` | `400 INVALID_INPUT` (필드 에러 메시지를 `필드: 메시지` 형태로 취합) |
+| `HttpMessageNotReadableException` | `400 INVALID_INPUT` (깨진 JSON, 누락 본문, 필드 타입 오류) |
+| `MethodArgumentTypeMismatchException` / `MissingServletRequestParameterException` | `400 INVALID_INPUT` (경로·검색 조건의 형식 오류 또는 필수 파라미터 누락) |
 | `OptimisticLockingFailureException` | `400 INVALID_STATUS` ("다른 사용자가 먼저 처리했습니다...") — 동시 승인 충돌 |
 | 그 외 `Exception` | `500 INTERNAL_ERROR` |
 
@@ -381,10 +383,10 @@ Request (`PurchaseOrderCreateRequest`) — **`totalAmount`/`lineAmount` 없음**
 | `partnerId` | number(Long) | `@NotNull` — 존재 · `SUPPLIER`/`BOTH` · `ACTIVE` |
 | `orderDate` | string(date) | `@NotNull`, `dueDate`가 있으면 `orderDate ≤ dueDate` |
 | `dueDate` | string(date) | nullable |
-| `lines` | array | `@NotEmpty`(최소 1건) |
+| `lines` | array | `@NotEmpty`(최소 1건), 각 행은 `@NotNull` (`[null]` 불가) |
 | `lines[].itemId` | number(Long) | `@NotNull` — 존재 · `ACTIVE`(단종 불가) |
 | `lines[].quantity` | number(int) | `@NotNull`, `@Positive`(> 0) |
-| `lines[].unitPrice` | number | nullable, ≥ 0. **null이면 품목 표준단가 적용** |
+| `lines[].unitPrice` | number | nullable, ≥ 0, 정수 13자리·소수 2자리 이하. **null이면 품목 표준단가 적용** |
 
 서버 처리:
 - `lineAmount = quantity × unitPrice`, `totalAmount = Σ lineAmount`를 **서버에서 재계산**해 저장(클라이언트 값 미수신).

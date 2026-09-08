@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 품목 수정 REST 요청 (PRD 3.7.4). 품목코드는 변경 불가(unique 키).
+ * 품목 수정 REST API의 JSON 본문을 받는 DTO.
+ * 등록 후 식별 기준으로 쓰이는 품목코드는 변경할 수 없으므로 이 DTO에 포함하지 않는다.
  */
 @Getter
 @Setter

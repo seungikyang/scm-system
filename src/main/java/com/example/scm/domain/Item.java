@@ -16,6 +16,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 품목 엔티티.
+ *
+ * <p>학습 모듈 03: 모듈 02의 Category를 이해한 뒤 ItemStatus → 이 클래스 순서로 읽는다.
+ * 등록·검색 Service는 모듈 08~09, 수정·단종 흐름은 모듈 28에서 이어진다.</p>
+ *
+ * 초보자 포인트:
+ * - unitPrice 는 반드시 BigDecimal. double 은 부동소수점 오차(0.1 + 0.2 != 0.3) 때문에
+ *   금액 계산에 쓰면 안 된다. precision/scale 로 DB 소수 자릿수도 고정한다.
+ * - 삭제(DELETE) 대신 DISCONTINUED 단종 상태로 전환한다. 과거 발주 라인이 이 품목을
+ *   계속 참조하므로 데이터는 남기고 "새 발주에 못 쓰게"만 막는다.
+ * - safetyStock(안전재고): 현재고가 이 값 이하면 재고 화면에서 부족으로 경고한다.
+ */
 @Entity
 @Getter
 @Table(name = "items")

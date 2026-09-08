@@ -4,9 +4,7 @@ import com.example.scm.domain.Partner;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * 공급사 셀렉트 옵션 (작성 폼 / 관리자 목록 거래처 필터). (02_contracts §3.1 partners, §3.4 partners)
- */
+/** 발주 작성 폼과 관리자 필터의 공급사 선택 상자에 필요한 최소 필드 DTO. */
 @Getter
 @Builder
 public class PartnerOption {

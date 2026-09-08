@@ -135,6 +135,16 @@ class PurchaseOrderServiceTest {
         }
 
         @Test
+        @DisplayName("null 라인은 서비스 직접 호출에서도 저장 전에 거부한다")
+        void create_nullLine() {
+            PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null);
+            req.setLines(java.util.Collections.singletonList(null));
+
+            assertCode(() -> service.create(req, writer), ErrorCode.INVALID_INPUT);
+            verify(purchaseOrderPersistenceService, never()).saveAndFlush(any());
+        }
+
+        @Test
         @DisplayName("AC-003 CUSTOMER 거래처 → PARTNER_TYPE_MISMATCH")
         void create_customerPartner() {
             given(partnerRepository.findById(1L))

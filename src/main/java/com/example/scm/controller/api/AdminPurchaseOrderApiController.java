@@ -24,7 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 발주(관리자/매니저 영역) REST API — ADMIN+MANAGER. (02_contracts §1.6~1.9, OQ-6)
+ * 관리자와 매니저가 발주를 결재하고 입고 처리하는 REST API.
+ * 학습 모듈 19에서 사용자용 PurchaseOrderApiController 다음에 읽으며, URL 분리와 실제
+ * Service 권한 검사가 각각 어떤 역할을 하는지 비교한다.
+ * URL에 admin이 있어도 그것만으로 보안이 생기지는 않으므로, 각 Service 메서드가
+ * 실제 로그인 사용자의 역할을 ADMIN 또는 MANAGER로 제한한다.
  */
 @RestController
 @RequestMapping("/api/admin/purchase-orders")
@@ -33,7 +37,7 @@ public class AdminPurchaseOrderApiController {
 
     private final PurchaseOrderService purchaseOrderService;
 
-    /** 1.6 관리자 발주 목록 — GET /api/admin/purchase-orders (200) */
+    /** 전체 발주를 상태와 거래처 조건으로 필터링해 조회한다. */
     @GetMapping
     public ResponseEntity<PageResponse<PurchaseOrderSummaryResponse>> list(
             @RequestParam(required = false) PurchaseOrderStatus status,
@@ -46,14 +50,14 @@ public class AdminPurchaseOrderApiController {
         return ResponseEntity.ok(PageResponse.of(page));
     }
 
-    /** 1.7 발주 승인 — PATCH /api/admin/purchase-orders/{poId}/approve (200) */
+    /** 결재 요청 상태인 발주를 승인한다. */
     @PatchMapping("/{poId}/approve")
     public ResponseEntity<PurchaseOrderStatusResponse> approve(@PathVariable Long poId,
                                                                @CurrentUser LoginUser loginUser) {
         return ResponseEntity.ok(purchaseOrderService.approve(poId, loginUser));
     }
 
-    /** 1.8 발주 반려 — PATCH /api/admin/purchase-orders/{poId}/reject (200) */
+    /** 결재 요청 상태인 발주를 사유와 함께 반려한다. */
     @PatchMapping("/{poId}/reject")
     public ResponseEntity<PurchaseOrderStatusResponse> reject(
             @PathVariable Long poId,
@@ -63,7 +67,7 @@ public class AdminPurchaseOrderApiController {
                 purchaseOrderService.reject(poId, request.getRejectReason(), loginUser));
     }
 
-    /** 1.9 입고 처리 — PATCH /api/admin/purchase-orders/{poId}/receive (200) */
+    /** 승인된 발주를 입고 처리하며, Service에서 재고도 함께 증가시킨다. */
     @PatchMapping("/{poId}/receive")
     public ResponseEntity<PurchaseOrderStatusResponse> receive(@PathVariable Long poId,
                                                                @CurrentUser LoginUser loginUser) {

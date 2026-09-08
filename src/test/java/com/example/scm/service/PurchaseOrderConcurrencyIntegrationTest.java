@@ -27,6 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+/**
+ * 학습 모듈 21의 두 번째 테스트.
+ * 정상 흐름 테스트 뒤에 읽으며, 두 작업을 같은 순간에 출발시켜 발주번호 UNIQUE 재시도와
+ * 최초 재고 행 잠금이 실제 경합 상황에서도 데이터를 지키는지 확인한다.
+ */
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("발주 동시성 통합 테스트")

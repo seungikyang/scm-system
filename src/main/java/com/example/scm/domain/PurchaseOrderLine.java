@@ -18,9 +18,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 발주 라인. (02_architect_datamodel §2.2)
- * 헤더에 종속(aggregate child) — 단독 저장 금지, 항상 헤더 cascade 로 저장.
- * lineAmount 는 서버 계산(quantity × unitPrice, OQ-1).
+ * 발주에 포함된 품목 한 줄을 나타내는 자식 엔티티.
+ *
+ * <p>학습 모듈 04: PurchaseOrderStatus 다음, PurchaseOrder 헤더 전에 읽는다.</p>
+ *
+ * <p>예를 들어 품목 A 3개와 품목 B 2개를 주문하면 라인이 두 개 생긴다. 라인은 단독으로
+ * 저장하지 않고 항상 {@link PurchaseOrder}에 추가해 함께 저장한다. 금액 조작을 막기 위해
+ * {@code lineAmount}는 클라이언트에서 받지 않고 서버가 수량 × 단가로 계산한다.</p>
  */
 @Entity
 @Getter
@@ -51,7 +55,7 @@ public class PurchaseOrderLine {
     private BigDecimal unitPrice;
 
     @Column(name = "line_amount", nullable = false, precision = 15, scale = 2)
-    private BigDecimal lineAmount;                    // 서버 계산 (OQ-1)
+    private BigDecimal lineAmount;                    // quantity × unitPrice 서버 계산값
 
     @Builder
     public PurchaseOrderLine(Long itemId, Integer quantity, BigDecimal unitPrice) {
@@ -61,7 +65,7 @@ public class PurchaseOrderLine {
         this.lineAmount = calcLineAmount(quantity, unitPrice);
     }
 
-    /** 헤더 연관 설정 (양방향 동기화 — PurchaseOrder.addLine 에서 호출). */
+    /** 헤더와 라인을 양쪽에서 일치시키기 위해 PurchaseOrder.addLine에서만 호출한다. */
     void setPurchaseOrder(PurchaseOrder purchaseOrder) {
         this.purchaseOrder = purchaseOrder;
     }

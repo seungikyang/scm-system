@@ -22,9 +22,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.flywaydb:flyway-core'
+    // Flyway 라이브러리뿐 아니라 시작 시 migrate()를 호출하는 Boot 자동 설정도 포함한다.
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
 
     runtimeOnly 'com.h2database:h2'
+    // Boot 4에서는 H2 드라이버와 콘솔 자동 설정이 분리되어 별도 모듈이 필요하다.
+    runtimeOnly 'org.springframework.boot:spring-boot-h2console'
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'org.flywaydb:flyway-mysql'
 

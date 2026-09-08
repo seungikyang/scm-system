@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * 카테고리 등록 REST 요청 (PRD 3.7.3).
- */
+/** 카테고리 등록 REST API의 JSON 본문과 입력 검증 규칙을 담는 DTO. */
 @Getter
 @Setter
 @NoArgsConstructor

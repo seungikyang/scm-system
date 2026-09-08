@@ -8,11 +8,13 @@
 
 | 순서 | 문서 | 목적 |
 |---|---|---|
-| 1 | [`../index.html`](../index.html) | 전체 학습 목차, 모듈 검색, 진도 관리 |
-| 2 | [`../README.md`](../README.md) | 구현 범위와 실행 방법 |
-| 3 | [`../practice/README.md`](../practice/README.md) | 워크북 사용법과 학습 트랙 |
-| 4 | [`LOOP_ENGINEERING.md`](./LOOP_ENGINEERING.md) | 반복 학습·개선 운영 규칙 |
-| 5 | [`PORTFOLIO_GUIDE.md`](./PORTFOLIO_GUIDE.md) | 데모, 이력서, 면접 준비 |
+| 1 | [`./GETTING_STARTED.md`](./GETTING_STARTED.md) | 설치 → 실행 → 화면 투어까지 첫날 가이드 |
+| 2 | [`../index.html`](../index.html) | 전체 학습 목차, 모듈 검색, 진도 관리 |
+| 3 | [`../README.md`](../README.md) | 구현 범위와 실행 방법 |
+| 4 | [`../practice/README.md`](../practice/README.md) | 워크북 사용법과 학습 트랙 |
+| 5 | [`LOOP_ENGINEERING.md`](./LOOP_ENGINEERING.md) | 반복 학습·개선 운영 규칙 |
+| 6 | [`PORTFOLIO_GUIDE.md`](./PORTFOLIO_GUIDE.md) | 데모, 이력서, 면접 준비 |
+| - | [`GLOSSARY.md`](./GLOSSARY.md) | 용어가 낯설 때 찾는 치트시트(상시 참조) |
 
 ## 2. 구현 계약
 
@@ -22,12 +24,14 @@
 | [`ERD.md`](./ERD.md) | 현재 엔티티, Flyway 테이블과 스키마 변경 규칙 | Entity/Repository/DB 변경 시 |
 | [`STATE_MACHINE.md`](./STATE_MACHINE.md) | 발주 상태 전이와 권한 | 상태·권한 규칙 변경 시 |
 | [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) | 장애, 동시성, 구현 차이 | 원인과 해결을 확인했을 때 |
+| [`HEALTH_CHECK.md`](./HEALTH_CHECK.md) | 동작 점검, 오류 수정, 검증 결과와 한계 | 실행·회귀 검증을 완료했을 때 |
 | [`../practice/DESIGN_DECISIONS.md`](../practice/DESIGN_DECISIONS.md) | 참조 구현의 설계 선택 | 대안 중 정책을 확정할 때 |
 
 ## 3. 학습 자료
 
 | 문서 | 사용법 |
 |---|---|
+| [`./GLOSSARY.md`](./GLOSSARY.md) | 도메인·Spring 용어가 낯설 때 먼저 확인한다. |
 | [`../practice/problems.md`](../practice/problems.md) | 모듈별 문제와 학습 목표를 먼저 읽는다. |
 | [`../practice/feature-implementation-workbook.md`](../practice/feature-implementation-workbook.md) | 요구사항을 계층·상태·테스트로 분해한다. |
 | [`../practice/answers.md`](../practice/answers.md) | 구현 후 판단 방향을 비교한다. 정답 코드가 아니다. |

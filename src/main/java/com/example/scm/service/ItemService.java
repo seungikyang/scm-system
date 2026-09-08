@@ -25,6 +25,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 품목 조회와 등록·수정·단종 규칙을 조정하는 서비스 계층.
+ *
+ * <p>컨트롤러는 HTTP 요청/화면 처리만 맡고, 권한 검사와 중복 검사는 이곳에서 수행한다.
+ * 조회 메서드의 {@code readOnly = true}는 읽기 전용 트랜잭션이라는 뜻이며, 변경 메서드는
+ * 트랜잭션 안에서 엔티티 값을 바꾸면 JPA 변경 감지가 UPDATE SQL을 실행한다.</p>
+ *
+ * <p>비슷한 create/update 메서드가 두 개인 이유는 웹 폼 DTO와 REST 요청 DTO가 다르기
+ * 때문이다. 어떤 진입 경로든 동일한 권한·검증 규칙을 거친다.</p>
+ *
+ * <p>학습 순서: 모듈 08의 등록(create) → 09의 검색(search) → 28의 상세·수정·단종
+ * 순서로 구역을 배치했다. 한 번에 파일 전체를 읽지 말고 현재 모듈 구역까지만 읽는다.</p>
+ */
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -32,29 +45,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
 
-    // ===== 조회 =====
-
-    @Transactional(readOnly = true)
-    public Page<ItemListView> search(ItemSearchForm form, Pageable pageable) {
-        Page<Item> page = itemRepository.findAll(ItemSpecs.search(form), pageable);
-        Map<Long, String> categoryNames = categoryRepository.findAll().stream()
-                .collect(Collectors.toMap(Category::getId, Category::getName));
-        return page.map(item ->
-                ItemListView.from(item, categoryNames.get(item.getCategoryId())));
-    }
-
-    @Transactional(readOnly = true)
-    public ItemDetailView getDetail(Long itemId) {
-        Item item = getEntity(itemId);
-        return ItemDetailView.from(item, resolveCategoryName(item.getCategoryId()));
-    }
-
-    @Transactional(readOnly = true)
-    public ItemForm getForm(Long itemId) {
-        return ItemForm.from(getEntity(itemId));
-    }
-
-    // ===== 변경 (ADMIN only) =====
+    // ===== 모듈 08: 품목 등록 (ADMIN only) =====
 
     @Transactional
     public Long create(ItemForm form, LoginUser loginUser) {
@@ -92,11 +83,37 @@ public class ItemService {
         return itemRepository.save(item).getId();
     }
 
+    // ===== 모듈 09: 품목 검색과 페이징 =====
+
+    @Transactional(readOnly = true)
+    public Page<ItemListView> search(ItemSearchForm form, Pageable pageable) {
+        Page<Item> page = itemRepository.findAll(ItemSpecs.search(form), pageable);
+        // 엔티티에는 categoryId만 있으므로 화면에 보여 줄 이름을 Service에서 합친다.
+        Map<Long, String> categoryNames = categoryRepository.findAll().stream()
+                .collect(Collectors.toMap(Category::getId, Category::getName));
+        return page.map(item ->
+                ItemListView.from(item, categoryNames.get(item.getCategoryId())));
+    }
+
+    // ===== 모듈 28: 품목 상세, 수정, 단종 =====
+
+    @Transactional(readOnly = true)
+    public ItemDetailView getDetail(Long itemId) {
+        Item item = getEntity(itemId);
+        return ItemDetailView.from(item, resolveCategoryName(item.getCategoryId()));
+    }
+
+    @Transactional(readOnly = true)
+    public ItemForm getForm(Long itemId) {
+        return ItemForm.from(getEntity(itemId));
+    }
+
     @Transactional
     public void update(Long itemId, ItemForm form, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         validateCategoryExists(form.getCategoryId());
         Item item = getEntity(itemId);
+        // save()를 다시 호출하지 않아도 트랜잭션 종료 시 변경 감지가 동작한다.
         item.update(form.getName(), form.getCategoryId(), form.getUnit(),
                 form.getUnitPrice(), form.getSafetyStock());
     }
@@ -114,7 +131,15 @@ public class ItemService {
     public void discontinue(Long itemId, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         Item item = getEntity(itemId);
+        // 과거 발주 이력을 보존하기 위해 DELETE 대신 상태만 바꾼다.
         item.discontinue();
+    }
+
+    // ===== 대시보드 집계 =====
+
+    @Transactional(readOnly = true)
+    public long countAll() {
+        return itemRepository.count();
     }
 
     // ===== 내부 헬퍼 =====
@@ -142,8 +167,4 @@ public class ItemService {
                 .orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public long countAll() {
-        return itemRepository.count();
-    }
 }

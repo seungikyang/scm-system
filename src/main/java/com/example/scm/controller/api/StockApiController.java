@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 현재고 목록과 요약 수치를 제공하는 읽기 전용 REST 컨트롤러.
+ * 검색 조건과 페이징 값을 받아 Service 결과를 안정적인 {@link PageResponse} JSON 구조로
+ * 감싸 반환한다.
+ */
 @RestController
 @RequestMapping("/api/stocks")
 @RequiredArgsConstructor

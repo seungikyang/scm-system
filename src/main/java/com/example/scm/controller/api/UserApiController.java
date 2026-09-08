@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 현재 로그인 사용자의 정보와 비밀번호를 다루는 REST 컨트롤러.
+ * {@code @CurrentUser} 값은 세션에서 자동 주입되며, 요청 본문의 Bean Validation 오류는
+ * ApiExceptionHandler가 공통 오류 JSON으로 바꾼다.
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
