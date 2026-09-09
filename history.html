@@ -49,8 +49,12 @@ background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%);border-
 .sec-h.result{color:#0d9488;background:#ccfbf1}
 footer{margin-top:50px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}
 footer a{color:var(--indigo-d);text-decoration:none;font-weight:600}
+.history-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;padding:12px 14px;background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.history-nav a{padding:5px 9px;color:var(--indigo-d);text-decoration:none;font-size:13px;font-weight:700;border-radius:8px}
+.history-nav a:hover,.history-nav a:focus-visible{background:#e0e7ff}
 @media(max-width:620px){.wrap{padding:28px 12px 60px}.hero{padding:30px 22px}.hero h1{font-size:24px}.rail{flex-basis:46px}.body{padding:16px 16px 18px}.timeline::before,.day-dot{display:none}}
 </style></head><body><div class="wrap">
+<nav class="history-nav" aria-label="워크북 문서 이동"><a href="index.html">← HTML 학습 목차</a><a href="README.md">실행 README</a><a href="docs/LOOP_ENGINEERING.md">루프 엔지니어링</a><a href="docs/PORTFOLIO_GUIDE.md">취업 준비</a></nav>
 <header class="hero"><div class="kicker">SCM Portfolio · Implementation History</div>
 <h1>공급망 관리(SCM) 시스템<br>구현 히스토리</h1>
 <p>SI 취업 포트폴리오를 위해 AI와 함께 SCM 시스템을 기획·설계하고, 직접 채우는 학습 워크북과 개발 하네스를 만들며 나눈 모든 지시를 시간순으로 정리했습니다. 지시 원문은 그대로 남기고, 그 의도를 이해한 정도와 작업 과정·성과를 함께 기록합니다.</p>
@@ -454,6 +458,64 @@ footer a{color:var(--indigo-d);text-decoration:none;font-weight:600}
             <div class="sec"><span class="sec-h work">작업 과정</span><p>기존 문서를 보존한 채 본 5일차 구현 타임라인(#25–34)을 동일 구조로 추가. 개별 메시지 타임스탬프가 세션에 없어 시각은 로그 앵커 기반 추정값임을 명시.</p></div>
             <div class="sec"><span class="sec-h result">성과 · 결과</span><p>셋업 + 실제 구현 전 과정을 담은 확장된 단일 history.html 완성.</p></div>
           </div></div></article>
+      <div class="day"><div class="day-dot"></div><div class="day-head">
+        <span class="day-date">2026-07-18</span><h2 class="day-title">6일차 · 취업 워크북 루프 엔지니어링</h2>
+        <p class="day-sub">HTML 학습 목차를 새 진입점으로 만들고, 문서·코드·테스트·운영 DB를 같은 완료 기준으로 반복 개선한 날. 개별 사용자 메시지 시각은 대화 메타데이터에 없어 날짜만 확정해 기록합니다.</p></div></div>
+      <article class="card"><div class="rail"><span class="rail-num">35</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;시각 미제공</span>
+            <span class="chip" style="color:#4f46e5;background:#e0e7ff">목표·운영 규칙 확정</span></div>
+          <h3 class="card-title">취업 워크북 목적 + HTML 목차 + 루프 문서</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>프로그램의 목적은 취업을 위한 워크북입니다. 그리고 프로그램 공부를 쉽게하기 위해 html 을 사용하여, 목차를 추가하고 싶습니다. 현제 계획에 앞에 작성한 2가지 내용 포함해서 루프 엔지니어에 대한 계획을 성정하고 루프 엔지니어 가능한 문서를 만들고, 루프 엔지니어 문서를 기반으로 루프를 통해 기존 문서 정리및 수정 그리고 완벽한  프로그램을 만들어줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>① 취업을 위한 실행·설명 가능한 워크북, ② HTML로 쉽게 찾는 목차를 최상위 목표로 두고, 코드·테스트·문서를 반복 검증하는 루프 운영 체계를 실제 저장소에 적용.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>현재 구조와 40개 모듈을 기준선으로 조사하고, 8단계 루프·Definition of Done·문서 지도를 작성. 검색·트랙 필터·localStorage 진도 관리가 있는 index.html과 포트폴리오 가이드를 만들고 README·practice·설계 문서의 링크와 표현을 동기화.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>취업 학습 진입점과 반복 개선 규칙을 하나로 연결. 인증·사용자·거래처·품목 테스트와 CI/portfolioCheck를 보강하고 데스크톱·모바일 HTML UI, 40개 모듈과 로컬 링크를 검증.</p></div>
+          </div></div></article>
+      <article class="card"><div class="rail"><span class="rail-num">36</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;~22:40 KST</span>
+            <span class="chip" style="color:#16a34a;background:#dcfce7">4개 루프 실행·검증</span></div>
+          <h3 class="card-title">목표까지 루프 지속 — DB·동시성·재고 수직 슬라이스</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>목표에 도달하때까지 루프를 진행해줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>계획만 보고하지 않고 기준선 실행→실패 원인 분리→MySQL 스키마→동시성→사용자 기능→문서 동기화를 각 루프의 테스트가 통과할 때까지 계속 진행.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>Gradle 소켓 제한을 JUnit Platform 직접 실행으로 우회해 기준선을 고정. Flyway 기준 스키마와 MySQL CI를 추가하고, 최대 번호 채번·UNIQUE 재시도·품목 잠금을 두 스레드 테스트로 검증. Item LEFT JOIN Stock 기반의 재고 Web/REST/대시보드 기능과 안전재고 필터를 구현.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>기본 테스트 93/93 통과, MySQL 전용 계약 1개, 총 테스트 계약 94개. 40개 모듈·99개 링크 누락 0, 마이그레이션 SQL 실행·CI YAML·소스 컴파일·문서 동기화 통과. bootJar와 실제 MySQL 최종 실행은 샌드박스 밖 CI 품질 게이트로 고정.</p></div>
+          </div></div></article>
+      <article class="card"><div class="rail"><span class="rail-num">37</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;22:50:30 KST</span>
+            <span class="chip" style="color:#b45309;background:#fef3c7">호스트 인증 완료 · 실행 환경 차단</span></div>
+          <h3 class="card-title">최종 변경사항 GitHub 게시 요청</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>git push학고, history.html 업데이트 해줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>이번 루프의 코드·테스트·문서 변경을 history.html에 이어 기록하고, 로컬 도구 산출물을 제외한 의도적인 커밋을 GitHub 원격에 게시.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>현재 main과 origin/main의 기준점, 전체 변경 범위, 원격 주소와 GitHub CLI 인증을 사전 점검. .omc/와 build-report.json은 로컬 도구 산출물로 판단해 .gitignore에 추가. 호스트의 seungikyang 계정 재인증 성공을 확인했으나, 격리된 실행 환경에서는 Keychain 인증과 api.github.com 네트워크에 접근할 수 없었고 Terminal·iTerm2·Ghostty 자동 조작도 안전 정책상 차단됨.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>history.html 업데이트와 게시 대상 정리 완료. 부분 커밋이나 허위 push 상태를 만들지 않았으며, 인증된 호스트 터미널 또는 네트워크가 갱신된 실행 환경에서 commit·push·Draft PR을 이어갈 수 있는 상태.</p></div>
+          </div></div></article>
+      <article class="card"><div class="rail"><span class="rail-num">38</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;22:55 KST</span>
+            <span class="chip" style="color:#b45309;background:#fef3c7">루트 경계 적용 · 게시 환경 차단</span></div>
+          <h3 class="card-title">임시 파일 감사와 저장소 루트 작업 강제</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>추가로 임시 폴더의 파일을 확인하고, git push 진행해줘. 그리고임시 폴더가 아닌  항상 루트에서 프로그램 변경하도록 강제해줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>임시 영역에 정식 소스가 남아 있는지 확인하고 게시 대상에서 분리한 뒤, 이후 모든 프로그램 변경이 Git 저장소 루트의 표준 경로에서만 이뤄지도록 행동 규칙과 자동 검사를 함께 적용.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>.omc·.playwright-cli·output·build·.gradle·build-report.json의 파일 종류와 Git 무시 상태를 감사. AGENTS.md와 CLAUDE.md에 루트 규칙을 명시하고, 경계 검증 스크립트·버전 관리 pre-commit hook·Gradle 품질 게이트·GitHub Actions 검사를 추가. tmp/temp도 Git·Docker 컨텍스트에서 제외.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>임시 영역에는 세션 상태·브라우저 검증 자료·빌드 캐시만 있고 정식 소스는 없음을 확인했으며 경계 검사는 통과. 현재 격리 환경은 .git 쓰기, GitHub DNS, 재인증 Keychain 접근이 차단되어 commit/push는 수행되지 않았고, 인증된 호스트에서 hook 활성화 후 게시할 수 있는 상태.</p></div>
+          </div></div></article>
+      <article class="card"><div class="rail"><span class="rail-num">39</span></div>
+        <div class="body"><div class="meta">
+            <span class="time">🕐 2026-07-18 &nbsp;22:59 KST</span>
+            <span class="chip" style="color:#16a34a;background:#dcfce7">임시 산출물 정리 완료</span></div>
+          <h3 class="card-title">감사된 임시 파일 삭제</h3>
+          <blockquote class="instr"><span class="q-label">나의 지시 (원문)</span>추가로 임시 폴더의 파일은 삭제해줘</blockquote>
+          <div class="sections">
+            <div class="sec"><span class="sec-h understand">이해</span><p>앞서 확인한 저장소 내부의 재생성 가능한 세션 상태·브라우저 로그·빌드 캐시·검증 이미지를 정식 소스와 분리해 삭제.</p></div>
+            <div class="sec"><span class="sec-h work">작업 과정</span><p>삭제 직전 Git 비추적·무시 상태를 다시 확인하고 .omc·.playwright-cli·.gradle·build·bin·output·build-report.json만 경로별로 제거. 개인 풀이 46개가 있는 practice/workspace는 사용자 데이터 보호를 위해 보존.</p></div>
+            <div class="sec"><span class="sec-h result">성과 · 결과</span><p>총 403개의 재생성 가능한 파일과 관련 빈 폴더 삭제 완료. Git 추적 프로그램 파일은 삭제되지 않았으며, 개인 워크북 풀이 공간은 그대로 유지.</p></div>
+          </div></div></article>
 </div>
-<footer>자동 생성 · 2026-05-30<br>GitHub: <a href="https://github.com/seungikyang/scm-system">github.com/seungikyang/scm-system</a></footer>
+<footer>업데이트 · 2026-07-18 22:59 KST<br>GitHub: <a href="https://github.com/seungikyang/scm-system">github.com/seungikyang/scm-system</a></footer>
 </div></body></html>

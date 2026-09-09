@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * 발주 반려 요청 (REST Body + Web 반려 모달 폼). (02_contracts §1.8, §3.4 rejectForm)
- */
+/** REST JSON 본문과 Web 반려 모달이 함께 사용하는 반려 사유 입력 DTO. */
 @Getter
 @Setter
 @NoArgsConstructor

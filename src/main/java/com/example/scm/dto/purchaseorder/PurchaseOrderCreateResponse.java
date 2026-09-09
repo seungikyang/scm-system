@@ -6,10 +6,7 @@ import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * 발주서 작성 결과. (02_contracts §1.1 Response 201)
- * { purchaseOrderId, orderNumber, status, totalAmount }
- */
+/** 발주서 작성 후 생성된 ID·발주번호·초기 상태·서버 계산 총액을 반환하는 DTO. */
 @Getter
 @Builder
 public class PurchaseOrderCreateResponse {

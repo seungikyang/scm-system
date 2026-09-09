@@ -1,6 +1,10 @@
 # ERD (엔티티 관계도)
 
+> [HTML 학습 목차](../index.html) · [문서 지도](./INDEX.md) · [루프 엔지니어링](./LOOP_ENGINEERING.md) · [실행 README](../README.md)
+
 SCM 시스템의 엔티티/테이블 구조입니다. **실제 도메인 클래스(`domain/**`)와 JPA 매핑을 기준**으로 작성했습니다.
+
+MySQL 스키마 변경의 진실원은 [`V1__baseline_schema.sql`](../src/main/resources/db/migration/mysql/V1__baseline_schema.sql)이며, Flyway가 적용한 뒤 Hibernate `ddl-auto=validate`가 엔티티 매핑을 검증합니다. 기본 H2 학습 모드는 기존처럼 임시 스키마를 생성합니다.
 
 - Java 필드는 camelCase, DB 컬럼/테이블은 snake_case입니다.
 - enum은 `@Enumerated(EnumType.STRING)`로 문자열 저장됩니다.
@@ -201,7 +205,9 @@ erDiagram
 | version | BIGINT | NOT NULL | 낙관적 락(`@Version`) |
 | created_at / updated_at | DATETIME | NOT NULL / NULL | 감사 |
 
-> 입고 처리 시 라인별로 `findByItemId` → 없으면 `quantity=0`으로 생성 후 `increase(quantity)`. `item_id` UNIQUE 제약이 동시 최초 생성의 최종 방어선입니다.
+> 입고 처리 시 관련 `Item` 행을 ID 순서로 비관적 잠금한 뒤, 라인별로 `findByItemId` → 없으면 `quantity=0`으로 생성 후 `increase(quantity)`. 품목 잠금으로 동시 최초 생성을 직렬화하고 `item_id` UNIQUE 제약을 최종 방어선으로 둡니다.
+>
+> 재고 조회는 `Item LEFT JOIN Stock`을 사용합니다. 따라서 아직 입고 이력이 없어 `stocks` 행이 없는 운영 품목도 현재고 0으로 표시되며, `quantity <= safety_stock`이면 부족 품목으로 분류됩니다.
 
 ---
 
@@ -238,3 +244,12 @@ erDiagram
 | Item | 읽기 | `status ≠ DISCONTINUED`, 표준단가(`unitPrice`) 기본값 출처 | `PurchaseOrderService.resolveLine` |
 | User | 읽기 | `writerId`(작성자), `approverId`(ADMIN/MANAGER 처리자) | 세션/권한 |
 | Item(via Stock) | 쓰기 | 입고 시 `itemId` 기준 재고 증가 | `PurchaseOrderService.receive` |
+
+---
+
+## 6. 스키마 변경 규칙
+
+- MySQL에서는 `ddl-auto=update/create`를 사용하지 않습니다.
+- 모든 변경은 `V2__...sql`처럼 새 Flyway 버전 파일로 추가하고 이미 적용된 마이그레이션은 수정하지 않습니다.
+- CI의 `mysqlSchemaTest`가 빈 MySQL 8.0에 마이그레이션을 적용한 뒤 Spring Context를 시작해 JPA 매핑을 검증합니다.
+- 외래키, UNIQUE, CHECK 제약은 Service 검증의 대체물이 아니라 마지막 데이터 무결성 방어선입니다.

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- 학습 모듈 35-2: fragment 교체 → 검색 폼 → th:each 목록 → pagination 순으로 읽는다. -->
 <head th:replace="~{fragments/layout :: head('품목 목록 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -66,7 +67,7 @@
             <td th:text="${i.name}">품목명</td>
             <td th:text="${i.categoryName} ?: '-'">카테고리명</td>
             <td th:text="${i.unit}">EA</td>
-            <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+            <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 1, 'COMMA', 2, 'POINT')}">0.00</td>
             <td class="num" th:text="${i.safetyStock}">0</td>
             <td><span class="badge" th:classappend="'badge-' + ${i.status}" th:text="${i.status}">ACTIVE</span></td>
         </tr>

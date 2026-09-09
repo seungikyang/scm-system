@@ -16,6 +16,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 거래처 엔티티. 물건을 공급하는 곳(SUPPLIER), 사가는 곳(CUSTOMER), 둘 다(BOTH)를 구분한다.
+ *
+ * <p>학습 모듈 02: PartnerType과 PartnerStatus를 먼저 보고 이 클래스의 canSupply와
+ * deactivate가 enum을 어떻게 사용하는지 확인한다. CRUD 흐름은 모듈 24에서 이어진다.</p>
+ *
+ * 초보자 포인트:
+ * - 거래처는 DELETE 하지 않고 status=INACTIVE 로만 비활성화한다.
+ *   과거 발주 이력이 여전히 이 행을 참조하므로 데이터를 남겨야 참조 무결성이 깨지지 않는다.
+ * - businessNumber(사업자번호)에 unique 제약: 같은 사업자의 중복 등록을 DB 차원에서 막는다.
+ */
 @Entity
 @Getter
 @Table(name = "partners")
@@ -84,6 +95,7 @@ public class Partner extends BaseTimeEntity {
         return this.status == PartnerStatus.ACTIVE;
     }
 
+    /** 도메인 헬퍼: 이 거래처가 "파는 쪽"인가? 발주 작성 시 공급사 선택 목록 제한에 사용된다. */
     public boolean canSupply() {
         return this.partnerType == PartnerType.SUPPLIER || this.partnerType == PartnerType.BOTH;
     }

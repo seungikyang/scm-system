@@ -1,6 +1,8 @@
 package com.example.scm.domain;
 
 import com.example.scm.common.entity.BaseTimeEntity;
+import com.example.scm.common.exception.BusinessException;
+import com.example.scm.common.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +16,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 재고 (신규, OQ-4). 품목별 현재고를 itemId 기준 1행으로 관리.
- * 입고(APPROVED→RECEIVED) 트랜잭션 안에서 라인별 수량만큼 quantity 증가.
- * 동시 증가 정합성을 위해 @Version 낙관적 락. (02_architect_datamodel §2.3)
+ * 품목별 현재 수량을 보관하는 재고 엔티티.
+ *
+ * <p>학습 모듈 11: PurchaseOrderService.receive의 상태 변경을 먼저 읽고, 재고 한 행이
+ * 어떻게 증가하는지 확인할 때 이 클래스로 이동한다.</p>
+ *
+ * <p>같은 {@code itemId}에는 재고 행이 하나만 존재한다. 발주가 승인에서 입고 완료로
+ * 바뀌는 트랜잭션 안에서 각 라인의 수량만큼 증가한다. {@code @Version}은 두 요청이 같은
+ * 재고를 동시에 수정했을 때 한쪽 변경을 조용히 덮어쓰지 않고 충돌로 감지하게 한다.</p>
  */
 @Entity
 @Getter
@@ -44,8 +51,15 @@ public class Stock extends BaseTimeEntity {
         this.quantity = (quantity != null) ? quantity : 0;
     }
 
-    /** 입고 시 재고 증가 (OQ-4). */
+    /** 입고 수량을 더한다. 0 이하와 int 범위를 넘는 합계는 업무 오류로 거부한다. */
     public void increase(int amount) {
-        this.quantity += amount;
+        if (amount <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "입고 수량은 0보다 커야 합니다.");
+        }
+        try {
+            this.quantity = Math.addExact(this.quantity, amount);
+        } catch (ArithmeticException e) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "재고 수량이 허용 범위를 초과합니다.");
+        }
     }
 }

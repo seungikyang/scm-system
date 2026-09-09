@@ -16,19 +16,26 @@ import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 기동 시 1회 시드 데이터 생성 (이미 있으면 skip). 03 문서 6절.
- * 시드 계정 비밀번호: password1!
+ * 학습용 로그인 계정과 예시 데이터를 애플리케이션 시작 시 넣는다.
+ *
+ * <p>{@link CommandLineRunner} 구현체이므로 Spring Boot 기동이 끝난 뒤 {@code run()}이
+ * 호출된다. 단, {@code scm.seed.enabled=true}일 때만 Bean이 만들어지고 사용자가 이미
+ * 있으면 전체 작업을 건너뛴다. 운영형 MySQL 설정에서는 기본값이 false다.</p>
+ *
+ * <p>시드 계정의 공통 비밀번호는 {@code password1!}이며 DB에는 BCrypt 해시로 저장된다.</p>
  */
 @Slf4j
 @Component
 @Order(1)
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "scm.seed", name = "enabled", havingValue = "true")
 public class DataInitializer implements CommandLineRunner {
 
     private static final String SEED_PASSWORD = "password1!";
@@ -42,11 +49,12 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+        // 여러 번 재시작해도 같은 예제 데이터가 중복 생성되지 않게 하는 간단한 가드다.
         if (userRepository.count() > 0) {
             log.info("[DataInitializer] 시드 데이터가 이미 존재합니다. skip.");
             return;
         }
-        log.info("[DataInitializer] 시드 데이터를 생성합니다. (계정 비밀번호: {})", SEED_PASSWORD);
+        log.info("[DataInitializer] 시드 데이터를 생성합니다.");
 
         seedUsers();
         seedPartners();

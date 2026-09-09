@@ -3,13 +3,16 @@
 //   src/main/java/com/example/scm/domain/PurchaseOrderLine.java
 // 목표: 발주서(헤더) + 발주서 라인 + PurchaseOrderStatus enum 을 채우세요.
 //       TRD 3.3.5, 3.3.6, 3.6.4 참고.
+// 비교 학습: 이 starter는 다른 aggregate를 @ManyToOne으로 연결합니다. 현재 src 참조 구현은
+// partnerId/itemId를 저장하고 헤더-라인 내부만 연관관계를 사용합니다. 두 선택의 장단점을
+// practice/DESIGN_DECISIONS.md와 비교해 학습 기록에 적으세요.
 
 // ===== PurchaseOrderStatus enum =====
 public enum PurchaseOrderStatus {
     // TODO 01: 발주 상태 전이 그래프를 보고 6가지 상태를 채우세요.
     //          DRAFT → REQUESTED → APPROVED → RECEIVED
     //                          └→ REJECTED
-    //                          DRAFT/REQUESTED → CANCELED
+    //                          DRAFT/REQUESTED/APPROVED → CANCELED
     ____, ____, ____, ____, ____, ____
 }
 
@@ -154,8 +157,10 @@ public class PurchaseOrder {
         if (!this.writerId.equals(currentUserId)) {
             throw new AccessDeniedException("본인 발주서만 취소할 수 있습니다.");
         }
-        // TODO 11: 취소 가능한 상태 두 가지?
-        if (this.status != PurchaseOrderStatus.____ && this.status != PurchaseOrderStatus.____) {
+        // TODO 11: 취소 가능한 상태 세 가지?
+        if (this.status != PurchaseOrderStatus.____
+                && this.status != PurchaseOrderStatus.____
+                && this.status != PurchaseOrderStatus.____) {
             throw new IllegalStateException("이 상태에서는 취소할 수 없습니다.");
         }
         this.status = PurchaseOrderStatus.CANCELED;

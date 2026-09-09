@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 거래처 수정 REST 요청 (PRD 3.7.2). 사업자번호는 변경 불가(unique 키).
+ * 거래처 수정 REST API의 JSON 본문을 받는 DTO.
+ * 등록 후 고유 식별값으로 쓰는 사업자번호는 변경할 수 없어 필드에 포함하지 않는다.
  */
 @Getter
 @Setter

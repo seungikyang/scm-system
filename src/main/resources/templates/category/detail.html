@@ -48,7 +48,7 @@
                 <td><a th:href="@{/items/{id}(id=${i.itemId})}" th:text="${i.itemCode}">ITM-001</a></td>
                 <td th:text="${i.name}">품목명</td>
                 <td th:text="${i.unit}">EA</td>
-                <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 1, 'COMMA', 2, 'POINT')}">0.00</td>
                 <td><span class="badge" th:classappend="'badge-' + ${i.status}" th:text="${i.status}">ACTIVE</span></td>
             </tr>
             </tbody>

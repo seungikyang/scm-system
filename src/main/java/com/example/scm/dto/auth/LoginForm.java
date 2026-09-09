@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 로그인 HTML 폼 값을 받는 DTO.
+ * {@code th:field}가 기본 생성자와 setter를 사용해 값을 채우고, {@code @Valid}가
+ * 아래 Bean Validation 애너테이션을 실행한다. 비밀번호 확인 자체는 AuthService 몫이다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

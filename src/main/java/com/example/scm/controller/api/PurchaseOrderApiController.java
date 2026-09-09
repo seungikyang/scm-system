@@ -28,7 +28,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 발주(사용자/본인 영역) REST API. (02_contracts §1.1~1.5)
+ * 일반 사용자가 자신의 발주를 작성·조회·상신·취소하는 REST API.
+ *
+ * <p>학습 모듈 19: 이 사용자 API를 먼저 읽은 뒤 AdminPurchaseOrderApiController와
+ * 비교한다. 두 컨트롤러가 같은 PurchaseOrderService를 사용하는 점을 찾는다.</p>
+ *
+ * <p>이 클래스는 URL과 HTTP 응답만 결정한다. 작성자 본인인지, 현재 상태에서 동작이
+ * 가능한지는 PurchaseOrderService가 확인하므로 화면 컨트롤러에서도 같은 규칙을 쓴다.</p>
  */
 @RestController
 @RequestMapping("/api/purchase-orders")
@@ -37,7 +43,7 @@ public class PurchaseOrderApiController {
 
     private final PurchaseOrderService purchaseOrderService;
 
-    /** 1.1 발주서 작성 — POST /api/purchase-orders (201) */
+    /** 발주서를 새로 작성한다. 생성 성공이므로 HTTP 201을 반환한다. */
     @PostMapping
     public ResponseEntity<PurchaseOrderCreateResponse> create(
             @Valid @RequestBody PurchaseOrderCreateRequest request,
@@ -46,14 +52,14 @@ public class PurchaseOrderApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /** 1.2 발주 요청(결재 상신) — PATCH /api/purchase-orders/{poId}/submit (200) */
+    /** 임시 저장(DRAFT) 발주를 결재 요청(REQUESTED) 상태로 바꾼다. */
     @PatchMapping("/{poId}/submit")
     public ResponseEntity<PurchaseOrderStatusResponse> submit(@PathVariable Long poId,
                                                               @CurrentUser LoginUser loginUser) {
         return ResponseEntity.ok(purchaseOrderService.submit(poId, loginUser));
     }
 
-    /** 1.3 내 발주서 목록 — GET /api/purchase-orders/my (200) */
+    /** 로그인 사용자가 작성한 발주만 페이지 단위로 조회한다. */
     @GetMapping("/my")
     public ResponseEntity<PageResponse<PurchaseOrderSummaryResponse>> myList(
             @RequestParam(required = false) PurchaseOrderStatus status,
@@ -65,14 +71,14 @@ public class PurchaseOrderApiController {
         return ResponseEntity.ok(PageResponse.of(page));
     }
 
-    /** 1.4 발주서 상세 — GET /api/purchase-orders/{poId} (200) */
+    /** 발주 상세를 조회한다. 작성자 또는 관리자/매니저만 접근할 수 있다. */
     @GetMapping("/{poId}")
     public ResponseEntity<PurchaseOrderDetailResponse> detail(@PathVariable Long poId,
                                                               @CurrentUser LoginUser loginUser) {
         return ResponseEntity.ok(purchaseOrderService.getDetail(poId, loginUser));
     }
 
-    /** 1.5 발주서 취소 — PATCH /api/purchase-orders/{poId}/cancel (200) */
+    /** 취소 가능한 상태의 본인 발주를 CANCELED로 바꾼다. */
     @PatchMapping("/{poId}/cancel")
     public ResponseEntity<PurchaseOrderStatusResponse> cancel(@PathVariable Long poId,
                                                               @CurrentUser LoginUser loginUser) {

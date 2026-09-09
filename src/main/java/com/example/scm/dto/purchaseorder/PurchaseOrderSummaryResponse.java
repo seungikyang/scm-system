@@ -9,7 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 발주 목록 항목 (내 목록 / 관리자 목록 공용). partnerName 은 Service 가 채운다(OSIV off). (02_contracts §1.3/1.6)
+ * 내 발주 목록과 관리자 목록에서 공통으로 사용하는 한 행의 DTO.
+ * 엔티티에는 거래처 ID만 있으므로 표시용 {@code partnerName}은 Service가 조회해 채운다.
+ * 학습 모듈 32에서 목록용 최소 필드를 먼저 확인한 뒤 PurchaseOrderDetailResponse로 이동한다.
  */
 @Getter
 @Builder

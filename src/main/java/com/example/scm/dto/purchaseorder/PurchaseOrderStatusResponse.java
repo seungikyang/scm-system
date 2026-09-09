@@ -5,10 +5,7 @@ import com.example.scm.domain.enums.PurchaseOrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * 상태 변경 결과 (submit/cancel/approve/reject/receive). (02_contracts §1.2/1.5/1.7/1.8/1.9)
- * { purchaseOrderId, orderNumber, status, message }
- */
+/** 결재 요청·취소·승인·반려·입고 처리 후 바뀐 상태와 안내 메시지를 반환하는 DTO. */
 @Getter
 @Builder
 public class PurchaseOrderStatusResponse {

@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 비밀번호 변경 API의 입력 DTO. 여기서는 빈 값과 길이 같은 형식만 검증하며,
+ * 현재 비밀번호 일치 여부와 새 비밀번호 암호화는 UserService가 처리한다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -23,8 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * 발주 승인 관리(관리자/매니저) 화면 — ADMIN+MANAGER. 뷰: purchaseorder/admin-list.
- * Model 속성/필터/버튼 플래그는 02_contracts §3.4 계약 그대로. (권한 검사는 Service 에서 ADMIN/MANAGER)
+ * 관리자와 매니저의 발주 승인·반려·입고 화면을 연결하는 MVC 컨트롤러.
+ *
+ * <p>학습 모듈 35에서 사용자용 PurchaseOrderWebController 다음에 읽고 같은 상세/상태
+ * 변경이 역할에 따라 어떻게 다른 화면으로 노출되는지 비교한다.</p>
+ *
+ * <p>목록 Model에는 검색 결과뿐 아니라 상태/거래처 필터 옵션과 반려 사유 폼도 담는다.
+ * URL이나 버튼을 숨기는 것만으로는 보안이 되지 않으므로 실제 역할 검사는 모든 상태
+ * 변경 직전에 PurchaseOrderService가 수행한다.</p>
  */
 @Controller
 @RequestMapping("/admin/purchase-orders")

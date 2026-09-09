@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- 학습 모듈 35-6: 상세 데이터보다 먼저 canSubmit/canCancel 등 버튼 플래그를 확인한다. -->
 <head th:replace="~{fragments/layout :: head('발주서 상세 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -82,14 +83,15 @@
                 <td th:text="${l.itemCode}">ITM-001</td>
                 <td th:text="${l.itemName}">품목명</td>
                 <td class="num" th:text="${l.quantity}">0</td>
-                <td class="num" th:text="${#numbers.formatDecimal(l.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
-                <td class="num" th:text="${#numbers.formatDecimal(l.lineAmount, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <!-- DB에 저장된 소수 금액이 화면에서 정수로 반올림되지 않도록 두 자리를 표시한다. -->
+                <td class="num" th:text="${#numbers.formatDecimal(l.unitPrice, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                <td class="num" th:text="${#numbers.formatDecimal(l.lineAmount, 1, 'COMMA', 2, 'POINT')}">0.00</td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <th colspan="4" class="num">총금액</th>
-                <th class="num" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</th>
+                <th class="num" th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}">0.00</th>
             </tr>
             </tfoot>
         </table>

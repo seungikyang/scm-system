@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * 카테고리 목록·상세·등록·수정·삭제 화면을 연결하는 MVC 컨트롤러.
+ * 학습 모듈 25에서 CategoryApiController 다음에 읽고 BindingResult, Model,
+ * RedirectAttributes가 각각 언제 쓰이는지 찾는다.
+ * 이 클래스는 화면용 Model과 이동 경로를 정하고, ADMIN 권한과 소속 품목 유무 같은
+ * 실제 업무 판단은 CategoryService에 맡긴다.
+ */
 @Controller
 @RequestMapping("/categories")
 @RequiredArgsConstructor

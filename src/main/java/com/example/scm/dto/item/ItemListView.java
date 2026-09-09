@@ -8,6 +8,8 @@ import lombok.Getter;
 
 /**
  * 품목 목록 행 View DTO. categoryName 은 Service 가 채운다(OSIV off).
+ * 학습 모듈 32에서 UserResponse 다음에 읽고, 엔티티 하나만으로 채울 수 없는
+ * categoryName을 Service가 함께 전달하는 차이를 확인한다.
  */
 @Getter
 @Builder

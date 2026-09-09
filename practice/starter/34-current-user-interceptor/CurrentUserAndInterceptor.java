@@ -149,7 +149,9 @@ public class CurrentUserRoleArgumentResolver implements HandlerMethodArgumentRes
 //     A:
 // Q4. JWT 단계로 진화하면 이 ArgumentResolver 는 어떻게 바뀌어야 하나?
 //     A:
-// Q5. 세션 기반 1차 와 Spring Security 2차 를 동시에 켜면 어떤 충돌이 생길 수 있는가?
+// Q5. 현재 참조 구현에서 세션 Interceptor와 Spring Security filter chain은 책임을 어떻게 나누는가?
 //     A:
-// Q6. ArgumentResolver 에서 throw 한 BusinessException 이 GlobalExceptionHandler 로 잡히려면 어떤 조건이 필요한가?
+// Q6. 두 계층이 모두 인증·인가를 수행하면 어떤 응답/로그인 경로 충돌이 생길 수 있는가?
+//     A:
+// Q7. ArgumentResolver 에서 throw 한 BusinessException 이 GlobalExceptionHandler 로 잡히려면 어떤 조건이 필요한가?
 //     A:

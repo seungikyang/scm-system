@@ -3,6 +3,16 @@ package com.example.scm.common.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 애플리케이션에서 사용하는 오류를 한곳에 모은 목록.
+ *
+ * <p>학습 모듈 15: ErrorCode → BusinessException → ErrorResponse 순서로 읽는다. 예외를
+ * 실제 JSON/화면으로 바꾸는 처리는 다음 모듈 16에서 확인한다.</p>
+ *
+ * <p>각 상수는 HTTP 상태, 기계가 읽는 코드, 사용자가 읽는 기본 메시지를 한 묶음으로
+ * 가진다. Service는 이 enum을 담은 {@link BusinessException}을 던지고, 전역 예외
+ * 처리기가 API(JSON) 또는 웹 오류 화면으로 변환한다.</p>
+ */
 @Getter
 public enum ErrorCode {
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/** 현재 로그인 사용자의 공개 가능한 정보만 mypage.html에 전달하는 MVC 컨트롤러. */
 @Controller
 @RequiredArgsConstructor
 public class MyPageController {

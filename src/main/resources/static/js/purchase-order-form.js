@@ -1,5 +1,6 @@
 /* ============================================================
    purchase-order-form.js
+   학습 모듈 35-7: purchaseorder/form.html의 lines[i].* 구조를 이해한 뒤 읽는다.
    발주 작성 폼의 라인 동적 추가/삭제 + 인덱스 재정렬.
    - 서버 폼 객체 PurchaseOrderCreateRequest 의 lines[i].itemId/quantity/unitPrice 인덱스 바인딩에 맞춘다.
    - 행 삭제/추가 후 모든 라인의 name/id 인덱스를 0..n 으로 재정렬한다(서버 List 바인딩 누락 방지).

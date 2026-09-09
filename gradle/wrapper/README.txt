@@ -1,7 +1,8 @@
-gradle-wrapper.jar 바이너리는 이 환경에서 생성할 수 없어 포함되지 않았다.
-아래 명령으로 wrapper jar 를 생성해야 빌드가 가능하다 (로컬에 Gradle 8.5 설치 필요):
+Gradle Wrapper 9.7.1의 실행 스크립트, 속성 파일, wrapper jar가 모두 저장소에 포함되어 있다.
+시스템 Gradle 설치 없이 저장소 루트에서 다음 명령으로 확인한다:
 
-    gradle wrapper --gradle-version 8.5
+    ./gradlew --version
 
-또는 IDE(IntelliJ/Eclipse)에서 Gradle 프로젝트로 import 하면 자동 생성된다.
-gradle-wrapper.properties / gradlew / gradlew.bat 는 이미 작성되어 있다.
+Wrapper를 공식 배포본 기준으로 다시 생성해야 할 때만 다음 명령을 두 번 실행한다:
+
+    ./gradlew wrapper --gradle-version=9.7.1 && ./gradlew wrapper

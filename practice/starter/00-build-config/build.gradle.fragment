@@ -3,9 +3,9 @@
 //       TRD 3.1 참고.
 
 plugins {
-    // TODO 01: Spring Boot 3.x 플러그인 ID 를 채우세요.
+    // TODO 01: 루트 build.gradle과 같은 Spring Boot 버전을 채우세요.
     id 'org.springframework.boot' version '____'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
 }
 
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    // TODO 03: REST 컨트롤러 + Tomcat + Jackson 을 묶어 주는 starter 는?
+    // TODO 03: Boot 4에서 REST 컨트롤러 + Tomcat + Jackson 을 묶는 MVC starter 는?
     implementation 'org.springframework.boot:spring-boot-starter-____'
 
     // TODO 04: JPA + Hibernate Repository 자동 구현을 제공하는 starter 는?
@@ -34,14 +34,18 @@ dependencies {
     // TODO 06: 서버 사이드 렌더링 화면(PRD 2.7) 을 위한 starter 는?
     implementation 'org.springframework.boot:spring-boot-starter-____'
 
+    // TODO 07: CSRF와 기본 보안 헤더를 제공하는 starter는?
+    implementation 'org.springframework.boot:spring-boot-starter-____'
+
     // Lombok (선택)
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // TODO 07: 인메모리 DB 로 학습용에 적합한 DB 는?
+    // TODO 08: 인메모리 DB 로 학습용에 적합한 DB 는?
     runtimeOnly 'com.h2database:____'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }
 
 tasks.named('test') {
@@ -49,9 +53,13 @@ tasks.named('test') {
 }
 
 // 학습 질문:
-// Q1. spring-boot-starter-web 과 spring-boot-starter-thymeleaf 를 같이 쓰면 어떤 일이 가능한가?
+// Q1. spring-boot-starter-webmvc 와 spring-boot-starter-thymeleaf 를 같이 쓰면 어떤 일이 가능한가?
 //     A:
-// Q2. Spring Boot 3.x 부터 javax.* 가 jakarta.* 로 바뀐 의미는?
+// Q2. Spring Boot 3.x부터 시작된 javax.* → jakarta.* 전환이 Boot 4/Jakarta EE 11 코드에 주는 의미는?
 //     A:
 // Q3. 운영 DB 로 MySQL 을 쓴다면 어떤 의존성을 추가해야 하는가?
+//     A:
+// Q4. 라이브러리 버전을 워크북에 복사해 고정하지 않고 루트 build.gradle을 기준으로 삼는 이유는?
+//     A:
+// Q5. Boot 4에서 Jackson 3의 ObjectMapper 패키지와 MVC 테스트 starter가 달라진 이유는?
 //     A:

@@ -10,8 +10,10 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 발주서 상세 (헤더 + 라인). 표시값(partnerName/writerName/approverName/itemCode/itemName)은
- * Service 가 마스터 조회해 채운다(OSIV off). (02_contracts §1.4, §2.2)
+ * 발주 헤더와 모든 라인을 한 번에 전달하는 상세 응답 DTO.
+ * 엔티티에 없는 표시용 이름(거래처·작성자·결재자·품목)은 Service가 ID로 조회해 채운다.
+ * 학습 모듈 32에서 헤더 변환 → LineResponse 중첩 목록 → Service의 일괄 이름 조회 순으로
+ * 오가며 읽는다.
  */
 @Getter
 @Builder
@@ -63,9 +65,7 @@ public class PurchaseOrderDetailResponse {
                 .build();
     }
 
-    /**
-     * 발주 상세 라인. itemCode/itemName 은 Service 가 채운다. (02_contracts §1.4 lines[], §2.2)
-     */
+    /** 발주 상세에 포함되는 품목 한 줄. 품목 코드와 이름은 Service가 채운다. */
     @Getter
     @Builder
     public static class LineResponse {

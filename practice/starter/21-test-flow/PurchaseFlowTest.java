@@ -70,7 +70,7 @@ class PurchaseFlowTest {
     }
 
     @Test
-    @DisplayName("USER 가 ADMIN 전용 API 호출 시 403")
+    @DisplayName("USER가 ADMIN/MANAGER 운영 API 호출 시 403")
     void user_calling_admin_api_should_be_forbidden() throws Exception {
         MockHttpSession userSession = new MockHttpSession();
         userSession.setAttribute("USER_ID", 1L);
@@ -86,6 +86,24 @@ class PurchaseFlowTest {
     @DisplayName("REQUESTED 가 아닌 발주를 승인하면 INVALID_STATUS")
     void approving_non_requested_should_fail() throws Exception {
         // TODO 06: DRAFT 상태 발주를 직접 만들고 승인 호출 → status().isBadRequest() 와 code 검증.
+    }
+
+    @Test
+    @DisplayName("MANAGER도 REQUESTED 발주를 승인할 수 있다")
+    void manager_can_approve_requested_order() throws Exception {
+        // TODO 07: MANAGER 세션으로 승인 성공을 검증하세요. 역할 문자열만 검사하지 말고 실제 사용자 역할도 준비합니다.
+    }
+
+    @Test
+    @DisplayName("작성자는 APPROVED 발주는 취소할 수 있지만 RECEIVED 발주는 취소할 수 없다")
+    void owner_cancel_boundary() throws Exception {
+        // TODO 08: APPROVED → CANCELED 성공과 RECEIVED → INVALID_STATUS 실패를 각각 검증하세요.
+    }
+
+    @Test
+    @DisplayName("입고 성공 시 모든 라인의 재고가 같은 트랜잭션에서 증가한다")
+    void receive_increases_stock_atomically() throws Exception {
+        // TODO 09: 두 라인의 재고 증가를 확인하고, 한 라인 실패 시 상태/재고가 모두 롤백되는 사례를 설계하세요.
     }
 }
 
