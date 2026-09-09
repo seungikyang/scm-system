@@ -24,6 +24,8 @@ import org.springframework.data.repository.query.Param;
 public interface ItemRepository
         extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
 
+    // 구현은 Spring Data JPA가 제공한다. 위의 Item은 엔티티, Long은 ID의 자료형이다.
+    // existsBy + ItemCode를 해석해 엔티티 필드 itemCode의 값이 존재하는지 조회한다.
     boolean existsByItemCode(String itemCode);
 
     List<Item> findByCategoryId(Long categoryId);
@@ -35,6 +37,7 @@ public interface ItemRepository
 
     /** 최초 재고 행 생성까지 품목별로 직렬화해 Stock UNIQUE 경합을 방지한다. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    // JPQL의 Item/id는 Java 엔티티/필드 이름이다. Hibernate가 DB용 SQL로 변환한다.
     @Query("select i from Item i where i.id in :itemIds order by i.id")
     List<Item> findAllByIdForUpdate(@Param("itemIds") Collection<Long> itemIds);
 }

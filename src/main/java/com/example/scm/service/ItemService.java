@@ -29,8 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
  * 품목 조회와 등록·수정·단종 규칙을 조정하는 서비스 계층.
  *
  * <p>컨트롤러는 HTTP 요청/화면 처리만 맡고, 권한 검사와 중복 검사는 이곳에서 수행한다.
- * 조회 메서드의 {@code readOnly = true}는 읽기 전용 트랜잭션이라는 뜻이며, 변경 메서드는
- * 트랜잭션 안에서 엔티티 값을 바꾸면 JPA 변경 감지가 UPDATE SQL을 실행한다.</p>
+ * 조회 메서드의 {@code readOnly = true}는 읽기 작업의 최적화를 돕는 설정이며 권한 검사가 아니다.
+ * 변경 메서드는 트랜잭션 안에서 관리 중인 엔티티 값을 바꾸면 JPA 변경 감지가
+ * UPDATE SQL을 실행한다.</p>
  *
  * <p>비슷한 create/update 메서드가 두 개인 이유는 웹 폼 DTO와 REST 요청 DTO가 다르기
  * 때문이다. 어떤 진입 경로든 동일한 권한·검증 규칙을 거친다.</p>
@@ -42,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ItemService {
 
+    // Lombok이 final 필드를 받는 생성자를 만들고, Spring이 실행 시 그 생성자에 빈을 주입한다.
+    // Service가 직접 Repository를 만들지 않아 단위 테스트에서는 DB 대역으로 바꿀 수 있다.
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
 
@@ -113,7 +116,8 @@ public class ItemService {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         validateCategoryExists(form.getCategoryId());
         Item item = getEntity(itemId);
-        // save()를 다시 호출하지 않아도 트랜잭션 종료 시 변경 감지가 동작한다.
+        // 같은 트랜잭션에서 조회한 관리 엔티티이므로 커밋 과정에서 변경 감지가 동작한다.
+        // 임의로 new로 만든 객체까지 필드 수정만으로 자동 저장되는 것은 아니다.
         item.update(form.getName(), form.getCategoryId(), form.getUnit(),
                 form.getUnitPrice(), form.getSafetyStock());
     }

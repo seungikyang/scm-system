@@ -55,6 +55,8 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 
 ## 2. 기술 스택
 
+처음이라면 [초보자를 위한 기술 안내](docs/TECHNOLOGY_GUIDE.md)에서 **각 기술을 왜 사용하고 어떻게 연결하는지** 먼저 읽어 보세요. 품목 조회·수정과 발주 입고를 실제 코드까지 따라갑니다.
+
 | 구분 | 기술 |
 |---|---|
 | Language | Java 17 |
@@ -254,6 +256,7 @@ com.example.scm
 |---|---|
 | [`index.html`](index.html) | 40개 모듈 HTML 목차, 검색·필터, 브라우저 진도 관리 |
 | [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) | 처음 시작하는 사람용 설치 → 실행 → 화면 투어 가이드 |
+| [`docs/TECHNOLOGY_GUIDE.md`](docs/TECHNOLOGY_GUIDE.md) | 기술별 사용 이유·동작 원리, 실제 요청 흐름과 코드, 확인 실습 |
 | [`docs/INDEX.md`](docs/INDEX.md) | 처음 읽는 순서와 문서 동기화 규칙 |
 | [`docs/GLOSSARY.md`](docs/GLOSSARY.md) | SCM 도메인·Spring 용어 사전(구현 기준) |
 | [`docs/LOOP_ENGINEERING.md`](docs/LOOP_ENGINEERING.md) | 학습·기능·문서·포트폴리오 반복 루프와 완료 조건 |

@@ -22,6 +22,8 @@ import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoCon
 public class ScmApplication {
 
     public static void main(String[] args) {
+        // 설정을 읽고 Spring 빈들을 연결하며 내장 웹 서버를 시작한다.
+        // main()에서 Controller를 직접 호출하지 않고, HTTP 요청이 들어오면 MVC가 호출한다.
         SpringApplication.run(ScmApplication.class, args);
     }
 }

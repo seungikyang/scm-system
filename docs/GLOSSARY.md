@@ -4,6 +4,8 @@
 
 워크북과 문서를 읽다가 낯선 용어를 만났을 때 찾는 치트시트입니다. 교과서 정의가 아니라 **이 저장소 구현 기준**으로 설명하고, 실제 파일을 옆에 적어 두었습니다.
 
+여러 기술이 **왜 필요한지, 어떻게 함께 동작하는지**는 [초보자를 위한 기술 안내](./TECHNOLOGY_GUIDE.md)에서 요청 흐름과 실제 코드로 읽을 수 있습니다.
+
 ---
 
 ## 1. SCM 도메인 용어
@@ -31,8 +33,10 @@
 따릅니다.
 
 ```
-브라우저 → 인터셉터(로그인 확인) → 컨트롤러 → 서비스(비즈니스 규칙) → 리포지토리(DB) → 엔티티(테이블)
+브라우저 → 필터 → MVC 인터셉터(로그인 확인) → 컨트롤러 → 서비스(비즈니스 규칙) → 리포지토리·ORM → DB
 ```
+
+엔티티는 별도 처리 단계가 아니라 Service와 Repository가 다루는, DB에 매핑되는 Java 객체입니다.
 
 | 용어 | 뜻 (이 저장소 기준) | 실제 코드 |
 |---|---|---|
@@ -48,11 +52,11 @@
 
 | 용어 | 초보자용 한 줄 정리 | 이 저장소 예시 |
 |---|---|---|
-| 의존성 주입 (DI) | 필요한 객체를 new로 만들지 않고 Spring이 생성자로 넣어 주는 것. `@RequiredArgsConstructor` + `final` 필드가 그 표현 | 모든 Service/Controller |
+| 의존성 주입 (DI) | 필요한 객체를 외부에서 공급받는 것. 이 코드에서는 Lombok이 생성자를 만들고 Spring이 그 생성자에 빈을 넣는다 | 모든 Service/Controller |
 | 빈 (Bean) | Spring이 대신 만들어 관리하는 객체. `@Service`, `@Component`를 붙이면 된다 | `service/OrderNumberGenerator.java` |
-| 트랜잭션 | "전부 성공하거나 전부 취소되는" 작업 묶음. `@Transactional` 메서드에서 예외가 나면 DB 변경이 롤백된다 | 입고 처리(상태 변경+재고 증가가 한 묶음) |
+| 트랜잭션 | "전부 성공하거나 전부 취소되는" 작업 묶음. Spring은 기본적으로 밖으로 전달된 RuntimeException·Error에 롤백하고, checked exception은 별도 설정이 필요하다 | 입고 처리(상태 변경+재고 증가가 한 묶음) |
 | 영속성 컨텍스트 | JPA가 엔티티를 추적하는 1차 캐시. 같은 트랜잭션 안에서 같은 ID 조회는 같은 객체가 돌아온다 | OSIV off 환경이라 Service 안에서만 유효 |
-| 지연 로딩 (LAZY) | 연관 객체를 실제로 쓸 때까지 조회를 미루는 것. 트랜잭션이 끝나면 미룰 수 없어 `LazyInitializationException`이 난다 | OSIV off라 Service에서 DTO로 변환해 해결 |
+| 지연 로딩 (LAZY) | 연관 객체를 실제로 쓸 때까지 조회를 미루는 것. 영속성 컨텍스트가 닫힌 뒤 아직 읽지 않은 연관을 조회하려 하면 `LazyInitializationException`이 날 수 있다 | OSIV off라 Service에서 DTO로 변환해 해결 |
 | Cascade | 부모 저장/삭제 시 자식도 함께 처리하는 전파 설정. 발주 헤더 저장 시 라인이 함께 저장된다 | `PurchaseOrder.lines`의 `CascadeType.ALL` |
 | 낙관적 락 (`@Version`) | 동시 수정 충돌을 버전 번호로 감지. 충돌 시 `OptimisticLockingFailureException` 발생 | `PurchaseOrder.version`, `Stock.version` |
 | 비관적 락 (`PESSIMISTIC_WRITE`) | 다른 트랜잭션이 건드리지 못하게 행을 잠그는 방식 | `ItemRepository.findAllByIdForUpdate()` |
@@ -62,7 +66,7 @@
 | Bean Validation | `@NotNull`, `@Positive` 같은 어노테이션으로 입력값을 자동 검증 | `dto/purchaseorder/PurchaseOrderCreateRequest.java` |
 | Flyway | DB 스키마 변경을 버전 있는 SQL 스크립트로 관리하는 도구 | `resources/db/migration/mysql/` |
 | H2 | 개발·학습용 가벼운 DB. in-memory 모드는 재시작 시 초기화된다 | `application.yml` 기본 설정 |
-| OSIV | 요청 끝까지 DB 연결(영속성 컨텍스트)을 여는 Spring 기본값. 이 저장소는 성능/계약 명확성 위해 **끄고**, Service에서 DTO를 완성한다 | `application.yml`의 `open-in-view: false` |
+| OSIV | 웹 요청 처리 동안 영속성 컨텍스트를 열어 두는 기능. 물리적 DB 연결을 계속 점유한다는 뜻과는 다르다. 이 저장소는 **끄고** Service에서 DTO를 완성한다 | `application.yml`의 `open-in-view: false` |
 | Pageable / Page | 페이지 번호·크기를 담아 조회하고 결과를 페이지 단위로 받는 Spring Data 기능 | 목록 API·화면 전체 |
 | Specification | 조건을 조립해 동적 검색 쿼리를 만드는 JPA 도구 | `repository/spec/*.java` |
 

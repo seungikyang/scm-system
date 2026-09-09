@@ -9,11 +9,12 @@
 | 순서 | 문서 | 목적 |
 |---|---|---|
 | 1 | [`./GETTING_STARTED.md`](./GETTING_STARTED.md) | 설치 → 실행 → 화면 투어까지 첫날 가이드 |
-| 2 | [`../index.html`](../index.html) | 전체 학습 목차, 모듈 검색, 진도 관리 |
-| 3 | [`../README.md`](../README.md) | 구현 범위와 실행 방법 |
-| 4 | [`../practice/README.md`](../practice/README.md) | 워크북 사용법과 학습 트랙 |
-| 5 | [`LOOP_ENGINEERING.md`](./LOOP_ENGINEERING.md) | 반복 학습·개선 운영 규칙 |
-| 6 | [`PORTFOLIO_GUIDE.md`](./PORTFOLIO_GUIDE.md) | 데모, 이력서, 면접 준비 |
+| 2 | [`TECHNOLOGY_GUIDE.md`](./TECHNOLOGY_GUIDE.md) | 기술을 쓰는 이유와 동작 원리 → 실제 코드 → 확인 실습 |
+| 3 | [`../index.html`](../index.html) | 전체 학습 목차, 모듈 검색, 진도 관리 |
+| 4 | [`../README.md`](../README.md) | 구현 범위와 실행 방법 |
+| 5 | [`../practice/README.md`](../practice/README.md) | 워크북 사용법과 학습 트랙 |
+| 6 | [`LOOP_ENGINEERING.md`](./LOOP_ENGINEERING.md) | 반복 학습·개선 운영 규칙 |
+| 7 | [`PORTFOLIO_GUIDE.md`](./PORTFOLIO_GUIDE.md) | 데모, 이력서, 면접 준비 |
 | - | [`GLOSSARY.md`](./GLOSSARY.md) | 용어가 낯설 때 찾는 치트시트(상시 참조) |
 
 ## 2. 구현 계약
@@ -48,6 +49,7 @@
 ## 5. 문서 동기화 규칙
 
 - API가 바뀌면 `API_SPEC`과 관련 워크북 문제를 함께 확인한다.
+- 기술·설정·요청 처리 흐름이 바뀌면 `TECHNOLOGY_GUIDE`의 설명과 코드 링크를 함께 확인한다.
 - 엔티티가 바뀌면 `ERD`, `DESIGN_DECISIONS`, 통합 테스트를 확인한다.
 - 상태 또는 권한이 바뀌면 `STATE_MACHINE`, API 권한표, Service 테스트를 함께 갱신한다.
 - 구현 범위가 바뀌면 `README`, 이 문서, `index.html`의 상태 배지를 함께 갱신한다.

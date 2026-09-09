@@ -49,9 +49,11 @@ public class ItemWebController {
                        Pageable pageable,
                        Model model) {
         Page<ItemListView> items = itemService.search(searchForm, pageable);
+        // Model은 Thymeleaf에 전달할 값의 이름표다. 템플릿은 ${items}로 목록을 참조한다.
         model.addAttribute("items", items);
         model.addAttribute("categories", categoryService.list());
         model.addAttribute("statuses", ItemStatus.values());
+        // @Controller의 이 문자열은 templates/item/list.html을 선택하는 뷰 이름이다.
         return "item/list";
     }
 

@@ -47,7 +47,9 @@ public class ItemApiController {
     @PostMapping
     public ResponseEntity<ItemDetailView> create(@Valid @RequestBody ItemCreateRequest request,
                                                  @CurrentUser LoginUser loginUser) {
+        // MVC가 Jackson으로 JSON을 DTO로 변환하고 @Valid 제약 검사 후 이 메서드를 호출한다.
         Long id = itemService.create(request, loginUser);
+        // 응답 DTO는 JSON이 된다. 201 CREATED는 새 자원이 생성되었다는 뜻이다.
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.getDetail(id));
     }
 
