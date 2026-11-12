@@ -3,8 +3,7 @@
 > [HTML 학습 목차](../index.html) · [워크북 안내](./README.md) · [루프 엔지니어링](../docs/LOOP_ENGINEERING.md) · [문서 지도](../docs/INDEX.md)
 
 문제를 먼저 푼 뒤 아래 경로를 따라 실제 구현과 테스트를 비교합니다. 표의 행은
-모듈 번호순이 아니라 워크북의 **권장 학습 순서**입니다. 확장 모듈에는 현재 참조 코드가
-없으므로 스스로 계약과 테스트를 먼저 만들어야 합니다.
+모듈 번호순이 아니라 워크북의 **권장 학습 순서**입니다. 확장 모듈도 참조 코드를 제공하지만 문항의 정답·해설과 계약·테스트를 비교합니다.
 
 기술의 역할부터 알고 싶다면 [초보자를 위한 기술 안내](../docs/TECHNOLOGY_GUIDE.md)를 함께 읽으세요. 의존성 주입, 웹/API 요청, DB 변경 감지, 로그인과 테스트를 실제 코드에 연결합니다.
 
@@ -24,8 +23,8 @@
 | 인증·마스터 28 | `ItemService`의 상세·수정·단종, Item Controller | 불변 품목코드, 변경 감지, soft delete |
 | 인증·마스터 31 → 32 | 전체 `repository/`, 응답 DTO와 Service 변환 메서드 | 도메인별 조회·잠금 책임을 점검한 뒤 OSIV off DTO 변환 확인 |
 | 인증·마스터 33 → 35 | `config/`, `common/auth/`, `controller/web/`, `templates/` | Bean 설정 → 인터셉터/현재 사용자 주입 → Thymeleaf 화면 |
-| 회고 22 → 36 → 37 → 38 → 39 | 루트 문서, 패키지 구조, 규칙표, 테스트·장애 기록 | 구현 결정을 문서와 자신의 말로 설명하는지 점검 |
-| 확장 05 → 06 → 12 → 13 → 14 → 26 → 27 → 30 | 현재 참조 구현 없음 | 공지·수주를 Entity → Service → Controller → 조회 권한 순으로 설계 |
+| 회고 22 → 36 → 37 → 38 → 39 | 루트 문서, 패키지 구조, 규칙표, 테스트·장애 기록 | 구현 결정을 설계·면접 4지 선다로 확인 |
+| 확장 05 → 06 → 12 → 13 → 14 → 26 → 27 → 30 | `Notice`, `SalesOrder`·`SalesOrderLine`, `NoticeService`, `SalesOrderService`, API/Web Controller | `SalesAndNoticeIntegrationTest`: 출고·취소 재고, 동시성, 공지 CRUD·조회수·권한 |
 
 ## 처음 읽는 참조 구현 순서
 

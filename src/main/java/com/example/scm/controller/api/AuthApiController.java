@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 다른 프로그램이 URL로 요청하는 로그인·로그아웃의 접수 창구입니다.
+ * 요청을 Service 담당자에게 전달하고 결과를 JSON 자료로 보냅니다. API는 프로그램끼리 요청과 결과를 주고받는 통로입니다.
+ *
  * JSON 기반 로그인·로그아웃 API의 진입점.
  *
  * <p>학습 모듈 23: AuthService를 먼저 읽은 뒤 로그인 성공 → 세션 생성 → 세션 ID 교체
@@ -38,10 +41,12 @@ public class AuthApiController {
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request,
                                               HttpServletRequest httpRequest) {
+        // @RequestBody는 JSON을 입력 양식으로 읽고, @Valid는 이메일 형식·필수 입력 규칙을 검사합니다.
         LoginUser loginUser = authService.login(request.getEmail(), request.getPassword());
         // true: 세션이 없으면 새로 만든다. 로그인 성공 전에는 세션에 사용자를 넣지 않는다.
         HttpSession session = httpRequest.getSession(true);
         // 로그인 전 세션 ID를 그대로 쓰지 않아 세션 고정(session fixation) 공격을 막는다.
+        // 방문 번호를 새 번호로 바꾼 뒤 서버의 세션 보관함에 로그인 출입증을 넣습니다.
         httpRequest.changeSessionId();
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
         return ResponseEntity.ok(userService.getMe(loginUser.id()));
@@ -54,6 +59,7 @@ public class AuthApiController {
         if (session != null) {
             session.invalidate();
         }
+        // noContent는 '처리는 끝났고 돌려줄 자료는 없음'을 뜻하는 204 응답을 만듭니다.
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,182 +1,67 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/controller/SalesOrderController.java
-// 목표: 수주 REST API + DTO 전체 셋. TRD 3.7.7 참고.
+// 수주 Controller + DTO — my / pending / confirm / ship / complete (TRD 3.7.7) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=27
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-@RestController
-@RequestMapping("/api/sales-orders")
-@RequiredArgsConstructor
-public class SalesOrderController {
+// 선택형 [W060] 수주 작성과 확정 API를 분리하는 장점은?
+//    1. 확정 전에 자동으로 출고한다
+//    2. 트랜잭션을 모두 제거한다
+//    3. 임시 작성과 최종 확정의 상태·검증 시점을 구분한다
+//    4. 권한 검사를 브라우저에만 둔다
+//    정답·해설: practice/workbook-questions.md#w060
+//    정답: 3번 · 현재 프로젝트는 작성과 confirm 상태 전이를 구분합니다.
 
-    private final SalesOrderService salesOrderService;
+// 선택형 [W067] 수주 취소 사유 정책은?
+//    1. 모든 취소는 사유 없이 처리한다
+//    2. 사유가 있으면 완료 상태도 무조건 취소한다
+//    3. 공백이 아닌 사유를 요구한다
+//    4. 사유를 비밀번호 필드에 저장한다
+//    정답·해설: practice/workbook-questions.md#w067
+//    정답: 3번 · 사유 검증과 취소 가능한 상태 검증을 모두 수행합니다.
 
-    // TODO 01: 수주서 작성 (DRAFT). 일반 사용자도 가능합니다.
-    @PostMapping
-    public ResponseEntity<SalesOrderResponse> create(
-            @CurrentUser Long currentUserId,
-            @Valid @RequestBody SalesOrderCreateRequest request) {
+// 선택형 [W117] 수주 my와 처리 대기 목록의 현재 권한 차이는?
+//    1. my는 모든 사용자의 비밀번호 목록이다
+//    2. 처리 대기는 비로그인에게만 허용한다
+//    3. URL 이름만으로 서버 인가가 보장된다
+//    4. my는 본인 목록, 처리 대기는 ADMIN/MANAGER용이다
+//    정답·해설: practice/workbook-questions.md#w117
+//    정답: 4번 · 목록 대상과 실행 권한을 Service에서 함께 확인합니다.
 
-        SalesOrderResponse response = salesOrderService.create(currentUserId, request);
-        return ResponseEntity.status(HttpStatus.____).body(response);
-    }
+// 선택형 [W118] confirm·ship·complete·cancel 경로의 설계 특징은?
+//    1. 경로 이름이 전이 검증을 자동 수행한다
+//    2. 업무 명령이 명확하지만 각 상태 전이 계약을 검사해야 한다
+//    3. confirm 호출은 무조건 재고를 차감한다
+//    4. cancel은 종료 상태에서도 항상 허용된다
+//    정답·해설: practice/workbook-questions.md#w118
+//    정답: 2번 · 명령형 API에는 권한·사유·상태·중복 호출 정책이 필요합니다.
 
-    // TODO 02: 수주 확정 (DRAFT → CONFIRMED). 상태 전이를 동사형 경로로.
-    @PatchMapping("/{soId}/____")
-    public SalesOrderResponse confirm(
-            @CurrentUser Long currentUserId,
-            @PathVariable Long soId) {
-        return salesOrderService.confirm(currentUserId, soId);
-    }
+// 선택형 [W119] 활성화된 메서드 보안에서 hasAnyRole('MANAGER','ADMIN')의 의미는?
+//    1. 두 역할을 동시에 가져야만 허용한다
+//    2. USER 역할만 허용한다
+//    3. 두 역할 중 하나라도 있으면 허용한다
+//    4. 로그인 없이 항상 허용한다
+//    정답·해설: practice/workbook-questions.md#w119
+//    정답: 3번 · 일반적인 ROLE_ 접두사 규칙을 적용하며 현재 Service 가드 구조와 구분합니다.
 
-    // TODO 03: 내가 작성한 수주 목록.
-    @GetMapping("/my")
-    public Page<SalesOrderResponse> my(
-            @CurrentUser Long currentUserId,
-            @RequestParam(required = false) SalesOrderStatus status,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return salesOrderService.findMy(currentUserId, status, pageable);
-    }
+// 선택형 [W221] 주문 라인 최소 개수 규칙의 입력 1차 방어는?
+//    1. CSS margin 설정
+//    2. DTO의 Size(min=1)와 중첩 입력 검증
+//    3. RequestParam의 기본 포트 변경
+//    4. 조회수 내림차순
+//    정답·해설: practice/workbook-questions.md#w221
+//    정답: 2번 · 입력 경계에서 검증하고 Service·도메인에서도 필요한 불변식을 보장합니다.
 
-    // TODO 04: 처리 대기 수주 목록 (CONFIRMED). 권한은 MANAGER 또는 ADMIN.
-    @GetMapping("/pending")
-    @PreAuthorize("hasAnyRole('____', '____')")
-    public Page<SalesOrderResponse> pending(
-            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return salesOrderService.pendingList(pageable);
-    }
+// 선택형 [W268] 컨트롤러에만 역할 검사를 두고 Service를 보호하지 않으면?
+//    1. DB unique가 모든 인가를 대신한다
+//    2. 메뉴 표시 조건이 모든 호출을 차단한다
+//    3. 컨트롤러 없는 호출은 Java에서 불가능하다
+//    4. 다른 진입 경로가 Service를 호출할 때 업무 인가를 우회할 수 있다
+//    정답·해설: practice/workbook-questions.md#w268
+//    정답: 4번 · 서버 업무 경계에서 필요한 인가를 보장해야 합니다.
 
-    // TODO 05: 상세 조회 — 작성자 / 처리자 / ADMIN 만 허용.
-    @GetMapping("/{soId}")
-    public SalesOrderResponse detail(
-            @CurrentUser Long currentUserId,
-            @CurrentUserRole UserRole currentRole,
-            @PathVariable Long soId) {
-        return salesOrderService.detail(currentUserId, currentRole, soId);
-    }
-
-    // ============ 매니저/관리자 상태 전이 ============
-
-    @PatchMapping("/{soId}/ship")
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-    public SalesOrderResponse ship(
-            @CurrentUser Long currentUserId,
-            @PathVariable Long soId) {
-        return salesOrderService.ship(currentUserId, soId);
-    }
-
-    @PatchMapping("/{soId}/complete")
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-    public SalesOrderResponse complete(
-            @CurrentUser Long currentUserId,
-            @PathVariable Long soId) {
-        return salesOrderService.complete(currentUserId, soId);
-    }
-
-    @PatchMapping("/{soId}/cancel")
-    public SalesOrderResponse cancel(
-            @CurrentUser Long currentUserId,
-            @PathVariable Long soId,
-            @Valid @RequestBody SalesOrderCancelRequest request) {
-        return salesOrderService.cancel(currentUserId, soId, request.reason());
-    }
-}
-
-
-// ===== Request DTO =====
-
-public record SalesOrderCreateRequest(
-        @NotNull Long partnerId,
-        @NotNull LocalDate orderDate,
-        LocalDate shipDate,
-        // TODO 06: 라인 ≥ 1 검증을 D 계층에서 어떻게 표현할까?
-        @____(min = 1, message = "수주 라인은 최소 1개 이상이어야 합니다.")
-        @Valid
-        List<LineDto> lines
-) {
-    public record LineDto(
-            @NotNull Long itemId,
-            @NotNull @Positive Integer quantity,
-            @NotNull @DecimalMin("0.00") BigDecimal unitPrice
-    ) {}
-}
-
-public record SalesOrderCancelRequest(
-        // TODO 07: 취소 사유는 비어 있으면 안 되는 이유는?
-        @NotBlank @Size(max = 500) String reason
-) {}
-
-
-// ===== Response DTO =====
-
-public record SalesOrderResponse(
-        Long salesOrderId,
-        String orderNumber,
-        Long partnerId,
-        String partnerName,
-        Long writerId,
-        Long managerId,
-        LocalDate orderDate,
-        LocalDate shipDate,
-        BigDecimal totalAmount,
-        SalesOrderStatus status,
-        String cancelReason,
-        LocalDateTime createdAt,
-        LocalDateTime confirmedAt,
-        LocalDateTime shippedAt,
-        LocalDateTime completedAt,
-        List<SalesOrderLineResponse> lines
-) {
-    public static SalesOrderResponse from(SalesOrder so) {
-        return new SalesOrderResponse(
-                so.getId(),
-                so.getOrderNumber(),
-                so.getPartner().getId(),
-                so.getPartner().getName(),
-                so.getWriterId(),
-                so.getManagerId(),
-                so.getOrderDate(),
-                so.getShipDate(),
-                so.getTotalAmount(),
-                so.getStatus(),
-                so.getCancelReason(),
-                so.getCreatedAt(),
-                so.getConfirmedAt(),
-                so.getShippedAt(),
-                so.getCompletedAt(),
-                so.getLines().stream().map(SalesOrderLineResponse::from).toList()
-        );
-    }
-}
-
-public record SalesOrderLineResponse(
-        Long lineId,
-        Long itemId,
-        String itemCode,
-        String itemName,
-        Integer quantity,
-        BigDecimal unitPrice,
-        BigDecimal lineAmount
-) {
-    public static SalesOrderLineResponse from(SalesOrderLine l) {
-        return new SalesOrderLineResponse(
-                l.getId(),
-                l.getItem().getId(),
-                l.getItem().getItemCode(),
-                l.getItem().getName(),
-                l.getQuantity(),
-                l.getUnitPrice(),
-                l.getLineAmount()
-        );
-    }
-}
-
-
-// 학습 질문:
-// Q1. /my 와 /pending 의 권한 차이를 정리해 보세요.
-//     A:
-// Q2. 수주 작성 후 자동으로 confirm 까지 하지 않고 별도 호출로 둔 이유는?
-//     A:
-// Q3. 처리자(매니저)가 본인이 아닌 사람이 /pending 을 호출하면 어떻게 막혀야 하는가?
-//     A:
-// Q4. cancel 의 권한 검사를 Controller @PreAuthorize 가 아닌 Service 가드에 둔 이유는?
-//     A:
-// Q5. lines 가 null 이 아니라 빈 List 일 때도 막으려면 어떤 검증을 추가해야 할까?
-//     A:
+// 선택형 [W353] 현재 담당자 미지정 CONFIRMED 수주는 누가 처리 대기 목록에서 조회하는가?
+//    1. ADMIN 또는 MANAGER의 역할 기반 목록에 포함될 수 있다
+//    2. 반드시 아무에게도 보이지 않는다
+//    3. 모든 비로그인 사용자에게만 보인다
+//    4. 작성자가 바뀌어야만 보인다
+//    정답·해설: practice/workbook-questions.md#w353
+//    정답: 1번 · 현재 pending은 상태로 조회하고 역할을 검사합니다. 담당자별 제한 목록은 별도 대안 정책입니다.

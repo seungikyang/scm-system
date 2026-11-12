@@ -28,9 +28,11 @@ class FlywayStartupIntegrationTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    @DisplayName("시작 시 V1을 자동 적용한 뒤 JPA가 매핑을 검증한다")
+    @DisplayName("시작 시 V1과 V2를 자동 적용한 뒤 JPA가 매핑을 검증한다")
     void startup_migratesBeforeJpaValidation() {
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("1");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("2");
+        assertThat(jdbcTemplate.queryForObject("select count(*) from sales_orders", Long.class)).isZero();
+        assertThat(jdbcTemplate.queryForObject("select count(*) from notices", Long.class)).isZero();
         assertThat(flyway.info().pending()).isEmpty();
         assertThat(jdbcTemplate.queryForObject("select count(*) from users", Long.class)).isZero();
         assertThat(jdbcTemplate.queryForObject("select count(*) from purchase_orders", Long.class)).isZero();

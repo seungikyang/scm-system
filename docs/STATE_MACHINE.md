@@ -1,4 +1,4 @@
-# 발주 상태 전이 (State Machine)
+# 발주·수주 상태 전이 (State Machine)
 
 > [HTML 학습 목차](../index.html) · [문서 지도](./INDEX.md) · [루프 엔지니어링](./LOOP_ENGINEERING.md) · [실행 README](../README.md)
 
@@ -34,7 +34,7 @@
 stateDiagram-v2
     [*] --> DRAFT : create
     DRAFT --> REQUESTED : submit (작성자)
-    REQUESTED --> APPROVED : approve (ADMIN/MANAGER)
+    REQUESTED --> APPROVED : approve (ADMIN/MANAGER, 작성자 본인 제외)
     REQUESTED --> REJECTED : reject (ADMIN/MANAGER, 사유 필수)
     APPROVED --> RECEIVED : receive (ADMIN/MANAGER, +재고 증가)
     DRAFT --> CANCELED : cancel (작성자)
@@ -53,13 +53,15 @@ stateDiagram-v2
 |---|---|---|---|---|---|---|
 | T1 | (없음) | create `POST /api/purchase-orders` | DRAFT | 로그인 사용자 | orderNumber 채번, writerId, totalAmount/lineAmount 서버 계산, status=DRAFT, createdAt | (빌더 + addLine) |
 | T2 | DRAFT | submit `PATCH .../submit` | REQUESTED | 작성자 본인 | status, updatedAt | `submit()` |
-| T3 | REQUESTED | approve `PATCH .../approve` | APPROVED | ADMIN/MANAGER | status, approverId, approvedAt | `approve(approverId)` |
-| T4 | REQUESTED | reject `PATCH .../reject` (사유 필수) | REJECTED | ADMIN/MANAGER | status, rejectReason, approverId | `reject(approverId, reason)` |
+| T3 | REQUESTED | approve `PATCH .../approve` | APPROVED | ADMIN/MANAGER (작성자 본인 제외) | status, approverId, approvedAt | `approve(approverId)` |
+| T4 | REQUESTED | reject `PATCH .../reject` (사유 필수) | REJECTED | ADMIN/MANAGER (작성자 본인 제외) | status, rejectReason, approverId | `reject(approverId, reason)` |
 | T5 | APPROVED | receive `PATCH .../receive` | RECEIVED | ADMIN/MANAGER | status, receivedAt, **라인별 Stock.quantity 증가** | `receive()` + Service |
 | T6 | DRAFT | cancel `PATCH .../cancel` | CANCELED | 작성자 본인 | status, updatedAt | `cancel()` |
 | T7 | REQUESTED | cancel | CANCELED | 작성자 본인 | status, updatedAt | `cancel()` |
 | T8 | APPROVED | cancel | CANCELED | 작성자 본인 | status, updatedAt | `cancel()` |
 
+> T3/T4 결재는 작성자가 아닌 사람이 해야 합니다. ADMIN/MANAGER라도 자기가 작성한 발주는 승인·반려할 수 없고(`requireNotWriter`, `ACCESS_DENIED`), 멈추려면 T6~T8 취소를 사용합니다.
+>
 > T6~T8의 취소 권한은 **작성자 본인**(권한 등급 무관)입니다. 취소 사유는 받지 않습니다. APPROVED 취소는 아직 재고가 증가하기 전이므로 재고 롤백이 필요 없습니다(RECEIVED만 취소 불가).
 
 ---
@@ -99,7 +101,8 @@ private void requireCancelable() {
 |---|---|---|
 | create | 로그인 필요 | `Authz.requireLogin` |
 | submit / cancel | 작성자 본인 | `requireWriter` (`writerId == loginUser.id()` 불일치 시 `ACCESS_DENIED`) |
-| approve / reject / receive | 역할 등급 | `Authz.requireRole(ADMIN, MANAGER)` |
+| approve / reject | 역할 등급 + 작성자 아님 | `Authz.requireRole(ADMIN, MANAGER)` + `requireNotWriter` |
+| receive | 역할 등급 | `Authz.requireRole(ADMIN, MANAGER)` |
 | 상세 조회 | 작성자 본인 또는 ADMIN/MANAGER | `requireDetailAccess` |
 
 ### 4.2 동시 승인 / 입고 (낙관적 락)
@@ -128,5 +131,31 @@ private void requireCancelable() {
 |---|---|
 | `canSubmit` | `status == DRAFT` && 작성자 본인 |
 | `canCancel` | `status ∈ {DRAFT, REQUESTED, APPROVED}` && 작성자 본인 |
-| `canApproveReject` | `status == REQUESTED` && role ∈ {ADMIN, MANAGER} |
+| `canApproveReject` | `status == REQUESTED` && role ∈ {ADMIN, MANAGER} && 작성자 본인 아님 |
 | `canReceive` | `status == APPROVED` && role ∈ {ADMIN, MANAGER} |
+
+
+## 6. 수주 상태 전이
+
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT : 작성
+    DRAFT --> CONFIRMED : 작성자 확정
+    CONFIRMED --> SHIPPED : ADMIN/MANAGER 출고, 재고 차감
+    SHIPPED --> COMPLETED : ADMIN/MANAGER 완료
+    DRAFT --> CANCELED : 취소 사유 필수
+    CONFIRMED --> CANCELED : 취소 사유 필수
+    SHIPPED --> CANCELED : ADMIN/MANAGER만, 취소 사유 필수, 재고 복원
+    COMPLETED --> [*]
+    CANCELED --> [*]
+```
+
+| 액션 | 현재 상태 | 권한 | 부수효과 |
+|---|---|---|---|
+| confirm | DRAFT | 작성자 본인 | confirmedAt 기록 |
+| ship | CONFIRMED | ADMIN/MANAGER | managerId·shippedAt 기록, 모든 라인 재고 차감 |
+| complete | SHIPPED | ADMIN/MANAGER | managerId·completedAt 기록 |
+| cancel | DRAFT/CONFIRMED | 작성자/ADMIN/MANAGER | 1~500자 cancelReason 기록 |
+| cancel | SHIPPED | ADMIN/MANAGER | 1~500자 cancelReason 기록, 재고 복원(실물 반품 확인 후 처리) |
+
+수주 행을 비관적 잠금하여 중복 상태 전이를 직렬화합니다. 출고와 출고 후 취소는 발주 입고와 같은 Item 행을 ID 순서로 잠급니다. 같은 품목을 여러 라인에 넣어도 재고가 음수가 되지 않으며, 한 라인이라도 부족하면 상태와 앞서 차감한 재고를 모두 롤백합니다. COMPLETED/CANCELED는 종료 상태입니다.

@@ -19,7 +19,7 @@ Java 17과 Spring Boot로 거래처·품목 마스터, 다단계 발주 승인·
 | 보안 | 세션 인증, Service 인가, CSRF와 보안 헤더 |
 | 테스트 | 단위·MockMvc·H2 흐름/동시성 테스트와 MySQL 스키마 테스트 |
 | 문제 해결 | OSIV, 채번, 동시 입고, 빌드 환경 트러블슈팅 |
-| 학습 설계 | 40개 빈칸 모듈과 참조 구현 연결 |
+| 학습 설계 | 40개 선택형 모듈과 참조 구현 연결 |
 
 ## 3. 3분 데모 시나리오
 
@@ -31,23 +31,194 @@ Java 17과 Spring Boot로 거래처·품목 마스터, 다단계 발주 승인·
 6. 입고 처리 후 재고 화면에서 현재고와 안전재고 부족 상태를 확인한다.
 7. 동시 발주·동시 최초 입고 테스트와 잘못된 상태 전이 차단을 보여준다.
 
-## 4. 핵심 면접 질문
+## 4. 핵심 면접 4지 선다
 
-- 왜 발주 헤더와 라인은 하나의 aggregate로 보았나요?
-- 왜 Partner, Item, User는 JPA 연관관계 대신 ID로 참조했나요?
-- OSIV를 끄면 어떤 문제가 생기고 표시값을 어디에서 채우나요?
-- 동시에 두 관리자가 같은 발주를 승인하면 어떻게 되나요?
-- 입고 상태 변경과 재고 증가를 왜 하나의 트랜잭션으로 묶나요?
-- 발주번호 `count + 1` 대신 최대 번호와 UNIQUE 재시도를 선택한 이유는 무엇인가요?
-- Controller와 Service 양쪽에서 권한을 다르게 다루는 이유는 무엇인가요?
-- H2와 MySQL의 동작 차이를 어떤 CI 단계로 검증하나요?
-- 입고 이력이 없는 품목을 재고 화면에서 누락하지 않는 방법은 무엇인가요?
 
-답변은 “사용 기술”보다 `문제 → 선택 → 대안 → 검증 결과` 순서로 준비한다.
+### W233. 발주 헤더와 라인을 같은 aggregate로 관리하는 이유는?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=233)
+
+1. 라인·총금액·상태 불변식을 주문 단위로 일관되게 관리하기 위해서다
+2. 모든 거래처를 같은 엔티티로 합치기 위해서다
+3. 모든 라인을 독립 트랜잭션으로 저장하기 위해서다
+4. 권한 검사를 생략하기 위해서다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 라인·총금액·상태 불변식을 주문 단위로 일관되게 관리하기 위해서다
+
+주문 전체가 일관된 구성·금액·생명주기 경계를 갖게 합니다.
+
+</details>
+
+
+
+### W231. 주문에서 거래처·품목·사용자를 ID로 참조하는 설계 이유는?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=231)
+
+1. ID만 저장하면 모든 무결성이 자동 보장된다
+2. JPA 연관관계는 기술적으로 사용할 수 없다
+3. 과거 주문을 자동 삭제하기 위해서다
+4. 집합 간 결합·로딩 범위를 줄이고 Service에서 존재·권한을 검증한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 집합 간 결합·로딩 범위를 줄이고 Service에서 존재·권한을 검증한다
+
+ID 참조는 선택이며 탐색·참조 무결성 확인 책임을 명시적으로 관리해야 합니다.
+
+</details>
+
+
+
+### W120. OSIV=false에서 LAZY 관계를 DTO로 변환할 위치는?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=120)
+
+1. 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+2. 브라우저가 JPA 프록시를 조회하게 한다
+3. 트랜잭션이 끝난 뒤 모든 관계를 처음 읽는다
+4. JSON 응답에 EntityManager를 넣는다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+
+영속성 컨텍스트가 종료된 뒤의 지연 로딩을 피하도록 조회와 변환을 설계합니다.
+
+</details>
+
+
+
+### W056. 같은 발주를 두 관리자가 동시에 승인하면 필요한 대응은?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=56)
+
+1. 둘 다 승인 이력을 덮어써도 무방하다
+2. 버전 충돌을 감지해 중복 상태 변경을 차단한다
+3. 인터넷 속도가 빠르면 충돌이 없다
+4. 각 요청이 다른 DB를 초기화한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 버전 충돌을 감지해 중복 상태 변경을 차단한다
+
+PurchaseOrder의 Version 낙관적 락이 경쟁 상태 변경을 감지합니다.
+
+</details>
+
+
+
+### W055. 입고 상태 변경과 재고 증가를 같은 트랜잭션으로 묶는 이유는?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=55)
+
+1. 상태만 성공하고 재고 실패는 무시하기 위해서다
+2. 조회수를 증가시키기 위해서다
+3. 권한을 USER로 바꾸기 위해서다
+4. 둘 중 하나가 실패하면 전체를 되돌리기 위해서다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 둘 중 하나가 실패하면 전체를 되돌리기 위해서다
+
+입고 이벤트와 모든 재고 반영은 원자적인 업무 작업입니다.
+
+</details>
+
+
+
+### W049. 동시 발주번호 채번의 안전한 전략은?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=49)
+
+1. count + 1만 읽으면 항상 유일하다
+2. 사용자 이름만 발주번호로 쓴다
+3. 같은 번호를 허용하고 나중에 주문을 삭제한다
+4. DB unique와 충돌 재시도 등 동시성 대책을 결합한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · DB unique와 충돌 재시도 등 동시성 대책을 결합한다
+
+참조 구현은 최대 번호와 unique 충돌의 독립 트랜잭션 재시도를 사용합니다.
+
+</details>
+
+
+
+### W084. 현재 보안 책임 분담은?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=84)
+
+1. Security가 모든 세션 사용자 인가를 자동으로 맡는다
+2. Thymeleaf만 모든 인가를 수행한다
+3. Repository가 세션 쿠키를 발급한다
+4. Interceptor·Service는 인증/인가, Security는 CSRF·헤더를 맡는다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · Interceptor·Service는 인증/인가, Security는 CSRF·헤더를 맡는다
+
+현재 참조 구현과 Spring Security가 전체 인증을 맡는 대안 설계를 구분합니다.
+
+</details>
+
+
+
+### W232. H2와 실제 MySQL의 차이를 검증하는 방법은?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=232)
+
+1. H2 테스트만으로 모든 MySQL 동작을 확정한다
+2. MySQL 버전 문자열만 문서에 쓴다
+3. 실제 MySQL에서 mysqlSchemaTest 등 프로필별 검증을 수행한다
+4. 테스트 없이 ddl-auto=update로 바꾼다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 실제 MySQL에서 mysqlSchemaTest 등 프로필별 검증을 수행한다
+
+Flyway 적용과 JPA validate를 실제 MySQL에서 별도로 확인합니다.
+
+</details>
+
+
+
+### W230. 입고 이력이 없는 품목도 재고 화면에 표시하려면?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=230)
+
+1. Item을 기준으로 Stock을 LEFT JOIN하고 없는 재고를 0으로 처리한다
+2. Stock 테이블만 조회한다
+3. INNER JOIN만 사용한다
+4. 입고 이력이 없으면 품목을 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · Item을 기준으로 Stock을 LEFT JOIN하고 없는 재고를 0으로 처리한다
+
+재고 행이 없는 품목을 누락하지 않도록 품목 중심 조회와 null 처리로 구성합니다.
+
+</details>
+
+
+
+정답·해설을 확인한 뒤 `문제 → 선택 → 대안 → 검증 결과`를 실제 코드와 대조한다.
 
 ## 5. 이력서 문장 만들기
 
-아래 문장은 그대로 복사하기보다 수치와 자신의 판단을 채운다.
+아래 문장은 구현 증거의 예시입니다. 설계 4지 선다의 정답·해설과 실제 코드에서 설명의 근거를 확인합니다.
 
 ```text
 - Java 17/Spring Boot 기반 SCM에서 발주 작성부터 승인·입고까지 6개 상태의 전이를 도메인 규칙으로 구현했습니다.

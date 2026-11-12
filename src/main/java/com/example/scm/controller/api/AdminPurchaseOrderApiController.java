@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 다른 프로그램이 URL로 요청하는 발주 관리의 접수 창구입니다.
+ * 요청을 Service 담당자에게 전달하고 결과를 JSON 자료로 보냅니다. API는 프로그램끼리 요청과 결과를 주고받는 통로입니다.
+ *
  * 관리자와 매니저가 발주를 결재하고 입고 처리하는 REST API.
  * 학습 모듈 19에서 사용자용 PurchaseOrderApiController 다음에 읽으며, URL 분리와 실제
  * Service 권한 검사가 각각 어떤 역할을 하는지 비교한다.

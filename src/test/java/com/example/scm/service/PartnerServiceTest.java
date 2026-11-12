@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,7 @@ class PartnerServiceTest {
     @DisplayName("ADMIN은 중복되지 않은 사업자번호로 활성 거래처를 등록한다")
     void create_success() {
         given(partnerRepository.existsByBusinessNumber("123-45-67890")).willReturn(false);
-        given(partnerRepository.save(any(Partner.class))).willAnswer(invocation -> {
+        given(partnerRepository.saveAndFlush(any(Partner.class))).willAnswer(invocation -> {
             Partner partner = invocation.getArgument(0);
             ReflectionTestUtils.setField(partner, "id", 5L);
             return partner;
@@ -66,7 +67,7 @@ class PartnerServiceTest {
         given(partnerRepository.existsByBusinessNumber("123-45-67890")).willReturn(true);
 
         assertCode(() -> service.create(form(), admin), ErrorCode.DUPLICATE_BUSINESS_NUMBER);
-        verify(partnerRepository, never()).save(any());
+        verify(partnerRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -116,6 +117,16 @@ class PartnerServiceTest {
                 .build();
         ReflectionTestUtils.setField(partner, "id", id);
         return partner;
+    }
+
+    @Test
+    @DisplayName("동시 등록으로 사전 확인을 통과해도 DB unique 위반은 DUPLICATE_BUSINESS_NUMBER로 알린다")
+    void create_concurrentDuplicate_mapsUniqueViolation() {
+        given(partnerRepository.existsByBusinessNumber("123-45-67890")).willReturn(false);
+        given(partnerRepository.saveAndFlush(any(Partner.class)))
+                .willThrow(new DataIntegrityViolationException("unique 사업자번호"));
+
+        assertCode(() -> service.create(form(), admin), ErrorCode.DUPLICATE_BUSINESS_NUMBER);
     }
 
     private void assertCode(org.junit.jupiter.api.function.Executable executable, ErrorCode expected) {

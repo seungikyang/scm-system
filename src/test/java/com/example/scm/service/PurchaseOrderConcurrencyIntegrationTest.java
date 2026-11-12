@@ -14,6 +14,7 @@ import com.example.scm.repository.PartnerRepository;
 import com.example.scm.repository.StockRepository;
 import com.example.scm.repository.UserRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -63,6 +64,35 @@ class PurchaseOrderConcurrencyIntegrationTest {
                 .extracting(PurchaseOrderCreateResponse::getOrderNumber)
                 .doesNotHaveDuplicates()
                 .allMatch(number -> number.matches("PO-\\d{8}-\\d{4}"));
+    }
+
+    @Test
+    @DisplayName("같은 날 발주 10건이 동시에 몰려도 재시도 대기 덕분에 모두 서로 다른 번호로 저장된다")
+    void manyConcurrentCreatesAllSucceed() throws Exception {
+        LoginUser writer = loginUser("user@scm.com");
+        Partner supplier = activeSupplier();
+        Item item = activeItem();
+        int requestCount = 10;
+        ExecutorService executor = Executors.newFixedThreadPool(requestCount);
+        CountDownLatch ready = new CountDownLatch(requestCount);
+        CountDownLatch start = new CountDownLatch(1);
+        try {
+            List<Future<PurchaseOrderCreateResponse>> futures = new ArrayList<>();
+            for (int i = 0; i < requestCount; i++) {
+                futures.add(executor.submit(awaitStart(ready, start,
+                        () -> purchaseOrderService.create(request(supplier, item, 1), writer))));
+            }
+            assertThat(ready.await(5, TimeUnit.SECONDS)).isTrue();
+            start.countDown();
+            List<String> numbers = new ArrayList<>();
+            for (Future<PurchaseOrderCreateResponse> future : futures) {
+                // 예전에는 즉시 재시도로 같은 번호끼리 계속 부딪혀 일부가 채번 실패(INTERNAL_ERROR)했다.
+                numbers.add(future.get(30, TimeUnit.SECONDS).getOrderNumber());
+            }
+            assertThat(numbers).hasSize(requestCount).doesNotHaveDuplicates();
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     @Test

@@ -28,6 +28,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 우리가 공급사에서 사 올 물건을 적은 발주서 한 장입니다.
+ * 회사와 주문일은 공통 정보에, 물건별 수량과 가격은 lines라는 품목 목록에 보관합니다.
+ *
  * 한 건의 발주에서 공통으로 쓰는 정보를 담는 발주 헤더 엔티티.
  *
  * <p>학습 모듈 04: PurchaseOrderStatus → PurchaseOrderLine → 이 클래스 순서로 읽는다.
@@ -84,7 +87,7 @@ public class PurchaseOrder extends BaseTimeEntity {
     private PurchaseOrderStatus status = PurchaseOrderStatus.DRAFT;
 
     @Column(name = "reject_reason", length = 500)
-    private String rejectReason;                      // nullable
+    private String rejectReason;                      // 반려하기 전에는 사유가 없어도 됩니다.
 
     @Version
     @Column(name = "version", nullable = false)
@@ -96,6 +99,8 @@ public class PurchaseOrder extends BaseTimeEntity {
     @Column(name = "received_at")
     private LocalDateTime receivedAt;
 
+    // 발주서 한 장에 물건 줄이 여러 개 들어갑니다. cascade는 줄도 함께 저장하라는 설정입니다.
+    // orphanRemoval은 이 목록에서 연결을 끊은 줄을 데이터베이스에서도 지우게 합니다.
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrderLine> lines = new ArrayList<>();
 
@@ -113,6 +118,7 @@ public class PurchaseOrder extends BaseTimeEntity {
 
     /** 양쪽 객체를 함께 연결해 헤더 저장 시 라인도 cascade로 저장되게 한다. */
     public void addLine(PurchaseOrderLine line) {
+        // 발주서는 이 줄을 기억하고, 줄은 자신이 속한 발주서를 기억하도록 양쪽을 연결합니다.
         this.lines.add(line);
         line.setPurchaseOrder(this);
     }

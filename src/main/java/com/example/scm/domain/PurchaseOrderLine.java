@@ -18,6 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 발주서에 적힌 물건 한 종류의 주문 내역입니다.
+ * 연필 3개와 공책 2개를 주문하면 두 줄이 생깁니다. 각 줄의 금액은 수량 × 단가입니다.
+ *
  * 발주에 포함된 품목 한 줄을 나타내는 자식 엔티티.
  *
  * <p>학습 모듈 04: PurchaseOrderStatus 다음, PurchaseOrder 헤더 전에 읽는다.</p>

@@ -1,100 +1,75 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/NoticeService.java
-// 목표: 공지사항 CRUD + important 정렬 + 조회수 증가 정책을 채우세요.
-//       TRD 3.8.4 참고.
+// 공지사항 Service (TRD 3.8.4) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=12
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-@Service
-@RequiredArgsConstructor
-public class NoticeService {
+// 선택형 [W029] 중요 공지를 먼저, 같은 중요도에서 최신 공지를 보여 주는 정렬은?
+//    1. important ASC, createdAt ASC
+//    2. important DESC, createdAt DESC
+//    3. viewCount ASC만 적용
+//    4. 제목 길이만 오름차순
+//    정답·해설: practice/workbook-questions.md#w029
+//    정답: 2번 · 참조 구현은 중요도·생성시각·ID 내림차순으로 순서를 안정화합니다.
 
-    private final NoticeRepository noticeRepository;
-    private final UserRepository userRepository;
+// 선택형 [W057] 공지 등록·수정·삭제의 권한을 보장하는 곳은?
+//    1. 화면 버튼 표시 여부만 확인한다
+//    2. Service에서 ADMIN 여부를 검증한다
+//    3. 공지 제목에 ADMIN이 있으면 허용한다
+//    4. 조회수에 비례해 권한을 부여한다
+//    정답·해설: practice/workbook-questions.md#w057
+//    정답: 2번 · 여러 호출 경로에서 동일한 권한 규칙을 지켜야 합니다.
 
-    // ============ 등록 (ADMIN) ============
-    @Transactional
-    public NoticeResponse create(Long currentUserId, NoticeCreateRequest request) {
-        // TODO 01: ADMIN 권한 확인.
-        User writer = userRepository.findById(currentUserId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        if (writer.getRole() != UserRole.____) {
-            throw new BusinessException(ErrorCode.ACCESS_DENIED);
-        }
+// 선택형 [W058] 중요 공지 우선 목록의 핵심 정렬은?
+//    1. important 내림차순
+//    2. important 오름차순
+//    3. 작성자 이메일 길이순
+//    4. 조회수 0인 공지만 선택
+//    정답·해설: practice/workbook-questions.md#w058
+//    정답: 1번 · 중요도가 같으면 생성시각과 ID 등으로 순서를 안정화합니다.
 
-        Notice notice = Notice.create(
-            writer.getId(),
-            request.getTitle(),
-            request.getContent(),
-            request.getImportant()
-        );
+// 선택형 [W059] 공지 상세 조회에서 조회수를 증가시키는 설계의 주의점은?
+//    1. GET이면 DB 변경이 기술적으로 불가능하다
+//    2. 조회수는 보안 권한을 대체한다
+//    3. 별도 메서드로 나누면 동시성 검사가 자동 완성된다
+//    4. 미리보기·반복 GET도 증가시킬 수 있고 원자성을 보장해야 한다
+//    정답·해설: practice/workbook-questions.md#w059
+//    정답: 4번 · 현재 구현은 상세 조회에서 원자적 UPDATE를 수행합니다. 별도 API는 다른 설계 선택입니다.
 
-        return NoticeResponse.from(noticeRepository.save(notice));
-    }
+// 선택형 [W114] GET에서 조회수를 늘릴 때 주의할 점은?
+//    1. GET은 기술적으로 쓰기를 절대 수행하지 못한다
+//    2. 재요청·봇·캐시가 조회수 의미에 영향을 줄 수 있다
+//    3. 조회수 증가가 인증을 대체한다
+//    4. PATCH를 쓰면 중복 요청이 항상 사라진다
+//    정답·해설: practice/workbook-questions.md#w114
+//    정답: 2번 · 별도 증가 API도 가능한 대안이며 어느 방식이든 집계 의미와 원자성을 정해야 합니다.
 
-    // ============ 목록 ============
-    @Transactional(readOnly = true)
-    public Page<NoticeResponse> list(Pageable pageable) {
-        // TODO 02: 중요 공지 우선 + 최신순 정렬을 추가하세요.
-        Sort sort = Sort.by(Sort.Direction.____, "important")
-                        .and(Sort.by(Sort.Direction.____, "createdAt"));
-        Pageable sortedPageable = PageRequest.of(
-            pageable.getPageNumber(), pageable.getPageSize(), sort
-        );
-        return noticeRepository.findAll(sortedPageable).map(NoticeResponse::from);
-    }
+// 선택형 [W135] 조회수 원자적 증가 쿼리의 핵심은?
+//    1. DB에서 viewCount = viewCount + 1을 직접 실행한다
+//    2. 조회한 값을 브라우저에서 1 더해 덮어쓴다
+//    3. 항상 viewCount=1로 저장한다
+//    4. 공지 ID를 조회수로 바꾼다
+//    정답·해설: practice/workbook-questions.md#w135
+//    정답: 1번 · Modifying Query와 트랜잭션에서 DB가 증가 연산을 수행해 유실을 줄입니다.
 
-    // ============ 상세 (조회수 증가) ============
-    @Transactional
-    public NoticeResponse get(Long noticeId) {
-        Notice notice = noticeRepository.findById(noticeId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.____));
+// 선택형 [W255] 현재 공지 삭제 API의 저장 정책은?
+//    1. 모든 공지를 비활성화 플래그로만 처리한다
+//    2. ADMIN 권한을 확인하고 해당 공지 행을 실제 삭제한다
+//    3. 아무 USER가 전체 공지를 삭제한다
+//    4. 공지 삭제 시 발주를 함께 삭제한다
+//    정답·해설: practice/workbook-questions.md#w255
+//    정답: 2번 · NoticeService.delete는 권한 확인 후 delete를 호출합니다. soft delete는 대안 설계입니다.
 
-        // TODO 03: 조회수를 증가시키는 두 가지 방법 중 어떤 걸 선택할지 적어 보세요.
-        //   (a) 도메인 메서드 increaseViewCount() → race 가능
-        //   (b) Repository @Modifying @Query 원자 UPDATE
-        //   (c) 별도 PATCH /view 엔드포인트
-        // 선택: ____
-        notice.increaseViewCount();
+// 선택형 [W268] 컨트롤러에만 역할 검사를 두고 Service를 보호하지 않으면?
+//    1. DB unique가 모든 인가를 대신한다
+//    2. 메뉴 표시 조건이 모든 호출을 차단한다
+//    3. 컨트롤러 없는 호출은 Java에서 불가능하다
+//    4. 다른 진입 경로가 Service를 호출할 때 업무 인가를 우회할 수 있다
+//    정답·해설: practice/workbook-questions.md#w268
+//    정답: 4번 · 서버 업무 경계에서 필요한 인가를 보장해야 합니다.
 
-        return NoticeResponse.from(notice);
-    }
-
-    // ============ 수정 / 삭제 ============
-    @Transactional
-    public NoticeResponse update(Long currentUserId, Long noticeId, NoticeUpdateRequest request) {
-        User writer = userRepository.findById(currentUserId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        if (writer.getRole() != UserRole.ADMIN) {
-            throw new BusinessException(ErrorCode.ACCESS_DENIED);
-        }
-
-        Notice notice = noticeRepository.findById(noticeId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.NOTICE_NOT_FOUND));
-
-        // TODO 04: 도메인 메서드 호출.
-        notice.____(request.getTitle(), request.getContent(), request.getImportant());
-
-        return NoticeResponse.from(notice);
-    }
-
-    @Transactional
-    public void delete(Long currentUserId, Long noticeId) {
-        User user = userRepository.findById(currentUserId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        if (user.getRole() != UserRole.ADMIN) {
-            throw new BusinessException(ErrorCode.ACCESS_DENIED);
-        }
-
-        // TODO 05: 존재 여부를 먼저 확인할지, 바로 deleteById 를 호출할지 결정.
-        if (!noticeRepository.existsById(noticeId)) {
-            throw new BusinessException(ErrorCode.____);
-        }
-        noticeRepository.deleteById(noticeId);
-    }
-}
-
-// 학습 질문:
-// Q1. 권한 검증을 Service 에서 한 이유는?
-//     A:
-// Q2. important DESC 정렬에서 createdAt 까지 같이 정렬해야 결과가 안정적인 이유는?
-//     A:
-// Q3. 조회수 증가가 GET 안에 있을 때의 단점은?
-//     A:
+// 선택형 [W395] 없는 공지 ID의 삭제를 404로 정의한 API에서 알맞은 처리 흐름은?
+//    1. 존재 여부와 관계없이 항상 201을 반환한다
+//    2. 없는 공지를 자동으로 새로 만든다
+//    3. 기존 전체 공지를 삭제한다
+//    4. 미존재를 NOTICE_NOT_FOUND로 처리하고 존재하는 공지를 삭제한다
+//    정답·해설: practice/workbook-questions.md#w395
+//    정답: 4번 · 현재 공지 삭제는 대상을 조회하고 미존재를 NOTICE_NOT_FOUND로 거부합니다. 대안 exists 검사에서도 조회와 삭제 사이의 경쟁 상황을 별도로 고려합니다.

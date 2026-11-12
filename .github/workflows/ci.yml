@@ -33,6 +33,15 @@ jobs:
       - name: Test workbook and build application
         run: ./gradlew portfolioCheck --no-daemon
 
+      # Java 테스트에 포함되지 않는 학습 기록 검사는 Node.js로 실행해, 이어풀기 오류도 자동으로 찾습니다.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test study state
+        run: node --test src/test/js/study-state.test.cjs
+
       - name: Upload test report on failure
         if: failure()
         uses: actions/upload-artifact@v4

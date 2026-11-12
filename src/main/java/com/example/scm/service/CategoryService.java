@@ -15,11 +15,16 @@ import com.example.scm.dto.item.ItemListView;
 import com.example.scm.repository.CategoryRepository;
 import com.example.scm.repository.ItemRepository;
 import java.util.List;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 물건을 문구류, 전자제품처럼 묶는 분류를 관리합니다.
+ * 분류에 속한 물건이 남아 있으면 분류를 지울 수 없도록 검사합니다.
+ *
  * 카테고리 조회와 등록·수정·삭제 규칙을 담당하는 서비스.
  *
  * <p>학습 모듈 24: create → list/detail → update → delete 순서로 읽고, delete에서
@@ -41,23 +46,25 @@ public class CategoryService {
     @Transactional
     public Long create(CategoryForm form, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
-        validateNameUnique(form.getName());
+        String name = trimmed(form.getName());
+        validateNameUnique(name);
         Category category = Category.builder()
-                .name(form.getName())
+                .name(name)
                 .description(form.getDescription())
                 .build();
-        return categoryRepository.save(category).getId();
+        return flushUniqueName(() -> categoryRepository.saveAndFlush(category)).getId();
     }
 
     @Transactional
     public Long create(CategoryCreateRequest request, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
-        validateNameUnique(request.getName());
+        String name = trimmed(request.getName());
+        validateNameUnique(name);
         Category category = Category.builder()
-                .name(request.getName())
+                .name(name)
                 .description(request.getDescription())
                 .build();
-        return categoryRepository.save(category).getId();
+        return flushUniqueName(() -> categoryRepository.saveAndFlush(category)).getId();
     }
 
     // ===== 모듈 24-2: 목록과 상세 조회 =====
@@ -65,6 +72,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryView> list() {
         // 카테고리 엔티티와 소속 품목 수를 화면/API 전용 DTO 하나로 합친다.
+        // stream은 목록을 하나씩 살펴보는 도구입니다. map은 각 분류를 화면에 쓸 정보로 바꿉니다.
         return categoryRepository.findAllByOrderByNameAsc().stream()
                 .map(c -> CategoryView.from(c, itemRepository.countByCategoryId(c.getId())))
                 .toList();
@@ -96,27 +104,35 @@ public class CategoryService {
     public void update(Long categoryId, CategoryForm form, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         Category category = getEntity(categoryId);
-        // 이름이 실제로 바뀔 때만 중복 조회를 수행한다.
-        if (!category.getName().equals(form.getName())) {
-            validateNameUnique(form.getName());
-        }
-        category.update(form.getName(), form.getDescription());
+        String name = trimmed(form.getName());
+        validateNameUniqueExcept(name, categoryId);
+        category.update(name, form.getDescription());
+        flushUniqueName(() -> {
+            categoryRepository.flush();
+            return category;
+        });
     }
 
     @Transactional
     public void update(Long categoryId, CategoryUpdateRequest request, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         Category category = getEntity(categoryId);
-        if (!category.getName().equals(request.getName())) {
-            validateNameUnique(request.getName());
-        }
-        category.update(request.getName(), request.getDescription());
+        String name = trimmed(request.getName());
+        validateNameUniqueExcept(name, categoryId);
+        category.update(name, request.getDescription());
+        flushUniqueName(() -> {
+            categoryRepository.flush();
+            return category;
+        });
     }
 
     @Transactional
     public void delete(Long categoryId, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
-        Category category = getEntity(categoryId);
+        // 분류를 먼저 잠급니다. 같은 분류에 품목을 저장 중인 작업(ItemService의 findByIdForShare)이 있으면
+        // 그 작업이 끝날 때까지 기다린 뒤 품목 수를 세므로, 방금 저장된 품목을 놓치지 않습니다.
+        Category category = categoryRepository.findByIdForUpdate(categoryId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
         // DB 외래 키 오류에 맡기지 않고 사용자가 이해할 수 있는 업무 오류로 알려 준다.
         if (itemRepository.countByCategoryId(categoryId) > 0) {
             throw new BusinessException(ErrorCode.CATEGORY_HAS_ITEMS);
@@ -138,10 +154,36 @@ public class CategoryService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    // existsByName 확인과 저장 사이에 다른 요청이 같은 이름을 먼저 저장할 수 있습니다.
+    // 메서드 안에서 바로 flush해 DB unique 제약 위반을 여기서 잡고, 서버 오류(500) 대신
+    // 중복 이름 오류로 바꿔 알려 줍니다. 예외가 나면 트랜잭션 전체가 롤백됩니다.
+    private Category flushUniqueName(Supplier<Category> write) {
+        try {
+            return write.get();
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorCode.DUPLICATE_CATEGORY_NAME);
+        }
+    }
+
     private void validateNameUnique(String name) {
         if (categoryRepository.existsByName(name)) {
             throw new BusinessException(ErrorCode.DUPLICATE_CATEGORY_NAME);
         }
+    }
+
+    // 수정할 때는 자기 자신을 뺀 나머지 분류에서만 같은 이름을 찾습니다.
+    // MySQL은 대소문자를 구분하지 않고 비교하므로, 자신을 빼지 않으면 "abc"를 "ABC"로
+    // 바꾸는 수정이 자기 이름과 겹친다고 판단되어 항상 중복 오류가 납니다.
+    private void validateNameUniqueExcept(String name, Long categoryId) {
+        if (categoryRepository.existsByNameAndIdNot(name, categoryId)) {
+            throw new BusinessException(ErrorCode.DUPLICATE_CATEGORY_NAME);
+        }
+    }
+
+    // 앞뒤 공백만 다른 값(" 전자부품 "과 "전자부품")이 서로 다른 자료로 등록되지 않도록
+    // 이름·코드처럼 사람을 구별하는 값은 저장하고 비교하기 전에 앞뒤 공백을 지웁니다.
+    private static String trimmed(String value) {
+        return value == null ? null : value.trim();
     }
 
 }

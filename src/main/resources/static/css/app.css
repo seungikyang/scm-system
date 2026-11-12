@@ -46,7 +46,11 @@ a:hover {
     display: flex;
     align-items: center;
     padding: 0 24px;
-    height: 56px;
+    min-height: 56px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     box-shadow: var(--shadow);
 }
 
@@ -63,11 +67,13 @@ a:hover {
 
 .navbar .menu {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
     flex: 1;
 }
 
 .navbar .menu a {
+    white-space: nowrap;
     color: #d1d5db;
     padding: 8px 12px;
     border-radius: 6px;
@@ -640,6 +646,7 @@ textarea.invalid {
 
     .navbar .menu {
         order: 3;
+        flex-wrap: nowrap;
         flex-basis: 100%;
         overflow-x: auto;
         padding-bottom: 2px;

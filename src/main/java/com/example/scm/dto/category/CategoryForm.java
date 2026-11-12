@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 브라우저의 분류 등록·수정 화면에서 입력한 이름과 설명입니다.
+ * from 함수는 저장된 자료를 입력 양식으로 옮겨 수정 화면에 기존 값을 보여 줍니다.
+ *
  * 카테고리 등록/수정 폼 객체 (Web). th:object="${categoryForm}".
  */
 @Getter

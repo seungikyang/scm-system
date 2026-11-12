@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  발주 관리자·매니저가 주문을 조회하는 화면입니다. 상태와 거래처를 선택해 처리할 주문을 찾습니다.
+  상세 화면에서 실제 처리를 요청하면 서버가 다시 권한을 검사합니다.
+-->
 <head th:replace="~{fragments/layout :: head('발주 승인 관리 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>

@@ -1,74 +1,59 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/PurchaseOrderService.java (my/detail/cancel/adminList)
-// 목표: 내 발주 목록 / 상세 / 취소 + 관리자 목록 분기 조회를 채우세요. PRD 2.5.5 참고.
+// 발주 — 내 목록 / 상세 / 취소 + 관리자 목록 (PRD 2.5.5) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=29
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ============ 내 발주 목록 ============
-@Transactional(readOnly = true)
-public Page<PurchaseOrderResponse> myList(Long currentUserId, Pageable pageable) {
-    // TODO 01: 본인 작성 발주만 조회. URL 에 writerId 받지 않고 인증 사용자 기반.
-    return purchaseOrderRepository.findBy____(currentUserId, pageable)
-        .map(PurchaseOrderResponse::from);
-}
+// 선택형 [W124] 본인 발주 목록의 소유권 기준은?
+//    1. 요청 쿼리 writerId를 인증 없이 신뢰한다
+//    2. 클라이언트 이름만 비교한다
+//    3. 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+//    4. 모든 사용자에게 전체 목록을 반환한다
+//    정답·해설: practice/workbook-questions.md#w124
+//    정답: 3번 · URL 값 조작에 의한 IDOR를 서버 인증 정보 기반 조회로 방지합니다.
 
-// ============ 발주 상세 (본인 또는 ADMIN/MANAGER) ============
-@Transactional(readOnly = true)
-public PurchaseOrderResponse getDetail(Long currentUserId, Long purchaseOrderId) {
-    User user = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+// 선택형 [W125] 작성자 발주 취소가 허용되는 현재 상태 조합은?
+//    1. RECEIVED·CANCELED·REJECTED
+//    2. RECEIVED만
+//    3. DRAFT·REQUESTED·APPROVED
+//    4. 모든 상태
+//    정답·해설: practice/workbook-questions.md#w125
+//    정답: 3번 · 현재 PurchaseOrder는 입고 후 작성자 취소를 허용하지 않습니다.
 
-    PurchaseOrder po = purchaseOrderRepository.findById(purchaseOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.PURCHASE_ORDER_NOT_FOUND));
+// 선택형 [W126] 발주 상세 조회를 허용하는 현재 정책은?
+//    1. 작성자 또는 ADMIN/MANAGER
+//    2. 아무 비로그인 사용자
+//    3. 작성자가 아닌 USER만
+//    4. 공급사 이메일을 입력한 사람 모두
+//    정답·해설: practice/workbook-questions.md#w126
+//    정답: 1번 · 역할과 작성자 소유권을 인증된 사용자 기준으로 검사합니다.
 
-    // TODO 02: 권한 분기 — 작성자이거나 ADMIN/MANAGER여야 함.
-    boolean isOwner = po.getWriterId().equals(user.getId());
-    boolean isOperator = user.getRole() == UserRole.____ || user.getRole() == UserRole.____;
-    if (!isOwner && !isOperator) {
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
+// 선택형 [W127] 관리자 발주 목록의 기본 검색 조건은?
+//    1. 비밀번호와 세션 쿠키
+//    2. CSS 색상과 글꼴
+//    3. 조회수와 JWT 서명
+//    4. 상태와 거래처 조건
+//    정답·해설: practice/workbook-questions.md#w127
+//    정답: 4번 · 현재 관리자 목록은 status·partnerId 선택 조건을 사용합니다.
 
-    return PurchaseOrderResponse.from(po);
-}
+// 선택형 [W128] status와 partnerId가 선택 조건일 때 올바른 검색 방식은?
+//    1. 값이 없으면 항상 모든 주문을 삭제한다
+//    2. 전달된 조건만 만들어 AND로 결합한다
+//    3. 항상 둘 중 하나만 무조건 무시한다
+//    4. 조건이 둘이면 페이징이 금지된다
+//    정답·해설: practice/workbook-questions.md#w128
+//    정답: 2번 · Specification 등의 조합으로 여러 선택 조건을 일관되게 처리합니다.
 
-// ============ 발주 취소 (본인) ============
-@Transactional
-public void cancel(Long currentUserId, Long purchaseOrderId) {
-    PurchaseOrder po = purchaseOrderRepository.findById(purchaseOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.PURCHASE_ORDER_NOT_FOUND));
+// 선택형 [W129] 발주 목록에 from/to 기간을 추가할 때 필요한 것은?
+//    1. 기존 소유권 검사를 제거한다
+//    2. from을 비밀번호 필드로 저장한다
+//    3. 날짜 범위를 검증하고 조회 조건·API·테스트를 함께 확장한다
+//    4. 모든 날짜를 문자열 연결만으로 비교한다
+//    정답·해설: practice/workbook-questions.md#w129
+//    정답: 3번 · 기간 검색의 경계와 누락 값 정책을 명시하고 다른 검색 조건과 조합합니다.
 
-    try {
-        // TODO 03: 도메인 메서드 안에서 작성자 + DRAFT/REQUESTED/APPROVED 검증.
-        po.____(currentUserId);
-    } catch (AccessDeniedException e) {
-        throw new BusinessException(ErrorCode.ACCESS_DENIED, e.getMessage());
-    } catch (IllegalStateException e) {
-        throw new BusinessException(ErrorCode.INVALID_STATUS, e.getMessage());
-    }
-}
-
-// ============ 관리자 발주 목록 (FR-PO-009) ============
-@Transactional(readOnly = true)
-public Page<PurchaseOrderResponse> adminList(
-        PurchaseOrderStatus status,
-        Long partnerId,
-        Pageable pageable
-) {
-    // TODO 04: status / partnerId 조합 4가지를 분기.
-    Page<PurchaseOrder> page;
-    if (status != null && partnerId != null) {
-        page = purchaseOrderRepository.findByStatusAndPartner_Id(status, partnerId, pageable);
-    } else if (status != null) {
-        page = purchaseOrderRepository.findByStatus(status, pageable);
-    } else if (partnerId != null) {
-        page = purchaseOrderRepository.findByPartner_Id(partnerId, pageable);
-    } else {
-        page = purchaseOrderRepository.____(pageable);
-    }
-    return page.map(PurchaseOrderResponse::from);
-}
-
-// 학습 질문:
-// Q1. URL 에 writerId 를 받지 않고 currentUserId 로 조회하는 이유는?
-//     A:
-// Q2. 조건 분기를 4갈래 if-else 로 두는 게 부담스러우면 어떤 대안이 있는가?
-//     A:
-// Q3. 본인 + ADMIN/MANAGER 분기 권한 검사 코드를 헬퍼로 추출한다면 어떤 시그니처가 좋을까?
-//     A:
+// 선택형 [W352] 반복되는 역할·작성자 접근 검사를 헬퍼로 모을 때의 입력은?
+//    1. 서버가 인증한 사용자 정보와 대상의 소유권 정보
+//    2. 요청 본문의 isAdmin만
+//    3. 브라우저 색상만
+//    4. DB 비밀번호만
+//    정답·해설: practice/workbook-questions.md#w352
+//    정답: 1번 · 대상별 정책을 공통화하되 현재 역할과 실제 대상 관계를 서버 값으로 판단합니다.

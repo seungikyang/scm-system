@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 다른 프로그램이 URL로 요청하는 거래처 관련 작업의 접수 창구입니다.
+ * 요청을 Service 담당자에게 전달하고 결과를 JSON 자료로 보냅니다. API는 프로그램끼리 요청과 결과를 주고받는 통로입니다.
+ *
  * 거래처 CRUD를 JSON으로 제공하는 REST 컨트롤러.
  * 학습 모듈 25에서 PartnerService를 읽은 뒤 create → list → detail → update → deactivate
  * 순으로 Service 메서드와 일대일 대응시킨다.

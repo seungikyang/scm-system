@@ -1,5 +1,7 @@
 package com.example.scm.service;
 
+import com.example.scm.common.validation.PageableValidator;
+
 import com.example.scm.common.auth.Authz;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.common.exception.BusinessException;
@@ -16,12 +18,16 @@ import com.example.scm.dto.partner.PartnerUpdateRequest;
 import com.example.scm.repository.PartnerRepository;
 import com.example.scm.repository.spec.PartnerSpecs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 물건을 공급하거나 사 가는 회사인 거래처를 관리합니다.
+ * 중복 회사 번호나 권한을 검사하고 저장합니다. 비활성화는 과거 기록을 남긴 채 새 거래를 막는 처리입니다.
+ *
  * 거래처 조회와 등록·수정·비활성화 규칙을 담당하는 서비스.
  *
  * <p>학습 모듈 24: create → search/detail → update → deactivate 순서로 읽는다. 다음
@@ -42,11 +48,12 @@ public class PartnerService {
     @Transactional
     public Long create(PartnerForm form, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
-        validateBusinessNumberUnique(form.getBusinessNumber());
+        String businessNumber = trimmed(form.getBusinessNumber());
+        validateBusinessNumberUnique(businessNumber);
 
         Partner partner = Partner.builder()
-                .name(form.getName())
-                .businessNumber(form.getBusinessNumber())
+                .name(trimmed(form.getName()))
+                .businessNumber(businessNumber)
                 .partnerType(form.getPartnerType())
                 .contactName(form.getContactName())
                 .phone(form.getPhone())
@@ -54,17 +61,18 @@ public class PartnerService {
                 .address(form.getAddress())
                 .status(PartnerStatus.ACTIVE)
                 .build();
-        return partnerRepository.save(partner).getId();
+        return saveNewPartner(partner);
     }
 
     @Transactional
     public Long create(PartnerCreateRequest request, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
-        validateBusinessNumberUnique(request.getBusinessNumber());
+        String businessNumber = trimmed(request.getBusinessNumber());
+        validateBusinessNumberUnique(businessNumber);
 
         Partner partner = Partner.builder()
-                .name(request.getName())
-                .businessNumber(request.getBusinessNumber())
+                .name(trimmed(request.getName()))
+                .businessNumber(businessNumber)
                 .partnerType(request.getPartnerType())
                 .contactName(request.getContactName())
                 .phone(request.getPhone())
@@ -72,13 +80,15 @@ public class PartnerService {
                 .address(request.getAddress())
                 .status(PartnerStatus.ACTIVE)
                 .build();
-        return partnerRepository.save(partner).getId();
+        return saveNewPartner(partner);
     }
 
     // ===== 모듈 24-2: 목록과 상세 조회 =====
 
     @Transactional(readOnly = true)
     public Page<PartnerListView> search(PartnerSearchForm form, Pageable pageable) {
+        PageableValidator.validate(pageable, PageableValidator.PARTNER);
+        // pageable은 몇 번째 페이지를 몇 건씩 볼지 정합니다. 검색 결과를 화면용 요약으로 바꿉니다.
         return partnerRepository.findAll(PartnerSpecs.search(form), pageable)
                 .map(PartnerListView::from);
     }
@@ -100,7 +110,7 @@ public class PartnerService {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         Partner partner = getEntity(partnerId);
         // 영속 엔티티를 변경하면 트랜잭션 종료 시 JPA가 UPDATE SQL을 만든다.
-        partner.update(form.getName(), form.getPartnerType(), form.getContactName(),
+        partner.update(trimmed(form.getName()), form.getPartnerType(), form.getContactName(),
                 form.getPhone(), form.getEmail(), form.getAddress());
     }
 
@@ -108,7 +118,7 @@ public class PartnerService {
     public void update(Long partnerId, PartnerUpdateRequest request, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN);
         Partner partner = getEntity(partnerId);
-        partner.update(request.getName(), request.getPartnerType(), request.getContactName(),
+        partner.update(trimmed(request.getName()), request.getPartnerType(), request.getContactName(),
                 request.getPhone(), request.getEmail(), request.getAddress());
     }
 
@@ -132,6 +142,22 @@ public class PartnerService {
     private Partner getEntity(Long partnerId) {
         return partnerRepository.findById(partnerId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PARTNER_NOT_FOUND));
+    }
+
+    // existsByBusinessNumber 확인과 저장 사이에 다른 요청이 같은 사업자번호를 먼저 저장할 수 있습니다.
+    // 그때는 DB unique 제약이 막아 주므로, 서버 오류(500) 대신 중복 사업자번호 오류로 바꿔 알려 줍니다.
+    private Long saveNewPartner(Partner partner) {
+        try {
+            return partnerRepository.saveAndFlush(partner).getId();
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
+        }
+    }
+
+    // 앞뒤 공백만 다른 값(" 전자부품 "과 "전자부품")이 서로 다른 자료로 등록되지 않도록
+    // 이름·코드처럼 사람을 구별하는 값은 저장하고 비교하기 전에 앞뒤 공백을 지웁니다.
+    private static String trimmed(String value) {
+        return value == null ? null : value.trim();
     }
 
     private void validateBusinessNumberUnique(String businessNumber) {

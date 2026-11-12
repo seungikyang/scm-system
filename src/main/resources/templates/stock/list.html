@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  창고의 현재 수량과 부족한 물건을 확인하는 화면입니다. 검색 조건을 서버로 보내 결과를 받아 표시합니다.
+  안전재고는 미리 확보하려는 기준 수량이고, 부족 수량은 그 기준에 모자라는 개수입니다.
+-->
 <head th:replace="~{fragments/layout :: head('재고 현황 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>

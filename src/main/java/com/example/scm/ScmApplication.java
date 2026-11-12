@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
 
 /**
+ * 프로그램의 시작 버튼에 해당합니다. 실행하면 설정을 읽고 웹 서버를 켭니다.
+ * 웹 서버는 브라우저의 요청을 받아 로그인 화면이나 조회 결과를 보내 주는 프로그램입니다.
+ *
  * 애플리케이션 시작점(엔트리 포인트).
  *
  * <p>학습 모듈 00: build.gradle과 application.yml을 확인한 다음 이 파일에서 프로그램이
@@ -22,8 +25,11 @@ import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoCon
 public class ScmApplication {
 
     public static void main(String[] args) {
+        // main은 Java가 실행을 시작하는 약속된 함수 이름입니다. args에는 실행할 때 붙인 옵션이 들어옵니다.
         // 설정을 읽고 Spring 빈들을 연결하며 내장 웹 서버를 시작한다.
         // main()에서 Controller를 직접 호출하지 않고, HTTP 요청이 들어오면 MVC가 호출한다.
+        // Spring은 접수 창구(Controller), 업무 담당자(Service), 자료 창구(Repository)를 연결해 줍니다.
+        // 이후 브라우저 요청 → Controller → Service → Repository → 데이터베이스 순서로 일을 처리합니다.
         SpringApplication.run(ScmApplication.class, args);
     }
 }

@@ -1,162 +1,83 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/repository/*
-// 목표: PRD/TRD 의 모든 도메인 Repository 를 메서드 이름 쿼리로 정리하세요.
-//       07-repository 의 ItemRepository 와 짝이 되는 여섯 가지 Repository 입니다.
+// Repository — User / Partner / Category / PurchaseOrder / Notice / SalesOrder (TRD 3.5) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=31
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// =====================================================================
-// 1. UserRepository
-// =====================================================================
-public interface UserRepository extends JpaRepository<User, Long> {
+// 선택형 [W029] 중요 공지를 먼저, 같은 중요도에서 최신 공지를 보여 주는 정렬은?
+//    1. important ASC, createdAt ASC
+//    2. important DESC, createdAt DESC
+//    3. viewCount ASC만 적용
+//    4. 제목 길이만 오름차순
+//    정답·해설: practice/workbook-questions.md#w029
+//    정답: 2번 · 참조 구현은 중요도·생성시각·ID 내림차순으로 순서를 안정화합니다.
 
-    // TODO 01: 로그인용 이메일 조회.
-    Optional<User> findBy____(String email);
+// 선택형 [W035] existsByItemCode와 findByItemCode의 차이는?
+//    1. 앞은 존재 여부, 뒤는 품목 조회를 표현한다
+//    2. 둘 다 모든 주문을 삭제한다
+//    3. exists는 페이지 목록을 반환한다
+//    4. find는 HTTP 경로를 등록한다
+//    정답·해설: practice/workbook-questions.md#w035
+//    정답: 1번 · Spring Data는 메서드 이름의 접두사와 속성 조건으로 쿼리를 구성합니다.
 
-    // TODO 02: 회원가입 시 중복 검사.
-    boolean existsBy____(String email);
-}
+// 선택형 [W049] 동시 발주번호 채번의 안전한 전략은?
+//    1. count + 1만 읽으면 항상 유일하다
+//    2. 사용자 이름만 발주번호로 쓴다
+//    3. 같은 번호를 허용하고 나중에 주문을 삭제한다
+//    4. DB unique와 충돌 재시도 등 동시성 대책을 결합한다
+//    정답·해설: practice/workbook-questions.md#w049
+//    정답: 4번 · 참조 구현은 최대 번호와 unique 충돌의 독립 트랜잭션 재시도를 사용합니다.
 
-// =====================================================================
-// 2. PartnerRepository (거래처)
-// =====================================================================
-public interface PartnerRepository extends JpaRepository<Partner, Long> {
+// 선택형 [W133] findByPartner_BusinessNumber의 속성 경로 의미는?
+//    1. HTTP 쿠키 이름 조건이다
+//    2. 연관된 partner의 businessNumber 조건이다
+//    3. 테이블 이름을 BusinessNumber로 변경한다
+//    4. 모든 파트너를 삭제한다
+//    정답·해설: practice/workbook-questions.md#w133
+//    정답: 2번 · 중첩 속성 탐색 구분자를 사용해 연관관계의 속성을 조회합니다.
 
-    // TODO 03: 사업자번호 중복 검사.
-    boolean existsByBusinessNumber(String businessNumber);
+// 선택형 [W134] JPQL orderDate BETWEEN :from AND :to의 일반적 경계는?
+//    1. 양 끝을 모두 제외한다
+//    2. 날짜와 무관하게 모든 행을 삭제한다
+//    3. from만 사용하고 to는 무시한다
+//    4. 양 끝 날짜를 포함하는 범위 조건이다
+//    정답·해설: practice/workbook-questions.md#w134
+//    정답: 4번 · 날짜 범위 조건과 from≤to 검증을 함께 적용합니다.
 
-    // TODO 04: 사업자번호로 조회. (관리자 화면 자동완성 등)
-    Optional<Partner> findByBusinessNumber(String businessNumber);
+// 선택형 [W135] 조회수 원자적 증가 쿼리의 핵심은?
+//    1. DB에서 viewCount = viewCount + 1을 직접 실행한다
+//    2. 조회한 값을 브라우저에서 1 더해 덮어쓴다
+//    3. 항상 viewCount=1로 저장한다
+//    4. 공지 ID를 조회수로 바꾼다
+//    정답·해설: practice/workbook-questions.md#w135
+//    정답: 1번 · Modifying Query와 트랜잭션에서 DB가 증가 연산을 수행해 유실을 줄입니다.
 
-    // TODO 05: 유형 필터 (SUPPLIER/CUSTOMER/BOTH) + 페이징.
-    Page<Partner> findByPartnerType(PartnerType type, Pageable pageable);
+// 선택형 [W136] 복잡해진 메서드 이름 쿼리를 정리하는 기준은?
+//    1. 메서드 이름을 무한히 늘린다
+//    2. Controller에 SQL 문자열을 모두 붙인다
+//    3. 가독성·조합 조건·조인 요구에 따라 Query나 Specification을 선택한다
+//    4. 조회 조건을 문서에서 삭제한다
+//    정답·해설: practice/workbook-questions.md#w136
+//    정답: 3번 · 명시 쿼리와 동적 조건 추상화의 목적에 맞게 선택합니다.
 
-    // TODO 06: 이름 또는 사업자번호 contains 검색 + 페이징.
-    Page<Partner> findByNameContainingOr____Containing(
-            String nameKeyword,
-            String businessNumberKeyword,
-            Pageable pageable
-    );
-}
+// 선택형 [W230] 입고 이력이 없는 품목도 재고 화면에 표시하려면?
+//    1. Item을 기준으로 Stock을 LEFT JOIN하고 없는 재고를 0으로 처리한다
+//    2. Stock 테이블만 조회한다
+//    3. INNER JOIN만 사용한다
+//    4. 입고 이력이 없으면 품목을 삭제한다
+//    정답·해설: practice/workbook-questions.md#w230
+//    정답: 1번 · 재고 행이 없는 품목을 누락하지 않도록 품목 중심 조회와 null 처리로 구성합니다.
 
-// =====================================================================
-// 3. CategoryRepository
-// =====================================================================
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+// 선택형 [W354] 파생 쿼리 메서드의 속성과 DB 컬럼 이름의 관계는?
+//    1. DB 컬럼 이름만을 Java 메서드로 무조건 그대로 파싱한다
+//    2. 컬럼명 변경은 HTTP 경로만 변경한다
+//    3. 엔티티 속성을 기준으로 파싱하며 Column 매핑이 DB 이름에 연결한다
+//    4. 속성명을 바꿔도 파생 쿼리는 항상 자동 수정된다
+//    정답·해설: practice/workbook-questions.md#w354
+//    정답: 3번 · 속성명을 바꾸면 메서드 경로를 함께 고쳐야 하며 DB 컬럼만 변경하는 경우 매핑을 대조합니다.
 
-    // TODO 07: 카테고리명 중복 검사.
-    boolean existsByName(String name);
-
-    Optional<Category> findByName(String name);
-}
-
-// =====================================================================
-// 4. ItemRepository (07 에서 다룬 메서드와 일관성 맞추기)
-// =====================================================================
-public interface ItemRepository extends JpaRepository<Item, Long> {
-
-    boolean existsByItemCode(String itemCode);
-    Optional<Item> findByItemCode(String itemCode);
-
-    // TODO 08: 카테고리별 품목 수 — 카테고리 삭제 검증에 사용.
-    long countByCategory_Id(Long categoryId);
-
-    Page<Item> findByCategory_Id(Long categoryId, Pageable pageable);
-    Page<Item> findByNameContainingOrItemCodeContaining(
-            String nameKeyword, String codeKeyword, Pageable pageable);
-    Page<Item> findByStatus(ItemStatus status, Pageable pageable);
-
-    // TODO 09: 상세 조회용 fetch join (LazyInitializationException 방지).
-    @Query("SELECT i FROM Item i JOIN ____ i.category WHERE i.id = :id")
-    Optional<Item> findDetailById(@Param("id") Long id);
-}
-
-// =====================================================================
-// 5. PurchaseOrderRepository
-// =====================================================================
-public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
-
-    // TODO 10: 내 발주 목록 (페이징).
-    Page<PurchaseOrder> findByWriterId(Long writerId, Pageable pageable);
-
-    // TODO 11: 거래처별 발주 수 — 거래처 삭제 검증에 사용.
-    long countByPartner_Id(Long partnerId);
-
-    // TODO 12: 관리자용 — 상태별 / 거래처별 / (둘 다) 조회.
-    Page<PurchaseOrder> findByStatus(PurchaseOrderStatus status, Pageable pageable);
-    Page<PurchaseOrder> findByPartner_Id(Long partnerId, Pageable pageable);
-    Page<PurchaseOrder> findByStatusAndPartner_Id(
-            PurchaseOrderStatus status, Long partnerId, Pageable pageable);
-
-    // TODO 13: 발주일 BETWEEN 검색.
-    @Query("""
-        SELECT po FROM PurchaseOrder po
-        WHERE po.orderDate ____ :from AND :to
-        ORDER BY po.orderDate DESC
-        """)
-    Page<PurchaseOrder> searchByOrderDateRange(
-            @Param("from") LocalDate from,
-            @Param("to") LocalDate to,
-            Pageable pageable);
-
-    // TODO 14: 헤더 + 라인 fetch join (상세 조회 N+1 방지).
-    @Query("""
-        SELECT DISTINCT po FROM PurchaseOrder po
-        LEFT JOIN ____ po.lines
-        WHERE po.id = :id
-        """)
-    Optional<PurchaseOrder> findDetailById(@Param("id") Long id);
-
-    // TODO 15: 동일 발주 동시 승인 방지를 위한 비관적 락 조회.
-    @Lock(LockModeType.____)
-    @Query("SELECT po FROM PurchaseOrder po WHERE po.id = :id")
-    Optional<PurchaseOrder> findByIdForUpdate(@Param("id") Long id);
-}
-
-// =====================================================================
-// 6. NoticeRepository
-// =====================================================================
-public interface NoticeRepository extends JpaRepository<Notice, Long> {
-
-    // 중요 공지를 위로 끌어올리려면 보통 어디서(Service 정렬 / Repository 쿼리) 해결할까요?
-    // → 단순 정렬은 Pageable + Sort 로 충분합니다.
-    //   복합 정렬이 자주 쓰이면 default Sort 빈을 두는 방식도 가능.
-
-    // TODO 16: 조회수 원자적 증가 — 동시성 충돌 회피.
-    @____
-    @Query("UPDATE Notice n SET n.viewCount = n.viewCount + 1 WHERE n.id = :id")
-    int increaseViewCount(@Param("id") Long id);
-}
-
-// =====================================================================
-// 7. SalesOrderRepository
-// =====================================================================
-public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
-
-    // TODO 17: 내가 작성한 수주 목록.
-    Page<SalesOrder> findByWriterId(Long writerId, Pageable pageable);
-    Page<SalesOrder> findByWriterIdAndStatus(
-            Long writerId, SalesOrderStatus status, Pageable pageable);
-
-    // TODO 18: 매니저가 처리할 수주 목록.
-    Page<SalesOrder> findByManagerIdAndStatus(
-            Long managerId, SalesOrderStatus status, Pageable pageable);
-
-    // TODO 19: 처리 대기 (status = CONFIRMED).
-    Page<SalesOrder> findByStatus(SalesOrderStatus status, Pageable pageable);
-
-    Page<SalesOrder> findByPartner_Id(Long partnerId, Pageable pageable);
-    Page<SalesOrder> findByStatusAndPartner_Id(
-            SalesOrderStatus status, Long partnerId, Pageable pageable);
-
-    long countByPartner_Id(Long partnerId);
-
-    // 학습 질문 (한 줄 답):
-    // Q1. 메서드 이름이 너무 길어지면 어떤 시점에 @Query 로 옮길까?
-    //     A:
-    // Q2. Spring Data JPA 가 메서드 이름을 어떤 규칙으로 파싱하는지 한 줄로 적어 보세요.
-    //     A:
-    // Q3. 중간에 컬럼명이 바뀌었을 때, 메서드 이름 쿼리는 어떻게 깨지는가? (Property → Column 매핑 관점)
-    //     A:
-    // Q4. nested property 쿼리(`findByPartner_Id`) 의 SQL JOIN 형태는?
-    //     A:
-    // Q5. 발주번호 채번 동시성을 Repository 레벨에서 어떻게 막을까?
-    //     A:
-}
+// 선택형 [W355] 연관관계가 있는 모델의 findByPartner_Id 같은 조회는?
+//    1. 항상 모든 엔티티를 메모리에 조회한다
+//    2. partner.id 속성 경로를 조건으로 해석하며 실제 SQL은 매핑·최적화에 따라 결정된다
+//    3. 어떤 경우에도 SQL JOIN이 발생하지 않는다
+//    4. 무조건 세션 쿠키를 검색한다
+//    정답·해설: practice/workbook-questions.md#w355
+//    정답: 2번 · 속성 경로와 실제 SQL JOIN 유무를 단정하지 말고 매핑과 쿼리 로그를 확인합니다.

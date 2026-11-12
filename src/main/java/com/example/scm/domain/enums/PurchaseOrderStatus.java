@@ -1,6 +1,9 @@
 package com.example.scm.domain.enums;
 
 /**
+ * 발주서가 어느 단계에 있는지 붙이는 이름표입니다.
+ * DRAFT=작성, REQUESTED=승인 요청, APPROVED=승인, REJECTED=반려, RECEIVED=입고, CANCELED=취소입니다.
+ *
  * 발주 상태. 상태는 정해진 방향으로만 움직인다(상태 머신).
  *
  * 학습 모듈 04에서 발주 엔티티보다 먼저 읽고 상태 이름과 순서부터 익힌다.

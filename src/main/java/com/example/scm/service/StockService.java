@@ -1,5 +1,7 @@
 package com.example.scm.service;
 
+import com.example.scm.common.validation.PageableValidator;
+
 import com.example.scm.common.auth.Authz;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.domain.enums.ItemStatus;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 창고에 물건이 몇 개 남았는지 보여 주는 담당자입니다.
+ * 현재 수량과 안전재고를 비교해 부족한 품목을 찾습니다. 수량 변경은 입고·출고 작업에서 처리합니다.
+ *
  * 재고 목록과 대시보드 요약을 조회하는 서비스.
  *
  * <p>학습 모듈 11: 입고로 재고가 증가하는 흐름을 확인한 뒤, 그 결과를 목록과 요약으로
@@ -33,7 +38,10 @@ public class StockService {
     public Page<StockListView> search(StockSearchForm form, Pageable pageable,
                                       LoginUser loginUser) {
         Authz.requireLogin(loginUser);
+        // 현재고 목록은 Item을 기준으로 조회하므로 품목 필드로 정렬한다.
+        PageableValidator.validate(pageable, PageableValidator.ITEM);
         // null 검색어를 빈 문자열로 정규화하면 Repository 쿼리의 분기가 단순해진다.
+        // lowOnly가 true이면 현재 수량이 안전재고 이하인 물건만 남깁니다. 같을 때도 부족 알림에 포함합니다.
         return stockRepository.searchCurrentStock(
                 ItemStatus.ACTIVE, form.normalizedKeyword(), form.isLowOnly(), pageable);
     }
@@ -41,6 +49,7 @@ public class StockService {
     @Transactional(readOnly = true)
     public StockSummaryView getSummary(LoginUser loginUser) {
         Authz.requireLogin(loginUser);
+        // 물건 종류 수, 전체 개수, 안전재고 이하인 종류 수는 서로 다른 값이라 따로 계산합니다.
         return new StockSummaryView(
                 stockRepository.countItems(ItemStatus.ACTIVE),
                 stockRepository.sumCurrentQuantity(ItemStatus.ACTIVE),

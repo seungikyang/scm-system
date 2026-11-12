@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 물건 목록의 한 행에 보여 줄 코드, 이름, 가격, 상태 등의 정보입니다.
+ * 분류 번호만 보여 주면 알아보기 어려우므로 분류 이름도 함께 담습니다.
+ *
  * 품목 목록 행 View DTO. categoryName 은 Service 가 채운다(OSIV off).
  * 학습 모듈 32에서 UserResponse 다음에 읽고, 엔티티 하나만으로 채울 수 없는
  * categoryName을 Service가 함께 전달하는 차이를 확인한다.

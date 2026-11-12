@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  발주 내가 작성한 주문 목록입니다. 로그인한 사람의 번호로 찾은 결과만 서버가 전달합니다.
+  표의 주문 번호를 누르면 해당 주문의 상세 화면으로 이동합니다.
+-->
 <head th:replace="~{fragments/layout :: head('내 발주 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>

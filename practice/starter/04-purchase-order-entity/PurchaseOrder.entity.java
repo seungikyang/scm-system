@@ -1,216 +1,139 @@
-// 실제 구현 위치 예:
-//   src/main/java/com/example/scm/domain/PurchaseOrder.java
-//   src/main/java/com/example/scm/domain/PurchaseOrderLine.java
-// 목표: 발주서(헤더) + 발주서 라인 + PurchaseOrderStatus enum 을 채우세요.
-//       TRD 3.3.5, 3.3.6, 3.6.4 참고.
-// 비교 학습: 이 starter는 다른 aggregate를 @ManyToOne으로 연결합니다. 현재 src 참조 구현은
-// partnerId/itemId를 저장하고 헤더-라인 내부만 연관관계를 사용합니다. 두 선택의 장단점을
-// practice/DESIGN_DECISIONS.md와 비교해 학습 기록에 적으세요.
+// PurchaseOrder 엔티티와 라인 (TRD 3.3.5, 3.3.6, 3.6.4) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=04
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ===== PurchaseOrderStatus enum =====
-public enum PurchaseOrderStatus {
-    // TODO 01: 발주 상태 전이 그래프를 보고 6가지 상태를 채우세요.
-    //          DRAFT → REQUESTED → APPROVED → RECEIVED
-    //                          └→ REJECTED
-    //                          DRAFT/REQUESTED/APPROVED → CANCELED
-    ____, ____, ____, ____, ____, ____
-}
+// 선택형 [W021] 금액을 BigDecimal로 계산하는 이유는?
+//    1. double이 모든 십진 금액을 정확히 표현하기 때문이다
+//    2. 십진 금액의 정밀도와 반올림 정책을 명시하기 위해서다
+//    3. BigDecimal은 비교와 반올림이 전혀 필요 없기 때문이다
+//    4. 문자열 연결만으로 금액 합계를 계산하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w021
+//    정답: 2번 · BigDecimal을 적절한 생성·스케일·반올림 정책과 함께 사용합니다.
 
-// ===== PurchaseOrder entity =====
-@Entity
-@Table(name = "purchase_orders",
-       uniqueConstraints = @UniqueConstraint(name = "uk_po_order_number", columnNames = "____"))
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class PurchaseOrder {
+// 선택형 [W022] 발주일과 납기일에 LocalDate를 사용하는 이유는?
+//    1. 나노초 정밀도의 이벤트 시각을 표현하기 위해서다
+//    2. DB 연결 만료 시간을 나타내기 위해서다
+//    3. 모든 날짜를 자동으로 오늘로 바꾸기 위해서다
+//    4. 시각·시간대 없이 업무 날짜만 표현하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w022
+//    정답: 4번 · 날짜만 필요한 업무 필드와 승인·입고의 시각 필드를 구분합니다.
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+// 선택형 [W023] 신규 발주를 만드는 팩토리의 초기 상태는?
+//    1. DRAFT
+//    2. RECEIVED
+//    3. APPROVED
+//    4. CANCELED
+//    정답·해설: practice/workbook-questions.md#w023
+//    정답: 1번 · 작성과 요청·승인·입고를 구분하기 위해 초깃값을 DRAFT로 설정합니다.
 
-    // 발주번호 (예: PO-20260526-0001)
-    @Column(nullable = false, length = 30, unique = true)
-    private String orderNumber;
+// 선택형 [W024] 승인자와 반려 사유를 기록하는 올바른 시점은?
+//    1. 모든 조회에서 승인자와 사유를 덮어쓴다
+//    2. 작성할 때 반려 사유를 항상 확정한다
+//    3. 승인 전이에서 승인자를, 반려 전이에서 사유를 기록한다
+//    4. 입고 후 작성자를 승인자로 바꾼다
+//    정답·해설: practice/workbook-questions.md#w024
+//    정답: 3번 · 상태와 감사 정보는 해당 전이가 성공할 때 함께 기록해야 합니다.
 
-    // TODO 02: 거래처(공급사) 와의 관계는?
-    @____(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "partner_id", nullable = false)
-    private Partner partner;
+// 선택형 [W025] writerId와 approverId를 분리하는 이유는?
+//    1. 작성과 승인 행위자의 책임·이력을 구분하기 위해서다
+//    2. 두 값이 항상 같도록 강제하기 위해서다
+//    3. 작성자의 로그인 비밀번호를 기록하기 위해서다
+//    4. 권한 검사를 생략하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w025
+//    정답: 1번 · 행위자 필드는 역할이 다르며 ID 분리 자체가 인가를 대신하지는 않습니다.
 
-    @Column(name = "writer_id", nullable = false)
-    private Long writerId;
+// 선택형 [W026] cascade ALL과 orphanRemoval의 효과와 주의점은?
+//    1. 모든 거래처까지 자동 삭제한다
+//    2. 트랜잭션 없이 부분 저장을 방지한다
+//    3. 라인 생명주기를 헤더에 묶고 컬렉션 제거 시 삭제 영향을 고려한다
+//    4. 연관관계 모든 조회를 항상 하나의 SQL로 만든다
+//    정답·해설: practice/workbook-questions.md#w026
+//    정답: 3번 · cascade·고아 삭제와 트랜잭션 원자성은 별개의 기능입니다.
 
-    @Column(name = "approver_id")
-    private Long approverId;
+// 선택형 [W027] totalAmount와 lineAmount 합계의 불변식을 지키는 방법은?
+//    1. 브라우저가 보낸 totalAmount를 검증 없이 저장한다
+//    2. 모든 변경 경로가 동일한 서버 재계산 규칙을 사용하게 한다
+//    3. 헤더 금액을 라인과 무관한 난수로 정한다
+//    4. DB 조회 때마다 작성자를 바꾼다
+//    정답·해설: practice/workbook-questions.md#w027
+//    정답: 2번 · 도메인 또는 Service의 배치는 설계 선택이지만 금액 계산은 서버에서 일관되어야 합니다.
 
-    @Column(nullable = false)
-    private LocalDate orderDate;
+// 선택형 [W049] 동시 발주번호 채번의 안전한 전략은?
+//    1. count + 1만 읽으면 항상 유일하다
+//    2. 사용자 이름만 발주번호로 쓴다
+//    3. 같은 번호를 허용하고 나중에 주문을 삭제한다
+//    4. DB unique와 충돌 재시도 등 동시성 대책을 결합한다
+//    정답·해설: practice/workbook-questions.md#w049
+//    정답: 4번 · 참조 구현은 최대 번호와 unique 충돌의 독립 트랜잭션 재시도를 사용합니다.
 
-    private LocalDate dueDate;
+// 선택형 [W051] REQUESTED가 아닌 발주의 승인·반려를 막는 설계는?
+//    1. 도메인 전이 메서드에 상태 가드를 둔다
+//    2. 화면 버튼만 숨긴다
+//    3. 승인 후 작성자 이메일을 바꾼다
+//    4. DTO 필드 이름을 바꾸면 충분하다
+//    정답·해설: practice/workbook-questions.md#w051
+//    정답: 1번 · Service 인가와 별도로 도메인 메서드가 상태 불변식을 보호합니다.
 
-    // TODO 03: 총금액 타입은?
-    @Column(nullable = false, precision = 15, scale = 2)
-    private ____ totalAmount;
+// 선택형 [W181] 발주 결재 요청의 정상 전이는?
+//    1. DRAFT → RECEIVED
+//    2. DRAFT → REQUESTED
+//    3. APPROVED → DRAFT
+//    4. RECEIVED → REQUESTED
+//    정답·해설: practice/workbook-questions.md#w181
+//    정답: 2번 · 작성자가 유효한 DRAFT 발주를 요청하며 이미 요청된 상태를 재요청하면 상태 오류가 됩니다.
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private PurchaseOrderStatus status;
+// 선택형 [W185] 주문 헤더-라인 구조의 구성은?
+//    1. 비밀번호와 세션 쿠키
+//    2. 카테고리 한 개와 CSS 색상
+//    3. JDK와 Gradle 캐시
+//    4. 주문 공통 정보와 여러 품목·수량·단가 라인
+//    정답·해설: practice/workbook-questions.md#w185
+//    정답: 4번 · 헤더는 거래처·작성일 같은 공통 정보, 라인은 개별 주문 항목을 표현합니다.
 
-    @Column(length = 500)
-    private String rejectReason;
+// 선택형 [W231] 주문에서 거래처·품목·사용자를 ID로 참조하는 설계 이유는?
+//    1. ID만 저장하면 모든 무결성이 자동 보장된다
+//    2. JPA 연관관계는 기술적으로 사용할 수 없다
+//    3. 과거 주문을 자동 삭제하기 위해서다
+//    4. 집합 간 결합·로딩 범위를 줄이고 Service에서 존재·권한을 검증한다
+//    정답·해설: practice/workbook-questions.md#w231
+//    정답: 4번 · ID 참조는 선택이며 탐색·참조 무결성 확인 책임을 명시적으로 관리해야 합니다.
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+// 선택형 [W233] 발주 헤더와 라인을 같은 aggregate로 관리하는 이유는?
+//    1. 라인·총금액·상태 불변식을 주문 단위로 일관되게 관리하기 위해서다
+//    2. 모든 거래처를 같은 엔티티로 합치기 위해서다
+//    3. 모든 라인을 독립 트랜잭션으로 저장하기 위해서다
+//    4. 권한 검사를 생략하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w233
+//    정답: 1번 · 주문 전체가 일관된 구성·금액·생명주기 경계를 갖게 합니다.
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+// 선택형 [W254] 발주 취소가 성공하면 설정되는 상태는?
+//    1. RECEIVED
+//    2. CONFIRMED
+//    3. SHIPPED
+//    4. CANCELED
+//    정답·해설: practice/workbook-questions.md#w254
+//    정답: 4번 · 현재 발주는 작성자의 DRAFT·REQUESTED·APPROVED 취소만 허용합니다.
 
-    private LocalDateTime approvedAt;
-    private LocalDateTime receivedAt;
+// 선택형 [W271] 주문 상태를 임의 문자열 대신 enum으로 관리하는 목적은?
+//    1. 모든 상태 전이가 자동 허용된다
+//    2. DB 잠금이 필요 없어지게 한다
+//    3. 허용 상태 집합을 명시하고 잘못된 상태 표현을 줄인다
+//    4. 사용자에게 관리자 권한을 부여한다
+//    정답·해설: practice/workbook-questions.md#w271
+//    정답: 3번 · enum 정의만으로 전이 규칙이 지켜지지는 않습니다. 도메인 메서드의 상태 가드도 필요합니다.
 
-    // ===== 라인 컬렉션 =====
-    // TODO 04: 헤더 저장만으로 라인까지 함께 저장/삭제되도록 하는 옵션 두 가지는?
-    @OneToMany(mappedBy = "purchaseOrder",
-               cascade = CascadeType.____,
-               orphanRemoval = ____)
-    private List<PurchaseOrderLine> lines = new ArrayList<>();
+// 선택형 [W379] Partner 객체를 연관 매핑하는 starter에서 여러 발주가 하나의 거래처를 참조하는 애너테이션은?
+//    1. @OneToMany
+//    2. @OneToOne
+//    3. @ManyToOne
+//    4. @ManyToMany
+//    정답·해설: practice/workbook-questions.md#w379
+//    정답: 3번 · 객체 연관을 사용하는 이 starter의 발주→거래처는 다대일 관계입니다. 현재 실행 엔티티는 연관 객체 대신 partnerId를 저장하는 별도 설계를 사용합니다.
 
-    // ===== 정적 팩토리 =====
-    public static PurchaseOrder create(String orderNumber,
-                                       Partner partner,
-                                       Long writerId,
-                                       LocalDate orderDate,
-                                       LocalDate dueDate) {
-        PurchaseOrder po = new PurchaseOrder();
-        po.orderNumber = orderNumber;
-        po.partner = partner;
-        po.writerId = writerId;
-        po.orderDate = orderDate;
-        po.dueDate = dueDate;
-        po.totalAmount = BigDecimal.ZERO;
-        // TODO 05: 신규 발주서의 초기 상태는?
-        po.status = PurchaseOrderStatus.____;
-        return po;
-    }
-
-    // ===== 도메인 메서드 =====
-    public void addLine(Item item, int quantity, BigDecimal unitPrice) {
-        if (quantity <= 0) throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
-        PurchaseOrderLine line = PurchaseOrderLine.create(this, item, quantity, unitPrice);
-        this.lines.add(line);
-        recalculateTotal();
-    }
-
-    public void recalculateTotal() {
-        // TODO 06: 라인 합계를 BigDecimal 로 모으는 reduce 식을 채우세요.
-        this.totalAmount = this.lines.stream()
-            .map(PurchaseOrderLine::getLineAmount)
-            .reduce(____, BigDecimal::add);
-    }
-
-    public void submit() {
-        // TODO 07: DRAFT 가 아니면 어떤 예외?
-        if (this.status != PurchaseOrderStatus.____) {
-            throw new IllegalStateException("DRAFT 상태에서만 요청할 수 있습니다.");
-        }
-        if (this.lines.isEmpty()) {
-            throw new IllegalStateException("____");
-        }
-        this.status = PurchaseOrderStatus.REQUESTED;
-    }
-
-    public void approve(Long approverUserId) {
-        if (this.status != PurchaseOrderStatus.REQUESTED) {
-            throw new IllegalStateException("REQUESTED 상태에서만 승인할 수 있습니다.");
-        }
-        this.approverId = approverUserId;
-        this.status = PurchaseOrderStatus.APPROVED;
-        // TODO 08: 승인 시각을 기록하세요.
-        this.approvedAt = ____;
-    }
-
-    public void reject(Long approverUserId, String reason) {
-        if (this.status != PurchaseOrderStatus.REQUESTED) {
-            throw new IllegalStateException("REQUESTED 상태에서만 반려할 수 있습니다.");
-        }
-        // TODO 09: 반려 사유 blank 검증.
-        if (reason == null || reason.____) {
-            throw new IllegalArgumentException("반려 사유는 필수입니다.");
-        }
-        this.approverId = approverUserId;
-        this.rejectReason = reason.trim();
-        this.status = PurchaseOrderStatus.REJECTED;
-    }
-
-    public void receive() {
-        // TODO 10: APPROVED 가 아니면 막는다.
-        if (this.status != PurchaseOrderStatus.____) {
-            throw new IllegalStateException("APPROVED 상태에서만 입고할 수 있습니다.");
-        }
-        this.status = PurchaseOrderStatus.RECEIVED;
-        this.receivedAt = LocalDateTime.now();
-    }
-
-    public void cancelByOwner(Long currentUserId) {
-        if (!this.writerId.equals(currentUserId)) {
-            throw new AccessDeniedException("본인 발주서만 취소할 수 있습니다.");
-        }
-        // TODO 11: 취소 가능한 상태 세 가지?
-        if (this.status != PurchaseOrderStatus.____
-                && this.status != PurchaseOrderStatus.____
-                && this.status != PurchaseOrderStatus.____) {
-            throw new IllegalStateException("이 상태에서는 취소할 수 없습니다.");
-        }
-        this.status = PurchaseOrderStatus.CANCELED;
-    }
-}
-
-// ===== PurchaseOrderLine entity =====
-@Entity
-@Table(name = "purchase_order_lines")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PurchaseOrderLine {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "purchase_order_id", nullable = false)
-    private PurchaseOrder purchaseOrder;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
-
-    @Column(nullable = false)
-    private Integer quantity;
-
-    @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal unitPrice;
-
-    @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal lineAmount;
-
-    public static PurchaseOrderLine create(PurchaseOrder po, Item item, int quantity, BigDecimal unitPrice) {
-        PurchaseOrderLine line = new PurchaseOrderLine();
-        line.purchaseOrder = po;
-        line.item = item;
-        line.quantity = quantity;
-        line.unitPrice = unitPrice;
-        // TODO 12: 라인 금액 = 수량 × 단가 계산식을 채우세요.
-        line.lineAmount = unitPrice.multiply(BigDecimal.valueOf(____));
-        return line;
-    }
-}
-
-// 학습 질문:
-// Q1. cascade = ALL + orphanRemoval = true 의 효과와 위험은?
-//     A:
-// Q2. 헤더 totalAmount 와 라인 합계가 어긋날 가능성을 어디서 막는가?
-//     A:
-// Q3. 발주번호(orderNumber) 채번의 동시성 문제는?
-//     A:
+// 선택형 [W380] 현재 발주 도메인에서 취소를 허용하는 상태 집합은?
+//    1. RECEIVED·REJECTED·CANCELED
+//    2. DRAFT·REQUESTED·APPROVED
+//    3. DRAFT·RECEIVED·CANCELED
+//    4. 모든 발주 상태
+//    정답·해설: practice/workbook-questions.md#w380
+//    정답: 2번 · PurchaseOrder.requireCancelable은 진행 중인 세 상태만 허용하며 입고 완료와 종료 상태의 취소를 막습니다.

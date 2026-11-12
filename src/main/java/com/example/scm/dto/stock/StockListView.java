@@ -3,6 +3,9 @@ package com.example.scm.dto.stock;
 import lombok.Getter;
 
 /**
+ * 물건 하나의 현재 수량, 안전재고, 부족 수량을 보여 줍니다.
+ * 안전재고가 10개이고 현재고가 3개라면 부족 수량은 7개입니다. 부족 수량은 음수가 되지 않습니다.
+ *
  * 재고 목록의 한 행을 나타내는 읽기 전용 DTO.
  *
  * <p>학습 모듈 11: StockRepository의 생성자 표현식 다음에 읽어 현재고에서 부족수량과

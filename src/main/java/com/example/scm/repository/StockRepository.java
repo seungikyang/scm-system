@@ -3,14 +3,19 @@ package com.example.scm.repository;
 import com.example.scm.domain.Stock;
 import com.example.scm.domain.enums.ItemStatus;
 import com.example.scm.dto.stock.StockListView;
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
+ * 재고 자료를 데이터베이스에서 찾거나 저장하는 창구입니다.
+ * 데이터베이스는 자료를 모아 두는 전자 장부입니다. Spring이 함수 이름이나 조회식을 보고 실제 작업을 준비합니다.
+ *
  * 현재고 조회와 집계를 담당하는 DB 접근 인터페이스.
  *
  * <p>학습 모듈 11: 먼저 단순한 findByItemId로 입고 저장을 이해하고, 그다음 LEFT JOIN
@@ -24,6 +29,13 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     Optional<Stock> findByItemId(Long itemId);
 
+    // 다른 작업이 방금 입고한 수량도 반영하도록, 변경할 재고는 최신 값을 잠가 읽습니다.
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select s from Stock s where s.itemId = :itemId")
+    Optional<Stock> findByItemIdForUpdate(@Param("itemId") Long itemId);
+
+    // left join은 물건 목록을 기준으로 재고 장부를 붙입니다. 아직 입고되지 않은 물건도 목록에 남습니다.
+    // coalesce(수량, 0)는 재고 값이 비어 있으면 0을 쓰라는 뜻입니다.
     // value는 현재 페이지 데이터, countQuery는 전체 페이지 수 계산에 사용한다.
     @Query(value = """
             select new com.example.scm.dto.stock.StockListView(
@@ -31,8 +43,8 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             from Item i left join Stock s on s.itemId = i.id
             where i.status = :itemStatus
               and (:keyword = ''
-                   or lower(i.itemCode) like lower(concat('%', :keyword, '%'))
-                   or lower(i.name) like lower(concat('%', :keyword, '%')))
+                   or lower(i.itemCode) like concat('%', :keyword, '%') escape '!'
+                   or lower(i.name) like concat('%', :keyword, '%') escape '!')
               and (:lowOnly = false or coalesce(s.quantity, 0) <= i.safetyStock)
             """,
             countQuery = """
@@ -40,8 +52,8 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             from Item i left join Stock s on s.itemId = i.id
             where i.status = :itemStatus
               and (:keyword = ''
-                   or lower(i.itemCode) like lower(concat('%', :keyword, '%'))
-                   or lower(i.name) like lower(concat('%', :keyword, '%')))
+                   or lower(i.itemCode) like concat('%', :keyword, '%') escape '!'
+                   or lower(i.name) like concat('%', :keyword, '%') escape '!')
               and (:lowOnly = false or coalesce(s.quantity, 0) <= i.safetyStock)
             """)
     Page<StockListView> searchCurrentStock(@Param("itemStatus") ItemStatus itemStatus,

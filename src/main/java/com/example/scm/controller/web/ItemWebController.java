@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
+ * 브라우저의 물건 화면 요청을 받아 담당 Service에 일을 맡깁니다.
+ * Model은 화면에 넣을 자료 꾸러미이고 반환하는 문자열은 사용할 HTML 화면 파일의 이름입니다.
+ *
  * 품목 목록·상세·등록·수정 화면을 연결하는 MVC 컨트롤러.
  *
  * <p>학습 모듈 35의 대표 MVC 예제다. list → newForm/create → detail → editForm/update
@@ -40,6 +43,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class ItemWebController {
 
+    // Controller는 화면 요청의 접수 창구이고, Service는 실제 업무 규칙을 처리하는 담당자입니다.
     private final ItemService itemService;
     private final CategoryService categoryService;
 

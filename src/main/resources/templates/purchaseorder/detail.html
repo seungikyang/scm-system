@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  발주 한 건의 자세한 정보 화면입니다. 서버에서 조회한 정보를 th:text로 글자 그대로 보여 줍니다.
+  처리 버튼을 누르면 서버가 권한과 현재 상태를 확인한 뒤 작업합니다.
+-->
 <!-- 학습 모듈 35-6: 상세 데이터보다 먼저 canSubmit/canCancel 등 버튼 플래그를 확인한다. -->
 <head th:replace="~{fragments/layout :: head('발주서 상세 - SCM')}"></head>
 <body>

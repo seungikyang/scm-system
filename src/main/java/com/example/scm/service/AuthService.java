@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 입력한 이메일과 비밀번호가 맞는지 확인하는 담당자입니다.
+ * 이메일로 사용자를 찾고 비밀번호를 검사한 뒤, 비밀번호를 뺀 로그인 출입증을 만듭니다.
+ *
  * 로그인 자격 증명(이메일·비밀번호)을 확인하는 서비스.
  *
  * <p>학습 모듈 23: UserRepository 조회 → BCrypt matches → LoginUser 변환 순서로 읽은 뒤
@@ -33,14 +36,18 @@ public class AuthService {
      */
     @Transactional(readOnly = true)
     public LoginUser login(String email, String rawPassword) {
+        // readOnly는 조회를 위한 설정입니다. 비밀번호가 맞는지는 아래의 검사로 따로 확인합니다.
+        // 1. 이메일로 사용자 장부를 찾습니다. 없으면 orElseThrow가 실패 신호를 보냅니다.
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.INVALID_INPUT, "이메일 또는 비밀번호가 올바르지 않습니다."));
 
+        // 2. 해시는 복호화하지 않습니다. 입력한 비밀번호가 저장된 해시와 맞는지 도구로 검사합니다.
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
+        // 3. 로그인 성공 결과에는 비밀번호를 담지 않고 출입증에 필요한 정보만 담습니다.
         return new LoginUser(user.getId(), user.getName(), user.getEmail(), user.getRole());
     }
 }

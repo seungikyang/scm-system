@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="SCM 워크북과 SW 기술 문제를 풀고, 과목별 진도와 오답을 관리하는 웹 문제집">
+  <title>SCM · 웹 문제집</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="quiz.css">
+  <script defer src="questions.js"></script>
+  <script defer src="workbook-questions.js"></script>
+  <script defer src="study-state.js"></script>
+  <script defer src="quiz.js"></script>
+</head>
+<body>
+  <a href="#content" class="skip-link">문제집 본문으로 이동</a>
+  <aside class="sidebar" aria-label="학습 메뉴">
+    <a class="brand" href="../../index.html"><span class="brand-mark">S<span>·</span></span><span>SCM <small>LEARNING LAB</small></span></a>
+    <div class="bank-picker"><label for="bank-select">나의 문제집</label><select id="bank-select"><option value="sw">SW 기술 3000제</option><option value="workbook">SCM 모듈 워크북</option></select></div>
+    <p class="nav-label">STUDY ROOM</p>
+    <nav class="study-nav" aria-label="학습 화면">
+      <button id="view-learn" type="button" aria-current="page"><span aria-hidden="true">▤</span> 문제 풀기 <span class="nav-arrow" aria-hidden="true">↗</span></button>
+      <button id="view-subjects" type="button"><span aria-hidden="true">▦</span> 과목별 학습</button>
+      <button id="view-wrong" type="button"><span aria-hidden="true">↺</span> 오답 노트 <span id="wrong-badge" class="nav-count">0</span></button>
+      <button id="view-bookmarks" type="button"><span aria-hidden="true">☆</span> 북마크 <span id="bookmark-badge" class="nav-count">0</span></button>
+    </nav>
+    <div class="sidebar-note"><span class="note-icon" aria-hidden="true">✦</span><strong>한 문제씩, 내 실력으로.</strong><p>고르고, 이해하고, 다시 풀기.<br>작은 반복이 실력을 만듭니다.</p></div>
+    <div class="sidebar-links"><a href="../../index.html">학습 목차 ↗</a><a href="../../docs/TECHNOLOGY_GUIDE.md">기술 참조 자료 ↗</a><a href="../../practice/README.md">워크북 이용 안내 ↗</a></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><p>내 학습 공간 <span>/</span> <strong id="breadcrumb">문제 풀기</strong></p><span id="save-status" class="save-status" role="status">이 브라우저에 자동 저장</span></header>
+    <main id="content">
+      <section class="intro">
+        <div><p class="eyebrow">A LITTLE PRACTICE, EVERY DAY</p><h1 id="quiz-heading">오늘도 한 문제, 더 단단하게.</h1><p id="quiz-description">기존 워크북의 문제를 풀며 개념부터 실무까지 연결해 보세요.</p></div>
+        <span class="edition">SCM WORKBOOK <span id="bank-count">3,000 QUESTIONS</span></span>
+      </section>
+      <p id="notice" class="notice" role="status" hidden></p>
+      <noscript><p class="notice">문제집을 실행하려면 브라우저의 JavaScript를 활성화하세요.</p></noscript>
+      <section class="study-overview" aria-label="전체 학습 진도">
+        <div class="overview-copy"><span class="pill">나의 학습 여정</span><h2 id="journey-title">첫 문제부터 시작해 볼까요?</h2><p id="journey-description">정답을 확인할 때마다 학습 진도가 쌓입니다.</p><button id="continue-learning" class="light-button" type="button">학습 시작하기 <span aria-hidden="true">→</span></button></div>
+        <div class="overview-progress"><div class="overview-progress-label"><span>전체 학습 진도</span><strong id="overall-percent">0%</strong></div><div id="overall-progress" class="progress-track" role="progressbar" aria-label="전체 학습 진도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="overall-bar"></div></div><p id="overall-detail">0문제 완료</p><span class="overview-caption">어제보다 한 걸음 더 가까이.</span></div>
+      </section>
+      <section class="stats" aria-label="전체 풀이 현황">
+        <div><span class="stat-symbol" aria-hidden="true">▤</span><div><span>풀이 완료</span><strong id="answered">0</strong></div></div>
+        <div><span class="stat-symbol green" aria-hidden="true">✓</span><div><span>맞힌 문제</span><strong id="correct">0</strong></div></div>
+        <div><span class="stat-symbol orange" aria-hidden="true">↺</span><div><span>복습할 오답</span><strong id="incorrect">0</strong></div></div>
+        <div><span class="stat-symbol violet" aria-hidden="true">◎</span><div><span>정답률</span><strong id="accuracy">—</strong></div></div>
+      </section>
+      <section id="subjects-view" hidden aria-labelledby="subjects-heading"><div class="section-heading"><div><p class="eyebrow">YOUR SUBJECTS</p><h2 id="subjects-heading">과목별로 차근차근</h2><p>과목을 골라 진도를 확인하고 이어서 학습하세요.</p></div><span id="subject-count" class="muted"></span></div><div id="subject-grid" class="subject-grid"></div></section>
+      <section id="learning-view" aria-label="문제 학습">
+        <div class="section-heading"><div><p id="mode-eyebrow" class="eyebrow">LET’S PRACTICE</p><h2 id="mode-heading">문제 풀기</h2></div><span id="result-count" class="muted"></span></div>
+        <section class="filters" aria-label="문제 선택">
+          <div><label for="category">학습 과목</label><select id="category"><option value="all">전체 과목</option></select></div>
+          <div><label for="status">풀이 범위</label><select id="status"><option value="all">전체 문제</option><option value="unanswered">아직 풀지 않은 문제</option><option value="wrong">오답 복습</option><option value="bookmarked">북마크한 문제</option></select></div>
+          <div><label for="search">문제 검색</label><input id="search" type="search" maxlength="200" placeholder="질문, 보기 또는 문항 번호" autocomplete="off"></div>
+        </section>
+        <div class="learning-layout">
+          <div class="question-column">
+            <div class="list-toolbar"><span id="scope-description">나의 속도로 한 문제씩 풀어 보세요.</span><button id="shuffle" class="text-button" type="button" aria-pressed="false">⇄ 무작위 순서</button></div>
+            <section id="quiz" class="question-card" aria-label="문제 풀이">
+              <div class="question-meta"><span id="category-name" class="tag"></span><button id="bookmark" type="button" class="bookmark" aria-pressed="false">☆ 북마크</button></div>
+              <div class="question-label"><p id="question-number" class="eyebrow"></p><span id="position"></span></div>
+              <h2 id="question-title" tabindex="-1"></h2>
+              <fieldset aria-labelledby="question-title"><legend class="sr-only">정답 선택</legend><div id="options" class="options"></div></fieldset>
+              <div class="submit-row"><span id="answer-hint">보기 하나를 선택하세요.</span><button id="grade" type="button" class="primary">정답 확인 <span aria-hidden="true">↗</span></button><button id="retry" type="button" class="secondary" hidden>다시 풀기 ↺</button></div>
+              <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+              <section id="explanation" class="explanation" hidden><h3>이렇게 이해해 보세요</h3><p id="explanation-text"></p><a id="reference" target="_blank" rel="noopener">워크북 참조 자료 보기 ↗</a></section>
+              <div class="navigation"><button id="previous" type="button" class="text-button">← 이전 문제</button><span>숫자 <kbd>1</kbd>–<kbd>4</kbd>로 선택</span><button id="next" type="button" class="text-button">다음 문제 →</button></div>
+            </section>
+            <section id="empty" class="empty" hidden><span class="empty-symbol" aria-hidden="true">✧</span><h2 id="empty-heading">선택한 조건에 맞는 문제가 없어요.</h2><p id="empty-description">과목이나 풀이 범위를 바꾸거나 검색어를 지워 보세요.</p><button id="show-all" type="button" class="primary">전체 문제 보기</button></section>
+          </div>
+          <aside class="learning-aside" aria-label="현재 과목 학습 현황">
+            <section class="session-card"><p class="eyebrow">STUDY PROGRESS</p><h3 id="session-category">전체 과목</h3><div class="session-percent"><strong id="session-percent">0<span>%</span></strong><span id="session-detail">0 / 0문제</span></div><div class="progress-track"><div id="progress-bar"></div></div><dl><div><dt>정답</dt><dd id="session-correct">0</dd></div><div><dt>오답</dt><dd id="session-wrong">0</dd></div><div><dt>미풀이</dt><dd id="session-remaining">0</dd></div></dl></section>
+            <section class="question-map-card"><div class="map-heading"><h3>문항 바로가기</h3><span id="map-range"></span></div><div id="question-map" class="question-map" aria-label="문항 선택"></div><div class="map-pagination"><button id="map-previous" type="button" class="text-button" aria-label="이전 문항 묶음">←</button><span id="map-page"></span><button id="map-next" type="button" class="text-button" aria-label="다음 문항 묶음">→</button></div><p class="map-legend"><span>○ 미풀이</span><span class="good-text">● 정답</span><span class="bad-text">● 오답</span></p></section>
+            <p class="study-tip"><span aria-hidden="true">✦</span> 틀린 문제는 배움의 시작.<br>해설을 읽고 오답 노트에서 다시 만나세요.</p>
+          </aside>
+        </div>
+      </section>
+      <footer class="study-footer"><div><strong>내 진도는 자동으로 저장돼요.</strong><p>이 브라우저에 과목·답안·보기가 저장됩니다. 다른 기기로 옮길 때는 기록 파일을 이용하세요.</p></div><div class="footer-actions"><button id="export" class="text-button" type="button">기록 내보내기 ↗</button><button id="import" class="text-button" type="button">가져오기</button><input id="import-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="학습 기록 파일"><button id="reset" class="text-button" type="button">초기화</button></div></footer>
+    </main>
+  </div>
+</body>
+</html>

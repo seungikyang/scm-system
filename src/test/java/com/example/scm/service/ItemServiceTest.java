@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.common.exception.BusinessException;
 import com.example.scm.common.exception.ErrorCode;
+import com.example.scm.domain.Category;
 import com.example.scm.domain.Item;
 import com.example.scm.domain.enums.ItemStatus;
 import com.example.scm.domain.enums.UserRole;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,8 +54,9 @@ class ItemServiceTest {
     @DisplayName("ADMIN은 중복되지 않은 코드와 존재하는 카테고리로 활성 품목을 등록한다")
     void create_success() {
         given(itemRepository.existsByItemCode("ITM-100")).willReturn(false);
-        given(categoryRepository.existsById(2L)).willReturn(true);
-        given(itemRepository.save(any(Item.class))).willAnswer(invocation -> {
+        given(categoryRepository.findByIdForShare(2L))
+                .willReturn(Optional.of(Category.builder().name("전자부품").build()));
+        given(itemRepository.saveAndFlush(any(Item.class))).willAnswer(invocation -> {
             Item item = invocation.getArgument(0);
             ReflectionTestUtils.setField(item, "id", 7L);
             return item;
@@ -70,17 +73,17 @@ class ItemServiceTest {
         given(itemRepository.existsByItemCode("ITM-100")).willReturn(true);
 
         assertCode(() -> service.create(form(), admin), ErrorCode.DUPLICATE_ITEM_CODE);
-        verify(itemRepository, never()).save(any());
+        verify(itemRepository, never()).saveAndFlush(any());
     }
 
     @Test
     @DisplayName("존재하지 않는 카테고리로 품목을 등록할 수 없다")
     void create_categoryNotFound() {
         given(itemRepository.existsByItemCode("ITM-100")).willReturn(false);
-        given(categoryRepository.existsById(2L)).willReturn(false);
+        given(categoryRepository.findByIdForShare(2L)).willReturn(Optional.empty());
 
         assertCode(() -> service.create(form(), admin), ErrorCode.CATEGORY_NOT_FOUND);
-        verify(itemRepository, never()).save(any());
+        verify(itemRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -97,7 +100,8 @@ class ItemServiceTest {
         ItemForm form = form();
         form.setName("변경 품목");
         form.setUnitPrice(new BigDecimal("2500.00"));
-        given(categoryRepository.existsById(2L)).willReturn(true);
+        given(categoryRepository.findByIdForShare(2L))
+                .willReturn(Optional.of(Category.builder().name("전자부품").build()));
         given(itemRepository.findById(7L)).willReturn(Optional.of(item));
 
         service.update(7L, form, admin);
@@ -142,6 +146,18 @@ class ItemServiceTest {
                 .build();
         ReflectionTestUtils.setField(item, "id", id);
         return item;
+    }
+
+    @Test
+    @DisplayName("동시 등록으로 사전 확인을 통과해도 DB unique 위반은 DUPLICATE_ITEM_CODE로 알린다")
+    void create_concurrentDuplicate_mapsUniqueViolation() {
+        given(itemRepository.existsByItemCode("ITM-100")).willReturn(false);
+        given(categoryRepository.findByIdForShare(2L))
+                .willReturn(Optional.of(Category.builder().name("전자부품").build()));
+        given(itemRepository.saveAndFlush(any(Item.class)))
+                .willThrow(new DataIntegrityViolationException("unique 품목코드"));
+
+        assertCode(() -> service.create(form(), admin), ErrorCode.DUPLICATE_ITEM_CODE);
     }
 
     private void assertCode(org.junit.jupiter.api.function.Executable executable, ErrorCode expected) {

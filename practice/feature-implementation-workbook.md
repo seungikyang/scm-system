@@ -1,4 +1,4 @@
-# 기능 구현 TODO/빈칸 워크북
+# 기능 구현과 4지 선다 워크북
 
 이 문서는 `scm_system_PRD_TRD.md` 의 모든 기능 요구사항을 구현 단위로 다시 쪼개는 학습용 워크북입니다.
 
@@ -11,27 +11,27 @@
 ## 사용 규칙
 
 1. [권장 학습 트랙](./README.md#학습-트랙)에서 현재 진행할 모듈을 하나 고른다.
-2. 해당 기능의 `개념 빈칸`과 입력·출력·권한·실패 계약을 먼저 채운다.
-3. `구현 TODO`는 Entity/DTO → Repository → Service → Controller 순서로 연결한다.
-4. `테스트 TODO`를 Given/When/Then으로 적고, 완성 후 요청 실행 순서로 역추적한다.
+2. 해당 기능의 `개념 4지 선다`과 입력·출력·권한·실패 계약을 먼저 확인한다.
+3. 계층·업무 규칙의 4지 선다에서 답을 고른 뒤 정답·해설을 확인한다.
+4. Given/When/Then으로 제시한 4지 선다에서 기대 결과를 선택한다.
 5. 막히면 PRD/TRD 절 번호와 `practice/starter` 파일을 다시 본다.
-6. 공통 계층·검색·페이징 계약은 한 절만 기준으로 삼고, 기능별 절에는 차이점과 증거만 적는다.
+6. 공통 계층·검색·페이징 계약은 한 절만 기준으로 삼고, 기능별 절에서는 차이점과 검증 근거를 문항으로 확인한다.
 
-핵심 구현(사용자·마스터·품목·발주·입고 재고)은 현재 테스트와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 비교합니다. 공지·수주는 현재 `src/`에 없는 확장 설계 과제이므로 요구사항, 상태 표, 실패 테스트를 먼저 작성합니다.
+핵심 구현(사용자·마스터·품목·발주·입고 재고)은 현재 테스트와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 비교합니다. 공지·수주도 현재 `src/`에 참조 구현이 있습니다. 확장 과제에서는 요구사항, 상태 표, 실패 테스트를 먼저 작성하고 `SalesAndNoticeIntegrationTest`와 비교합니다.
 
 ## 공통 구현 지도
 
-아래 빈칸을 먼저 채우면 모든 기능의 구현 방향이 흔들리지 않습니다.
+아래 객관식 문제를 먼저 풀면 모든 기능의 구현 방향이 흔들리지 않습니다.
 
-| 계층 | 책임 | 경계: 넣지 말아야 할 것 | 빈칸 |
+| 계층 | 책임 | 경계: 넣지 말아야 할 것 | 4지 선다 |
 |---|---|---|---|
-| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 | 중복 조회, 상태 전이, 직접 SQL/Repository 호출 | Controller 는 Repository 를 직접 호출하지 않고 ____ 를 호출한다. |
-| Service | 비즈니스 규칙, 트랜잭션, 권한/소유자 검증 | Servlet 응답 조작, 화면 HTML 생성 | 상태 전이는 주로 ____ 계층 또는 도메인 메서드에서 검증한다. |
-| Repository | DB 조회/저장, 조건 검색, 페이징 | HTTP status와 사용자 메시지 결정 | 복잡한 조건은 메서드 이름이 길어지면 ____ 로 옮긴다. |
-| Entity | 식별자, 연관관계, 상태값, 도메인 메서드 | Controller DTO 의존, 세션 접근 | 상태값은 String 대신 ____ 으로 관리한다. |
-| DTO | 요청/응답 계약, Validation | 영속성 생명주기와 비즈니스 상태 변경 | Entity 를 그대로 응답하지 않고 ____ DTO 로 변환한다. |
-| Exception | 공통 에러 응답 | 기능마다 제각각인 오류 형식 | 예외 응답은 status, code, message, ____ 를 포함한다. |
-| Test | 성공/실패/권한/상태 전이 검증 | 구현 세부사항에만 묶인 검증 | 승인/반려 기능은 ____ 상태가 아닌 경우를 반드시 테스트한다. |
+| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 | 중복 조회, 상태 전이, 직접 SQL/Repository 호출 | [W270 선택지·정답·해설](workbook-questions.md#w270) |
+| Service | 비즈니스 규칙, 트랜잭션, 권한/소유자 검증 | Servlet 응답 조작, 화면 HTML 생성 | [W051 선택지·정답·해설](workbook-questions.md#w051) |
+| Repository | DB 조회/저장, 조건 검색, 페이징 | HTTP status와 사용자 메시지 결정 | [W136 선택지·정답·해설](workbook-questions.md#w136) |
+| Entity | 식별자, 연관관계, 상태값, 도메인 메서드 | Controller DTO 의존, 세션 접근 | [W271 선택지·정답·해설](workbook-questions.md#w271) |
+| DTO | 요청/응답 계약, Validation | 영속성 생명주기와 비즈니스 상태 변경 | [W137 선택지·정답·해설](workbook-questions.md#w137) |
+| Exception | 공통 에러 응답 | 기능마다 제각각인 오류 형식 | [W069 선택지·정답·해설](workbook-questions.md#w069) |
+| Test | 성공/실패/권한/상태 전이 검증 | 구현 세부사항에만 묶인 검증 | [W051 선택지·정답·해설](workbook-questions.md#w051) |
 
 ## Spring Framework 상세 이해
 
@@ -84,10 +84,10 @@ Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 �
 | 확인 대상 | Spring이 하는 일 | 이 저장소의 예 |
 |---|---|---|
 | `ScmApplication` | `ApplicationContext` 시작과 자동 설정 | `src/main/java/com/example/scm/ScmApplication.java` |
-| `PasswordConfig` | 외부 라이브러리 객체를 `@Bean`으로 등록 | 등록되는 타입: ____ |
-| `WebMvcConfig` | MVC 확장 지점에 Interceptor와 ArgumentResolver 연결 | 보호 경로와 제외 경로: ____ |
-| `ItemService` | 생성자 주입으로 Repository 등 협력 객체를 받음 | 주입되는 필드: ____ |
-| `ItemRepository` | 런타임 프록시가 Repository 구현을 제공 | 직접 구현 클래스가 없어도 호출 가능한 이유: ____ |
+| `PasswordConfig` | 외부 라이브러리 객체를 `@Bean`으로 등록 | [W226 선택지·정답·해설](workbook-questions.md#w226) |
+| `WebMvcConfig` | MVC 확장 지점에 Interceptor와 ArgumentResolver 연결 | [W227 선택지·정답·해설](workbook-questions.md#w227) |
+| `ItemService` | 생성자 주입으로 Repository 등 협력 객체를 받음 | [W228 선택지·정답·해설](workbook-questions.md#w228) |
+| `ItemRepository` | 런타임 프록시가 Repository 구현을 제공 | [W229 선택지·정답·해설](workbook-questions.md#w229) |
 
 ### HTTP 요청이 DB까지 가는 흐름
 
@@ -128,9 +128,66 @@ Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 �
 
 프록시 동작을 확인하는 질문:
 
-- `new ItemService(...)`로 직접 만든 객체와 Spring에서 주입받은 `ItemService`의 차이는 무엇인가? ____
-- `@Transactional` 메서드를 같은 객체 내부에서 직접 호출하면 어떤 문제가 생길 수 있는가? ____
-- 입고 처리 중 세 번째 라인에서 예외가 나면 발주 상태와 앞선 두 라인의 재고는 어떻게 되어야 하는가? ____
+
+### W223. Spring 프록시 방식에서 new로 직접 만든 Service의 특징은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=223)
+
+1. 자동 트랜잭션 프록시를 거치지 않는다
+2. 자동으로 ApplicationContext에 등록된다
+3. 모든 final 필드가 자동 주입된다
+4. JPA가 HTTP 세션을 생성한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 자동 트랜잭션 프록시를 거치지 않는다
+
+컨테이너 관리 객체의 프록시 호출과 직접 생성한 객체의 호출을 구분합니다.
+
+</details>
+
+
+
+### W224. 기본 프록시 방식의 같은 객체 내부 Transactional 호출은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=224)
+
+1. 항상 별도 트랜잭션을 생성한다
+2. 자동으로 다른 서버에 위임된다
+3. 프록시를 우회해 내부 메서드의 새 트랜잭션 설정이 적용되지 않을 수 있다
+4. 모든 checked exception을 자동 제거한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 프록시를 우회해 내부 메서드의 새 트랜잭션 설정이 적용되지 않을 수 있다
+
+외부에서 프록시를 통한 호출 구조와 테스트로 경계를 확인합니다.
+
+</details>
+
+
+
+### W225. 세 번째 입고 라인에서 RuntimeException이 발생하면 기대 결과는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=225)
+
+1. 앞선 두 재고만 증가하고 상태는 RECEIVED로 남는다
+2. 예외가 발생한 라인만 자동 삭제된다
+3. 모든 과거 발주까지 삭제된다
+4. 발주 상태와 앞선 재고 변경까지 함께 롤백된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 발주 상태와 앞선 재고 변경까지 함께 롤백된다
+
+입고 상태·재고 반영을 같은 트랜잭션으로 묶어 부분 반영을 막습니다.
+
+</details>
+
+
 
 ### JPA와 Spring Data JPA의 역할 구분
 
@@ -157,7 +214,7 @@ Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 �
 
 ## 워크북 요구사항을 프로그램으로 만드는 기술
 
-워크북의 빈칸을 채우는 것과 실행 가능한 프로그램을 만드는 것은 다릅니다. 프로그램 구현은 **요구사항을 관찰 가능한 계약으로 바꾸고, 계약을 지키는 최소 수직 흐름을 만든 뒤, 실패 사례로 경계를 검증하는 작업**입니다. 아래 순서를 기능마다 반복합니다.
+4지 선다에서 확인한 규칙은 실행 가능한 참조 구현에서 다시 확인할 수 있습니다. 프로그램 구현은 **요구사항을 관찰 가능한 계약으로 바꾸고, 계약을 지키는 최소 수직 흐름을 만든 뒤, 실패 사례로 경계를 검증하는 작업**입니다. 아래 순서를 기능마다 반복합니다.
 
 ```text
 FR 읽기
@@ -173,28 +230,135 @@ FR 읽기
 
 기능 이름만 보고 바로 Controller부터 만들지 않습니다. 먼저 하나의 FR을 다음 카드로 바꿉니다.
 
-| 항목 | 결정할 질문 | 품목 등록 예시 |
-|---|---|---|
-| 행위자 | 누가 실행할 수 있는가? | `ADMIN` |
-| 진입점 | HTTP method와 URL은? | `POST /api/items` |
-| 입력 | 필수값, 형식, 범위는? | 코드·이름·카테고리·단위·단가·안전재고 |
-| 출력 | status와 응답 DTO는? | `201 Created`, `ItemDetailView` |
-| 비즈니스 규칙 | 단순 형식 검사를 넘어 무엇을 확인하는가? | 품목코드 중복 금지, 카테고리 존재 |
-| 상태 변화 | Entity가 어떻게 변하는가? | 새 품목은 `ACTIVE` |
-| 트랜잭션 | 함께 성공·실패해야 하는 작업은? | 검증 후 품목 저장 |
-| 실패 계약 | 어떤 ErrorCode/status를 반환하는가? | 권한 없음, 중복 코드, 카테고리 없음 |
-| 증거 | 어떤 테스트가 완료를 증명하는가? | 성공·검증·권한·중복·참조 무결성 테스트 |
+| 항목 | 확인할 계약 | 품목 등록 예시 | 4지 선다 |
+|---|---|---|---|
+| 행위자 | 권한 범위 | `ADMIN` | [W079 선택지](workbook-questions.md#w079) |
+| 진입점 | HTTP method와 URL | `POST /api/items` | [W077 선택지](workbook-questions.md#w077) |
+| 입력 | 필수값·형식·범위 | 코드·이름·카테고리·단위·단가·안전재고 | [W074 선택지](workbook-questions.md#w074) |
+| 출력 | status와 응답 DTO | `201 Created`, `ItemDetailView` | [W389 선택지](workbook-questions.md#w389) |
+| 비즈니스 규칙 | 입력 형식 외 업무 검증 | 품목코드 중복 금지, 카테고리 존재 | [W040 선택지](workbook-questions.md#w040) |
+| 상태 변화 | 초기 엔티티 상태 | 새 품목은 `ACTIVE` | [W377 선택지](workbook-questions.md#w377) |
+| 트랜잭션 | 성공·실패를 함께 처리할 범위 | 검증 후 품목 저장 | [W039 선택지](workbook-questions.md#w039) |
+| 실패 계약 | ErrorCode와 HTTP status | 권한 없음, 중복 코드, 카테고리 없음 | [W070 선택지](workbook-questions.md#w070) |
+| 증거 | 완료를 증명하는 테스트 | 성공·검증·권한·중복·참조 무결성 테스트 | [W401 선택지](workbook-questions.md#w401) |
 
 요구사항이 모호하면 코딩으로 숨기지 말고 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)에 선택과 이유를 기록합니다. 예를 들어 “삭제”가 실제 행 삭제인지 `INACTIVE`/`DISCONTINUED` 전환인지 먼저 정해야 Repository와 API가 흔들리지 않습니다.
 
-구현 카드 빈칸:
+구현 카드 4지 선다 확인:
 
-- 대상 FR ID: ____
-- 행위자와 권한: ____
-- 정상 입력/출력: ____
-- 지켜야 할 규칙 3개: ____
-- 실패 사례 3개와 ErrorCode: ____
-- 하나의 트랜잭션으로 묶을 범위: ____
+### W079. 관리자 전용 품목 변경을 보호하는 방법은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=79)
+
+1. URL에 admin을 쓰면 자동으로 보호된다
+2. HTML 버튼을 숨기기만 한다
+3. 인증된 사용자의 ADMIN 역할을 서버 가드에서 검사한다
+4. 품목 코드에 ADMIN을 붙인다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 인증된 사용자의 ADMIN 역할을 서버 가드에서 검사한다
+
+경로 이름과 UI만으로는 권한을 보장할 수 없습니다.
+
+</details>
+
+
+### W074. NotBlank·Positive·Size·Pattern의 역할 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=74)
+
+1. 공백 금지·양수·길이/개수·정규식 검증
+2. DB 생성·로그인·정렬·출고 처리
+3. 모두 같은 문자열 길이 검사
+4. 모두 권한 검사
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 공백 금지·양수·길이/개수·정규식 검증
+
+각 어노테이션은 적용 타입과 검사하는 입력 조건이 다릅니다.
+
+</details>
+
+
+### W161. DTO·Entity·Service·DB 검증 책임의 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=161)
+
+1. 화면 글꼴·CSS·이미지·북마크
+2. 모두 HTTP 쿠키 생성
+3. 모두 같은 역할 문자열 비교만
+4. 입력 형식·불변식·업무 흐름·최종 무결성
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 입력 형식·불변식·업무 흐름·최종 무결성
+
+검증은 서로 다른 진입 경로·업무 경계·경쟁 상태를 방어합니다.
+
+</details>
+
+
+### W068. HTTP status와 비즈니스 ErrorCode의 관계는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=68)
+
+1. 둘 다 화면 글꼴을 지정한다
+2. ErrorCode는 TCP 포트다
+3. status가 400이면 모든 오류 원인이 같다
+4. status는 HTTP 결과 분류, code는 구체적인 업무 오류를 나타낸다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · status는 HTTP 결과 분류, code는 구체적인 업무 오류를 나타낸다
+
+동일한 HTTP 상태 안에도 중복·상태 오류 등 다른 업무 코드가 있습니다.
+
+</details>
+
+
+### W039. 여러 저장 작업의 트랜잭션 경계는 어디에 두는가?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=39)
+
+1. CSS 선택자에 둔다
+2. HTML 버튼 이름에 둔다
+3. 업무 작업을 묶는 Service의 프록시 호출 메서드에 둔다
+4. 각 SQL 로그 줄에 둔다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 업무 작업을 묶는 Service의 프록시 호출 메서드에 둔다
+
+Service 경계에서 여러 Repository 작업이 함께 성공·실패하도록 묶습니다.
+
+</details>
+
+
+### W401. 검증 단계가 제공해야 하는 근거는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=401)
+
+1. 성공이라고 적은 문장만
+2. 아직 실행하지 않은 테스트 이름만
+3. 라이브러리 버전 문자열만
+4. 적절한 테스트의 실행 명령과 실제 결과
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 적절한 테스트의 실행 명령과 실제 결과
+
+실행한 검사와 결과를 기록합니다. 환경상 실행하지 못한 검증은 성공으로 기록하지 않습니다.
+
+</details>
+
 
 ### 2단계: 수직 슬라이스로 작게 완성하기
 
@@ -223,9 +387,66 @@ Entity 전체를 먼저 만들고 모든 Repository, 모든 Service를 차례로
 
 코드 리뷰에서는 다음 세 질문으로 경계를 확인합니다.
 
-- 이 로직은 HTTP, 비즈니스 규칙, 영속성 중 무엇 때문에 바뀌는가?
-- 하위 계층이 상위 계층의 DTO·세션·status code를 알고 있지는 않은가?
-- Controller 없이 Service를, 실제 DB 없이 도메인 규칙을 각각 테스트할 수 있는가?
+
+### W158. 기본 요청 처리 의존 방향은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=158)
+
+1. Domain → Controller → Session
+2. Repository → HTML → Controller
+3. CSS → PasswordEncoder → SQL
+4. Controller → Service → Repository, Service → Domain
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · Controller → Service → Repository, Service → Domain
+
+업무 도메인을 HTTP 표현과 세션으로부터 독립시키는 방향입니다.
+
+</details>
+
+
+
+### W159. Entity가 피해야 할 의존의 예는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=159)
+
+1. Controller·HttpSession·응답 DTO
+2. 업무 상태 enum
+3. BigDecimal
+4. LocalDate
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · Controller·HttpSession·응답 DTO
+
+도메인 타입 사용과 외부 표현·인프라 책임의 결합을 구분합니다.
+
+</details>
+
+
+
+### W158. 기본 요청 처리 의존 방향은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=158)
+
+1. Domain → Controller → Session
+2. Repository → HTML → Controller
+3. CSS → PasswordEncoder → SQL
+4. Controller → Service → Repository, Service → Domain
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · Controller → Service → Repository, Service → Domain
+
+업무 도메인을 HTTP 표현과 세션으로부터 독립시키는 방향입니다.
+
+</details>
+
+
 
 ### 4단계: 입력 검증과 비즈니스 검증을 분리하기
 
@@ -249,10 +470,86 @@ public void discontinue() {
 
 현재 참조 구현은 같은 요청을 다시 받아도 최종 상태가 동일한 멱등 동작을 선택했습니다. 반복 요청을 오류로 거절하고 싶다면 `INVALID_STATUS` 검증을 추가하되 API 계약, 테스트, 설계 결정 문서를 함께 바꿉니다. 구현 전에 다음을 판단합니다.
 
-- 동일 상태 재요청을 멱등 성공으로 볼 것인가, 잘못된 상태로 거절할 것인가?
-- 규칙을 Entity에 둘 것인가 Service에 둘 것인가?
-- 어떤 예외 코드가 API 사용자에게 가장 안정적인 계약인가?
-- 그 선택을 어떤 테스트로 고정할 것인가?
+
+### W051. REQUESTED가 아닌 발주의 승인·반려를 막는 설계는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=51)
+
+1. 도메인 전이 메서드에 상태 가드를 둔다
+2. 화면 버튼만 숨긴다
+3. 승인 후 작성자 이메일을 바꾼다
+4. DTO 필드 이름을 바꾸면 충분하다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 도메인 전이 메서드에 상태 가드를 둔다
+
+Service 인가와 별도로 도메인 메서드가 상태 불변식을 보호합니다.
+
+</details>
+
+
+
+### W161. DTO·Entity·Service·DB 검증 책임의 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=161)
+
+1. 화면 글꼴·CSS·이미지·북마크
+2. 모두 HTTP 쿠키 생성
+3. 모두 같은 역할 문자열 비교만
+4. 입력 형식·불변식·업무 흐름·최종 무결성
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 입력 형식·불변식·업무 흐름·최종 무결성
+
+검증은 서로 다른 진입 경로·업무 경계·경쟁 상태를 방어합니다.
+
+</details>
+
+
+
+### W070. 도메인별 오류를 enum으로 모으는 장점은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=70)
+
+1. 예외가 절대 발생하지 않는다
+2. 코드·상태·기본 메시지의 일관성을 유지한다
+3. 모든 오류를 200으로 바꾼다
+4. DB unique 검사가 없어져도 된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 코드·상태·기본 메시지의 일관성을 유지한다
+
+Service와 예외 처리기가 같은 오류 계약을 공유합니다.
+
+</details>
+
+
+
+### W087. 발주 통합 테스트의 정상 흐름은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=87)
+
+1. 로그인 → 작성 → 입고 → 요청
+2. 비로그인 → 완료 → 생성
+3. 승인 → 반려 → 재승인 → 삭제
+4. 로그인 → 작성 → 요청 → 승인 → 입고
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 로그인 → 작성 → 요청 → 승인 → 입고
+
+이전 응답의 ID와 각 역할의 세션·CSRF 조건을 이어 사용합니다.
+
+</details>
+
+
 
 발주처럼 상태가 많은 기능은 먼저 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md) 또는 [STATE_MACHINE.md](../docs/STATE_MACHINE.md)의 전이 표를 보고, **허용 목록 방식**으로 구현합니다. 현재 상태별 허용 동작을 명시하면 새 상태가 추가됐을 때 의도치 않게 모든 동작이 허용되는 문제를 줄일 수 있습니다.
 
@@ -320,9 +617,66 @@ Entity를 요청·응답에 직접 사용하지 않습니다.
 
 ### 9단계: 인증·인가·소유권을 각각 검증하기
 
-- **인증**: 로그인한 사용자인가?
-- **역할 인가**: `USER`, `ADMIN`, `MANAGER` 중 이 기능을 실행할 역할인가?
-- **소유권**: 해당 역할이라도 이 데이터의 작성자 또는 담당자인가?
+
+### W172. 인증(Authentication)이 확인하는 것은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=172)
+
+1. 업무 기능 실행 권한만
+2. 사용자가 주장한 신원과 인증 증거의 일치
+3. 주문의 현재 재고만
+4. CSS 적용 여부
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 사용자가 주장한 신원과 인증 증거의 일치
+
+인증은 신원을 확인하고 인가는 기능·데이터 접근 권한을 판단합니다.
+
+</details>
+
+
+
+### W173. 인가(Authorization)가 판단하는 것은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=173)
+
+1. JDK 설치 여부
+2. 문자열의 UTF-8 바이트 수
+3. 인증된 사용자가 기능·데이터에 접근할 권한
+4. 비밀번호 자체의 평문 값
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 인증된 사용자가 기능·데이터에 접근할 권한
+
+로그인 성공만으로 모든 데이터에 접근할 수 있는 것은 아닙니다.
+
+</details>
+
+
+
+### W124. 본인 발주 목록의 소유권 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=124)
+
+1. 요청 쿼리 writerId를 인증 없이 신뢰한다
+2. 클라이언트 이름만 비교한다
+3. 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+4. 모든 사용자에게 전체 목록을 반환한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+
+URL 값 조작에 의한 IDOR를 서버 인증 정보 기반 조회로 방지합니다.
+
+</details>
+
+
 
 URL의 `userId`나 요청 본문의 역할을 신뢰하지 않습니다. 현재 사용자는 세션과 `@CurrentUser`에서 얻고, 대상 데이터의 작성자 ID와 서버에서 비교합니다. 화면에서 버튼을 숨기는 것은 사용성일 뿐 보안 경계가 아니므로 API/Service에서도 반드시 거절해야 합니다.
 
@@ -388,17 +742,143 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 ### 기능별 구현 증거 기록표
 
-1단계 구현 카드는 코딩 전 계약을 정하는 양식이고, 아래 표는 구현 후 증거만 기록합니다. 같은 설계 질문을 다시 쓰지 말고 실제 파일·명령·결과를 연결합니다.
+1단계 구현 카드는 코딩 전 계약을 정하는 양식이고, 아래 표는 구현 후 증거만 기록합니다. 선택형 문항으로 파일·명령·결과의 검증 기준을 확인합니다.
 
-| 완료 증거 | 내 기록 |
-|---|---|
-| 변경한 프로그램 파일 | ____ |
-| 추가한 정상/실패 테스트 | ____ |
-| 실행한 검증 명령과 결과 | ____ |
-| 실제 HTTP 요청·응답 | ____ |
-| 확인한 SQL·트랜잭션·로그 | ____ |
-| 설계 결정 문서와 선택하지 않은 대안 | ____ |
-| 남은 위험과 다음 작업 | ____ |
+아래 4지 선다에서 검증 기준을 선택하고 정답·해설을 확인합니다.
+
+### W171. PR 설명의 기본 네 가지 내용은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=171)
+
+1. 비밀번호·salt·token·cookie
+2. 색상·글꼴·이미지만
+3. 파일명·파일명·파일명·파일명
+4. 무엇·왜·검증·영향 범위
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 무엇·왜·검증·영향 범위
+
+변경 결과와 이유·테스트·마이그레이션 등 영향 정보를 검토자가 이해할 수 있게 적습니다.
+
+</details>
+
+
+### W166. 트러블슈팅 문서를 작성하는 올바른 순서는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=166)
+
+1. 문제 원인 없이 기술명만 나열한다
+2. 실패한 모든 증거를 삭제한다
+3. 해결하지 않은 문제를 성공했다고 적는다
+4. 재현 가능한 문제·원인·해결·배운 점과 검증을 남긴다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 재현 가능한 문제·원인·해결·배운 점과 검증을 남긴다
+
+독자가 같은 조건에서 확인할 수 있는 근거를 함께 기록합니다.
+
+</details>
+
+
+### W401. 검증 단계가 제공해야 하는 근거는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=401)
+
+1. 성공이라고 적은 문장만
+2. 아직 실행하지 않은 테스트 이름만
+3. 라이브러리 버전 문자열만
+4. 적절한 테스트의 실행 명령과 실제 결과
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 적절한 테스트의 실행 명령과 실제 결과
+
+실행한 검사와 결과를 기록합니다. 환경상 실행하지 못한 검증은 성공으로 기록하지 않습니다.
+
+</details>
+
+
+### W263. Connection refused와 DB 인증 실패를 구분하는 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=263)
+
+1. 항상 JPA enum 선언 순서를 바꾼다
+2. 브라우저 북마크를 삭제한다
+3. 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+4. Flyway SQL 전체를 무조건 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+
+네트워크 접속 실패와 서버 접속 후 인증 거절은 원인 범위가 다릅니다.
+
+</details>
+
+
+### W261. 오류를 계층별로 추적하는 올바른 방법은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=261)
+
+1. 모든 오류를 DB 비밀번호 탓으로 결론 낸다
+2. 로그 없이 재설치만 반복한다
+3. 예외 응답을 모두 성공으로 바꾼다
+4. 요청 매핑·인가·입력·업무·DB·DTO 단계의 실제 실패 지점을 확인한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 요청 매핑·인가·입력·업무·DB·DTO 단계의 실제 실패 지점을 확인한다
+
+마지막으로 성공한 단계와 실패 증거를 연결하면 원인 범위를 줄일 수 있습니다.
+
+</details>
+
+
+### W402. 루프의 설명 단계에서 이해를 확인하는 방식은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=402)
+
+1. 선택한 설계와 대안·검증 근거를 코드와 대조한다
+2. 기술 이름만 나열한다
+3. 실패 사례를 모두 감춘다
+4. 검증하지 않은 기능을 구현했다고 주장한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 선택한 설계와 대안·검증 근거를 코드와 대조한다
+
+선택 이유는 실제 구현과 증거로 뒷받침합니다. 객관식 정답·해설을 실제 코드에 적용해 이해를 확인합니다.
+
+</details>
+
+
+### W403. 루프의 정리 단계에서 함께 맞출 대상은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=403)
+
+1. 문서만 삭제하고 코드와의 차이를 숨긴다
+2. 임시 빌드 결과를 유일한 원본으로 삼는다
+3. 코드와 문서·HTML 목차·변경 이력·관련 링크
+4. 모든 변경을 검증 없이 게시한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 코드와 문서·HTML 목차·변경 이력·관련 링크
+
+산출물이 같은 동작을 설명하고 파일 링크가 실제 자료를 가리키도록 정리합니다.
+
+</details>
+
+
 
 ## 전체 기능 추적표
 
@@ -459,797 +939,2590 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 ## FR-USER-001 로그인
 
-개념 빈칸:
+개념 4지 선다:
 
-- 인증(Authentication)은 사용자가 ____ 인지 확인하는 과정이다.
-- 인가(Authorization)는 사용자가 특정 기능을 ____ 수 있는지 판단하는 과정이다.
-- 비밀번호는 평문 비교가 아니라 `passwordEncoder.____(raw, encoded)` 로 검증한다.
-- 로그인 실패 메시지를 이메일/비밀번호로 나누지 않는 이유는 ____ 공격을 줄이기 위해서다.
 
-구현 TODO:
+### W172. 인증(Authentication)이 확인하는 것은?
 
-- Request DTO: `email`, `password` 에 각각 `@____`, `@____` 를 적용한다.
-- Repository: `Optional<User> findBy____(String email)` 을 만든다.
-- Service:
-  - 이메일을 `trim().toLowerCase()` 로 ____ 한다.
-  - 사용자를 찾지 못하면 `ErrorCode.____` 또는 로그인 실패 전용 코드를 던진다.
-  - 비밀번호 불일치도 같은 메시지로 응답한다.
-  - 성공 시 세션에 `USER_ID`, `USER_ROLE` 을 저장한다.
-  - 세션 고정 공격 방지를 위해 `request.____()` 를 호출한다.
-- Controller:
-  - `POST /api/auth/____`
-  - 성공 응답에는 비밀번호를 절대 포함하지 않는다.
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=172)
 
-테스트 TODO:
+1. 업무 기능 실행 권한만
+2. 사용자가 주장한 신원과 인증 증거의 일치
+3. 주문의 현재 재고만
+4. CSS 적용 여부
 
-- Given 등록된 사용자, When 올바른 비밀번호로 로그인, Then 세션에 ____ 가 저장된다.
-- Given 등록된 사용자, When 틀린 비밀번호로 로그인, Then HTTP ____ 와 공통 에러 응답을 받는다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · 사용자가 주장한 신원과 인증 증거의 일치
+
+인증은 신원을 확인하고 인가는 기능·데이터 접근 권한을 판단합니다.
+
+</details>
+
+
+
+### W173. 인가(Authorization)가 판단하는 것은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=173)
+
+1. JDK 설치 여부
+2. 문자열의 UTF-8 바이트 수
+3. 인증된 사용자가 기능·데이터에 접근할 권한
+4. 비밀번호 자체의 평문 값
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 인증된 사용자가 기능·데이터에 접근할 권한
+
+로그인 성공만으로 모든 데이터에 접근할 수 있는 것은 아닙니다.
+
+</details>
+
+
+
+### W094. 로그인 비밀번호 검증에 사용하는 메서드는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=94)
+
+1. passwordEncoder.encode(raw).equals(encoded)만 사용
+2. 비밀번호 문자열을 응답에 출력
+3. 이메일만 있으면 로그인 성공
+4. passwordEncoder.matches(raw, encoded)
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · passwordEncoder.matches(raw, encoded)
+
+BCrypt의 salt 때문에 재인코딩 결과 문자열의 단순 비교를 사용하지 않습니다.
+
+</details>
+
+
+
+### W097. 로그인 실패 메시지를 통일하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=97)
+
+1. 모든 실패를 성공으로 바꾸기 위해서다
+2. 비밀번호 해시를 숨기지 않기 위해서다
+3. 이메일 존재 여부를 이용한 계정 열거를 줄이기 위해서다
+4. 로그인 속도를 항상 두 배로 만들기 위해서다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 이메일 존재 여부를 이용한 계정 열거를 줄이기 위해서다
+
+사용자에게 계정 존재 여부를 직접 구분해 알려 주지 않습니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W094. 로그인 비밀번호 검증에 사용하는 메서드는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=94)
+
+1. passwordEncoder.encode(raw).equals(encoded)만 사용
+2. 비밀번호 문자열을 응답에 출력
+3. 이메일만 있으면 로그인 성공
+4. passwordEncoder.matches(raw, encoded)
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · passwordEncoder.matches(raw, encoded)
+
+BCrypt의 salt 때문에 재인코딩 결과 문자열의 단순 비교를 사용하지 않습니다.
+
+</details>
+### W260. 로그인 성공 시 현재 세션에 저장되는 인증 값은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=260)
+
+1. LOGIN_USER 키의 LoginUser 객체
+2. 평문 password 문자열
+3. Item Entity 전체
+4. 사용자가 요청한 임의 role 문자열
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · LOGIN_USER 키의 LoginUser 객체
+
+SessionConst.LOGIN_USER를 사용해 인증된 사용자 ID·이름·이메일·역할을 보관합니다.
+
+</details>
+### W283. FR-USER-001 로그인: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? Given 등록된 사용자, When 틀린 비밀번호로 로그인, Then HTTP ____ 와 공통 에러 응답을 받는다.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=283)
+
+1. 200
+2. 401
+3. 403
+4. 400
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-USER-002 로그아웃
 
-개념 빈칸:
+개념 4지 선다:
 
-- 세션 로그아웃은 서버가 보관하던 인증 상태를 ____ 하는 것이다.
-- JWT 로그아웃은 서버가 토큰 상태를 보관하지 않으면 즉시 강제 로그아웃이 ____.
 
-구현 TODO:
+### W174. 세션 로그아웃의 핵심 처리는?
 
-- Service: `session.____()` 로 기존 세션을 폐기한다.
-- Controller: `POST /api/auth/____`
-- 응답: 본문 없이 `204 No Content` 또는 메시지 포함 `200 OK` 중 팀 컨벤션을 정한다.
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=174)
 
-테스트 TODO:
+1. 서버의 해당 세션 인증 상태를 폐기한다
+2. 브라우저에서 화면만 닫는다
+3. 사용자의 모든 주문을 삭제한다
+4. 평문 비밀번호를 응답한다
 
-- Given 로그인된 세션, When 로그아웃, Then 이후 보호 API 호출은 HTTP ____ 이다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · 서버의 해당 세션 인증 상태를 폐기한다
+
+현재 서버 세션을 invalidate해 이후 보호 요청의 인증 상태를 제거합니다.
+
+</details>
+
+
+
+### W175. 무상태 JWT의 즉시 강제 로그아웃을 구현하려면?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=175)
+
+1. 클라이언트 토큰 삭제만으로 유출 복사본까지 무효화한다
+2. JWT의 exp 검사를 제거한다
+3. payload의 role을 암호 없이 믿는다
+4. 폐기 목록·토큰 버전 등 서버 확인 정책을 추가한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 폐기 목록·토큰 버전 등 서버 확인 정책을 추가한다
+
+클라이언트 삭제는 탈취된 복사본을 폐기하지 못합니다. 짧은 TTL은 노출 시간을 줄일 뿐 즉시 폐기는 별도 대책입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W284. FR-USER-002 로그아웃: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? Given 로그인된 세션, When 로그아웃, Then 이후 보호 API 호출은 HTTP ____ 이다.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=284)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 401
+
+보호 API에 인증 세션이 없으면 AUTHENTICATION_REQUIRED로 401을 응답합니다.
+
+</details>
 ## FR-USER-003 내 정보 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 내 정보 조회는 URL 에 userId 를 받기보다 현재 인증 사용자에서 ____ 를 꺼내는 편이 안전하다.
-- 응답 DTO 에 password, internal token, salt 같은 값은 ____.
 
-구현 TODO:
+### W176. 내 정보 조회에서 사용자를 정하는 안전한 기준은?
 
-- 인증 사용자 주입:
-  - 1차 세션 방식: `HttpSession.getAttribute("____")`
-  - 개선 방식: `@____ Long currentUserId`
-  - Spring Security 방식: `@____`
-- Service: `userRepository.findById(currentUserId)` 로 조회한다.
-- Response DTO: `userId`, `email`, `name`, `role` 정도만 포함한다.
-- Controller: `GET /api/users/____`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=176)
 
-테스트 TODO:
+1. URL에서 받은 임의의 userId만
+2. 서버가 인증한 현재 사용자 ID
+3. 요청 본문의 isAdmin만
+4. 브라우저 북마크 이름
 
-- Given 로그인하지 않은 사용자, When 내 정보 조회, Then HTTP ____.
-- Given 로그인한 사용자, When 내 정보 조회, Then 응답에 ____ 필드가 없다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · 서버가 인증한 현재 사용자 ID
+
+인증 주체의 ID를 사용해 다른 사용자 정보 조회 우회를 막습니다.
+
+</details>
+
+
+
+### W177. 응답 DTO에서 제외해야 할 정보는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=177)
+
+1. 비밀번호 해시·내부 토큰 등 민감정보
+2. 공개 품목 이름
+3. 공개 카테고리 이름
+4. 공지 제목
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 비밀번호 해시·내부 토큰 등 민감정보
+
+평문뿐 아니라 비밀번호 해시와 내부 인증 자료도 응답 계약에서 제외합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W285. FR-USER-003 내 정보 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? Given 로그인하지 않은 사용자, When 내 정보 조회, Then HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=285)
+
+1. 200
+2. 400
+3. 403
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 401
+
+보호 API에 인증 세션이 없으면 AUTHENTICATION_REQUIRED로 401을 응답합니다.
+
+</details>
+### W177. 응답 DTO에서 제외해야 할 정보는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=177)
+
+1. 비밀번호 해시·내부 토큰 등 민감정보
+2. 공개 품목 이름
+3. 공개 카테고리 이름
+4. 공지 제목
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 비밀번호 해시·내부 토큰 등 민감정보
+
+평문뿐 아니라 비밀번호 해시와 내부 인증 자료도 응답 계약에서 제외합니다.
+
+</details>
 ## FR-USER-004 비밀번호 변경
 
-개념 빈칸:
+개념 4지 선다:
 
-- 비밀번호 변경 전 현재 비밀번호를 다시 확인하는 이유는 ____ 된 세션 피해를 줄이기 위해서다.
-- 새 비밀번호는 저장 전 반드시 ____ 해야 한다.
 
-구현 TODO:
+### W178. 비밀번호 변경 전에 현재 비밀번호를 다시 검증하는 이유는?
 
-- Request DTO:
-  - `currentPassword`: `@NotBlank`
-  - `newPassword`: `@Size(min = ____, max = ____)`
-- Service:
-  - 현재 사용자 조회
-  - `passwordEncoder.matches(currentPassword, user.getPassword())`
-  - 새 비밀번호를 `passwordEncoder.____(...)`
-  - `user.changePassword(encodedPassword)`
-- Controller: `PATCH /api/users/me/password`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=178)
 
-테스트 TODO:
+1. 새 비밀번호를 평문 저장하기 위해서다
+2. 모든 세션을 ADMIN으로 바꾸기 위해서다
+3. 탈취·공유된 로그인 세션의 피해를 줄이기 위해서다
+4. 이메일 중복 검사를 없애기 위해서다
 
-- 현재 비밀번호가 틀리면 HTTP ____.
-- 성공 후 기존 raw password 로는 `matches` 가 ____ 이어야 한다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 탈취·공유된 로그인 세션의 피해를 줄이기 위해서다
+
+중요 작업에 추가 인증 증거를 요구하되 새 비밀번호 해시 저장도 필요합니다.
+
+</details>
+
+
+
+### W098. 비밀번호 변경의 올바른 처리 순서는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=98)
+
+1. 새 비밀번호를 평문 저장하고 이전 값을 응답한다
+2. 현재 비밀번호 검증 후 새 비밀번호를 해시해 저장한다
+3. 현재 비밀번호 확인 없이 누구나 변경한다
+4. 세션 ID를 새 비밀번호로 저장한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 현재 비밀번호 검증 후 새 비밀번호를 해시해 저장한다
+
+형식 검증과 현재 비밀번호 일치 확인·새 비밀번호 보호를 함께 수행합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W286. FR-USER-004 비밀번호 변경: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 현재 비밀번호가 틀리면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=286)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W276. 새 비밀번호를 기존 값과 다르게 변경한 뒤 이전 비밀번호의 matches 결과는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=276)
+
+1. false
+2. true
+3. null
+4. ADMIN
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · false
+
+기존과 다른 새 비밀번호를 저장했다는 전제입니다. 새 해시에 이전 비밀번호가 일치하면 안 됩니다.
+
+</details>
 ## FR-USER-005 권한 구분
 
-개념 빈칸:
+개념 4지 선다:
 
-- USER, ADMIN, MANAGER 는 `UserRole` ____ 으로 정의한다.
-- `@Enumerated(EnumType.____)` 를 사용하는 이유는 enum 순서 변경에 안전하기 때문이다.
-- ADMIN 권한 검사는 Controller 에서 1차, ____ 에서 2차로 할 수 있다.
 
-구현 TODO:
+### W253. USER·ADMIN·MANAGER를 정의하는 프로젝트 타입은?
 
-- `UserRole`: `USER`, `ADMIN`, `MANAGER`
-- 세션 방식:
-  - 로그인 시 `USER_ROLE` 저장
-  - Interceptor 또는 Service 가 `role == UserRole.____` 검사
-- Spring Security 방식:
-  - `@PreAuthorize("hasRole('____')")`
-  - `@PreAuthorize("hasAnyRole('MANAGER','____')")`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=253)
 
-테스트 TODO:
+1. UserRole enum
+2. PartnerType enum
+3. ItemStatus enum
+4. PurchaseOrderStatus enum
 
-- USER 가 품목 등록 API 를 호출하면 HTTP ____.
-- MANAGER 가 출고 처리 API 를 호출하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · UserRole enum
+
+사용자 역할과 거래처 유형·품목 상태·주문 상태를 별도 enum으로 구분합니다.
+
+</details>
+
+
+
+### W007. UserRole을 EnumType.STRING으로 저장하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=7)
+
+1. enum 선언 순서가 바뀌어도 저장된 이름의 의미를 유지하기 위해서다
+2. 권한 검사가 자동으로 생기기 때문이다
+3. DB 용량이 항상 ORDINAL보다 작기 때문이다
+4. 알 수 없는 enum 값도 모두 허용하기 때문이다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · enum 선언 순서가 바뀌어도 저장된 이름의 의미를 유지하기 위해서다
+
+STRING은 이름을 저장합니다. enum 이름 변경에는 별도 마이그레이션이 필요합니다.
+
+</details>
+
+
+
+### W079. 관리자 전용 품목 변경을 보호하는 방법은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=79)
+
+1. URL에 admin을 쓰면 자동으로 보호된다
+2. HTML 버튼을 숨기기만 한다
+3. 인증된 사용자의 ADMIN 역할을 서버 가드에서 검사한다
+4. 품목 코드에 ADMIN을 붙인다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 인증된 사용자의 ADMIN 역할을 서버 가드에서 검사한다
+
+경로 이름과 UI만으로는 권한을 보장할 수 없습니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W287. FR-USER-005 권한 구분: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? USER 가 품목 등록 API 를 호출하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=287)
+
+1. 403
+2. 200
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
+### W288. 유효한 CONFIRMED 수주·충분한 재고 등 다른 조건이 모두 충족될 때 MANAGER의 출고 API 성공 응답은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=288)
+
+1. 400
+2. 401
+3. 200
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 200
+
+유효한 업무 조건을 갖춘 현재 출고 API는 200 OK를 반환합니다.
+
+</details>
 ---
 
 # 2. 거래처 관리 기능
 
 ## FR-PARTNER-001 거래처 등록
 
-개념 빈칸:
+개념 4지 선다:
 
-- 사업자번호는 ____ 식별자이므로 DB unique 제약을 둔다.
-- 거래처 유형은 ____ enum 으로 관리하면 잘못된 값을 막을 수 있다.
 
-구현 TODO:
+### W012. 사업자번호 unique 제약의 목적은?
 
-- Request DTO: `name`, `businessNumber`, `partnerType`, `contactName`, `phone`, `email`, `address`
-- Repository:
-  - `partnerRepository.existsBy____(businessNumber)`
-- Service:
-  - ADMIN 권한 확인
-  - 사업자번호 중복 확인
-  - `Partner.create(...)`
-- Controller: `POST /api/____`
-- Response: `partnerId`, `name`, `businessNumber`, `partnerType`, `status`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=12)
 
-테스트 TODO:
+1. 서로 다른 사업체의 번호를 같게 만든다
+2. 같은 사업체가 중복 거래처로 등록되는 것을 막는다
+3. 공급사만 자동으로 고객사로 바꾼다
+4. 사업자번호를 세션 ID로 사용한다
 
-- 중복 사업자번호는 HTTP ____ 와 `DUPLICATE_BUSINESS_NUMBER`.
-- USER 권한 등록 시도는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · 같은 사업체가 중복 거래처로 등록되는 것을 막는다
+
+업무 식별자에 대한 최종 중복 방어선입니다.
+
+</details>
+
+
+
+### W014. PartnerType과 canSupply·canBuy 헬퍼의 목적은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=14)
+
+1. DB 연결 비밀번호를 생성한다
+2. 공급·판매 가능 여부를 도메인 규칙으로 모은다
+3. INACTIVE 거래처도 항상 주문을 허용한다
+4. 고객사와 공급사의 의미를 제거한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 공급·판매 가능 여부를 도메인 규칙으로 모은다
+
+SUPPLIER·CUSTOMER·BOTH의 업무 의미를 헬퍼에 모으면 조건 중복을 줄일 수 있습니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W289. FR-PARTNER-001 거래처 등록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 중복 사업자번호는 HTTP ____ 와 `DUPLICATE_BUSINESS_NUMBER`.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=289)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W290. FR-PARTNER-001 거래처 등록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? USER 권한 등록 시도는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=290)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ## FR-PARTNER-002 거래처 목록 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 목록은 ____ 를 적용해 페이지 단위로 조회한다.
 
-구현 TODO:
+### W043. Pageable의 계층 전달 흐름은?
 
-- Controller: `GET /api/partners?page=0&size=20&type=SUPPLIER`
-- Service: 조건 분기 (`partnerType` 필터)
-- Response DTO 변환
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=43)
 
-테스트 TODO:
+1. Controller → Service → Repository
+2. Entity → CSS → Session
+3. DB → README → 브라우저 쿠키
+4. Repository → 비밀번호 해시
 
-- type=SUPPLIER 조회 시 CUSTOMER 거래처는 ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · Controller → Service → Repository
+
+페이지·크기·정렬 조건을 필요한 검증을 거쳐 조회 계층으로 전달합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W277. SUPPLIER만 조회하는 거래처 유형 필터에서 CUSTOMER 전용 거래처는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=277)
+
+1. 반드시 포함된다
+2. 자동으로 SUPPLIER가 된다
+3. 삭제된다
+4. 제외된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 제외된다
+
+조건에 맞는 거래처만 조회하며 조회가 데이터를 변경하지 않습니다.
+
+</details>
 ## FR-PARTNER-003 거래처 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 상세 조회는 PathVariable 로 ____ 를 받는다.
-- 거래처 상세 응답에 발주/수주 통계까지 포함할지는 ____ 와 응답 크기의 트레이드오프다.
 
-구현 TODO:
+### W251. 거래처 상세 경로 /api/partners/{id}의 PathVariable은?
 
-- Repository: `findById(partnerId)`
-- Service:
-  - 거래처 없으면 `ErrorCode.____`
-  - Service 안에서 DTO 변환
-- Controller: `GET /api/partners/{____}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=251)
 
-테스트 TODO:
+1. 조회할 거래처 ID
+2. 사용자 권한 문자열
+3. 공지 조회수
+4. 페이지 총 개수
 
-- 없는 거래처 ID 조회 시 HTTP ____.
-- 응답에 사업자번호와 유형이 포함된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · 조회할 거래처 ID
+
+조회 대상 ID를 받아 존재 여부와 접근 조건을 확인합니다.
+
+</details>
+
+
+
+### W109. 거래처 상세에 주문 통계를 포함할지 판단할 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=109)
+
+1. 통계가 있으면 인증을 제거한다
+2. 항상 모든 주문 엔티티를 그대로 직렬화한다
+3. 통계 계산이 DB unique를 대체한다
+4. 화면 요구와 조회 비용·응답 크기를 함께 고려한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 화면 요구와 조회 비용·응답 크기를 함께 고려한다
+
+통계를 같은 응답에 넣거나 별도 API로 나누는 선택을 명시합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W291. FR-PARTNER-003 거래처 상세 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 없는 거래처 ID 조회 시 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=291)
+
+1. 200
+2. 404
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 404
+
+현재 ErrorCode의 대상 미존재 오류는 404입니다. 접근 권한 등 선행 조건은 충족했다고 가정합니다.
+
+</details>
 ## FR-PARTNER-004 거래처 정보 수정
 
-개념 빈칸:
+개념 4지 선다:
 
-- 수정 시 Service 가 setter 를 직접 호출하기보다 Entity 의 ____ 메서드를 쓰면 규칙이 모인다.
-- 사업자번호 변경 요청이 들어왔다면 ____ 검증을 다시 해야 한다.
 
-구현 TODO:
+### W122. setter 대신 도메인 메서드를 사용하는 장점은?
 
-- Request DTO: 등록 계약을 재사용하되 `PUT`이면 전체 필드, `PATCH`이면 변경 허용 필드만 받는 정책을 ____ 에 기록한다.
-- Service:
-  - 거래처 조회
-  - 사업자번호가 바뀌었다면 중복 재검사
-  - `partner.update(...)`
-- Controller: `PUT /api/partners/{partnerId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=122)
 
-테스트 TODO:
+1. 모든 SQL이 없어지고 DB가 불필요해진다
+2. 권한 검사가 무조건 자동 생성된다
+3. 모든 필드를 외부에 무제한 공개한다
+4. 업무 의미와 불변식 검증을 변경 지점에 모은다
 
-- 다른 거래처와 같은 사업자번호로 변경하면 HTTP ____.
-- 유형(SUPPLIER → BOTH) 변경 후 발주 가능한지 확인.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 업무 의미와 불변식 검증을 변경 지점에 모은다
+
+changeCategory·discontinue 같은 메서드는 허용된 상태 변경을 표현합니다.
+
+</details>
+
+
+
+### W099. 사업자번호 exists 검사와 unique 제약을 함께 두는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=99)
+
+1. 사전 안내와 동시 등록의 최종 무결성을 각각 보장한다
+2. exists 검사로 모든 경쟁 상태가 제거된다
+3. unique 제약으로 화면 입력 형식까지 검증한다
+4. 중복 번호를 일부러 두 번 저장한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 사전 안내와 동시 등록의 최종 무결성을 각각 보장한다
+
+사전 조회 이후 다른 트랜잭션이 저장할 수 있으므로 DB 제약이 필요합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W274. PUT·PATCH 입력 정책과 허용 필드를 기록할 문서는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=274)
+
+1. 비밀번호 해시 컬럼
+2. Gradle 다운로드 캐시
+3. 실제 코드와 동기화한 API 명세
+4. 브라우저 세션 쿠키
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 실제 코드와 동기화한 API 명세
+
+입력·응답·권한·오류·수정 의미를 독자가 재현할 수 있게 API 계약에 적습니다.
+
+</details>
+### W292. FR-PARTNER-004 거래처 정보 수정: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 다른 거래처와 같은 사업자번호로 변경하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=292)
+
+1. 400
+2. 200
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-PARTNER-005 거래처 삭제 / 비활성화
 
-개념 빈칸:
+개념 4지 선다:
 
-- 발주/수주 이력이 있는 거래처를 hard delete 하면 ____ 가 깨질 수 있다.
-- 그래서 보통은 ____ 처리(soft delete)로 둔다.
 
-구현 TODO:
+### W100. 이력이 있는 거래처를 삭제 요청할 때 현재 정책은?
 
-- Repository: `purchaseOrderRepository.countByPartner_Id(partnerId)`, `salesOrderRepository.countByPartner_Id(partnerId)`
-- Service:
-  - 이력이 0 이면 delete
-  - 이력이 있으면 `partner.deactivate()` 로 상태 변경
-- Controller: `DELETE /api/partners/{partnerId}` 또는 `PATCH /api/partners/{partnerId}/deactivate`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=100)
 
-테스트 TODO:
+1. 주문 라인까지 모두 삭제한다
+2. 사용자 계정 비밀번호를 초기화한다
+3. 항상 DB 테이블 전체를 삭제한다
+4. INACTIVE로 바꿔 이력을 보존한다
 
-- 발주 이력이 있는 거래처 삭제 시 응답 상태는 ____, 거래처 status 는 ____ 가 된다.
-- 이력이 없는 거래처는 실제 DELETE 된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · INACTIVE로 바꿔 이력을 보존한다
+
+참조 구현의 거래처 삭제는 비활성화 정책입니다.
+
+</details>
+
+
+
+### W100. 이력이 있는 거래처를 삭제 요청할 때 현재 정책은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=100)
+
+1. 주문 라인까지 모두 삭제한다
+2. 사용자 계정 비밀번호를 초기화한다
+3. 항상 DB 테이블 전체를 삭제한다
+4. INACTIVE로 바꿔 이력을 보존한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · INACTIVE로 바꿔 이력을 보존한다
+
+참조 구현의 거래처 삭제는 비활성화 정책입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W278. ADMIN이 현재 거래처 삭제 API로 비활성화를 성공하면 응답과 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=278)
+
+1. 204 / INACTIVE
+2. 200 / ACTIVE
+3. 403 / INACTIVE
+4. 201 / DRAFT
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 204 / INACTIVE
+
+PartnerApiController는 noContent, Service는 비활성화 상태 변경을 수행합니다.
+
+</details>
 ## FR-PARTNER-006 거래처 검색
 
-개념 빈칸:
+개념 4지 선다:
 
-- 검색 조건이 이름/사업자번호/유형으로 늘어나면 단순 메서드 이름 쿼리가 ____ 질 수 있다.
 
-구현 TODO:
+### W136. 복잡해진 메서드 이름 쿼리를 정리하는 기준은?
 
-- Controller: `GET /api/partners?keyword=best&type=SUPPLIER`
-- Repository:
-  - 단순 버전: `findByNameContainingOrBusinessNumberContaining(...)`
-  - 확장 버전: `@Query` 또는 Specification/Querydsl
-- Service:
-  - keyword blank 면 전체
-  - keyword trim
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=136)
 
-테스트 TODO:
+1. 메서드 이름을 무한히 늘린다
+2. Controller에 SQL 문자열을 모두 붙인다
+3. 가독성·조합 조건·조인 요구에 따라 Query나 Specification을 선택한다
+4. 조회 조건을 문서에서 삭제한다
 
-- 이름 일부로 검색하면 해당 거래처만 나온다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 가독성·조합 조건·조인 요구에 따라 Query나 Specification을 선택한다
+
+명시 쿼리와 동적 조건 추상화의 목적에 맞게 선택합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-PARTNER-007 페이징
 
-개념 빈칸:
+개념 4지 선다:
 
-- Spring Data 의 `Page` 는 content 뿐 아니라 totalElements, totalPages 같은 ____ 정보를 가진다.
-- `Page.map` 을 쓰면 페이징 메타 정보가 ____ 된다.
 
-구현 TODO:
+### W138. Page.map이 보존하는 정보는?
 
-- Controller 파라미터: `Pageable pageable`
-- 기본값: `@PageableDefault(size = ____, sort = "id")`
-- 정렬 허용 컬럼 정책: ____
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=138)
 
-테스트 TODO:
+1. 평문 비밀번호
+2. 모든 서버 세션
+3. 페이지 메타 정보와 변환된 content
+4. SQL 수정 권한
 
-- `page=1, size=10` 요청 시 두 번째 페이지가 조회된다.
-- 허용하지 않는 sort 컬럼은 ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 페이지 메타 정보와 변환된 content
+
+전체 개수와 페이지 수를 잃지 않고 Entity를 DTO로 바꿉니다.
+
+</details>
+
+
+
+### W138. Page.map이 보존하는 정보는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=138)
+
+1. 평문 비밀번호
+2. 모든 서버 세션
+3. 페이지 메타 정보와 변환된 content
+4. SQL 수정 권한
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 페이지 메타 정보와 변환된 content
+
+전체 개수와 페이지 수를 잃지 않고 Entity를 DTO로 바꿉니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W045. 클라이언트 정렬을 허용할 때 필요한 정책은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=45)
+
+1. 허용 필드와 기본 정렬을 명시하고 검증한다
+2. 모든 입력을 SQL 문자열에 그대로 붙인다
+3. 사용자가 임의의 DB 컬럼을 삭제하게 한다
+4. 정렬을 허용하면 페이징을 제거한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 허용 필드와 기본 정렬을 명시하고 검증한다
+
+서버 고정과 제한적 사용자 선택 중 요구에 맞게 정하되 안정적인 기준을 둡니다.
+
+</details>
+### W279. 정렬 허용 목록을 구현하는 과제에서 금지된 sort 입력의 올바른 처리는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=279)
+
+1. SQL에 그대로 연결한다
+2. 서버 관리자 권한을 부여한다
+3. 입력 오류로 거절한다
+4. 모든 데이터를 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 입력 오류로 거절한다
+
+이 문제는 허용 목록 검증을 구현하는 설계 과제를 전제로 하며 현재 자동 바인딩 자체가 이를 보장하지는 않습니다.
+
+</details>
 ---
 
 # 3. 카테고리 / 품목 관리 기능
 
 ## FR-CAT-001 카테고리 등록
 
-개념 빈칸:
+개념 4지 선다:
 
-- 카테고리명은 사용자 식별성이 높으므로 DB 에 ____ 제약을 둔다.
 
-구현 TODO:
+### W009. 카테고리명에 unique 제약을 두는 목적은?
 
-- Request DTO: `name`, `description`
-- Service:
-  - ADMIN 권한 확인
-  - `categoryRepository.existsBy____(name)`
-  - `Category.create(name, description)`
-- Controller: `POST /api/____`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=9)
 
-테스트 TODO:
+1. 모든 카테고리가 같은 이름을 갖게 하기 위해서다
+2. 품목 조회를 무조건 한 쿼리로 줄이기 위해서다
+3. 동일한 이름의 카테고리 중복을 차단하기 위해서다
+4. 관리자 권한을 부여하기 위해서다
 
-- 중복 카테고리명은 `DUPLICATE_CATEGORY_NAME` 으로 응답한다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 동일한 이름의 카테고리 중복을 차단하기 위해서다
+
+사용자에게 식별되는 이름의 중복은 Service 검사와 DB 제약으로 막습니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-CAT-002 카테고리 목록 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 카테고리는 품목보다 수가 적어 MVP 에서는 ____ 조회로 충분하다.
-- 그러나 카테고리가 100개를 넘어가면 ____ 적용을 고려한다.
 
-구현 TODO:
+### W106. 소수 카테고리 전체 조회가 대규모에서 달라져야 하는 이유는?
 
-- Controller: `GET /api/categories`
-- Service: `categoryRepository.findAll(Sort.by("name").____())`
-- Response: `categoryId`, `name`, `description`, `itemCount`(선택)
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=106)
 
-테스트 TODO:
+1. 1000개가 되면 모든 데이터가 자동 삭제된다
+2. 응답 크기·메모리·지연이 늘어 페이징을 고려해야 한다
+3. List 반환은 Java에서 항상 금지되어 있다
+4. 전체 조회면 DB 연결이 필요 없다
 
-- 로그인 사용자는 USER/ADMIN/MANAGER 모두 조회 가능하다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 응답 크기·메모리·지연이 늘어 페이징을 고려해야 한다
+
+데이터 규모와 화면 요구에 맞춰 전체 조회 또는 페이지 계약을 선택합니다.
+
+</details>
+
+
+
+### W106. 소수 카테고리 전체 조회가 대규모에서 달라져야 하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=106)
+
+1. 1000개가 되면 모든 데이터가 자동 삭제된다
+2. 응답 크기·메모리·지연이 늘어 페이징을 고려해야 한다
+3. List 반환은 Java에서 항상 금지되어 있다
+4. 전체 조회면 DB 연결이 필요 없다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 응답 크기·메모리·지연이 늘어 페이징을 고려해야 한다
+
+데이터 규모와 화면 요구에 맞춰 전체 조회 또는 페이지 계약을 선택합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-CAT-003 카테고리 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 카테고리 상세에 소속 품목까지 포함하면 N+1 문제를 피하기 위해 ____ 또는 EntityGraph 를 사용할 수 있다.
-- 또는 소속 품목을 ____ API 로 분리해 페이징을 적용한다.
 
-구현 TODO:
+### W105. 카테고리 상세의 품목 조회에서 N+1을 줄이는 방법은?
 
-- Repository:
-  - `categoryRepository.findById(categoryId)`
-  - 소속 품목: `itemRepository.findByCategory_Id(categoryId, pageable)`
-- Response: 카테고리 정보 + 소속 품목 요약 DTO
-- Controller: `GET /api/categories/{categoryId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=105)
 
-테스트 TODO:
+1. LAZY만 붙이면 항상 한 쿼리다
+2. 각 품목마다 카테고리를 다시 조회한다
+3. DTO로 바꾸기만 하면 모든 SQL이 사라진다
+4. 필요한 관계를 fetch join·EntityGraph 또는 별도 일괄 조회로 가져온다
 
-- 없는 카테고리 ID 는 HTTP ____.
-- 상세 응답에 item summary 목록이 포함된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 필요한 관계를 fetch join·EntityGraph 또는 별도 일괄 조회로 가져온다
+
+조회 계획을 의도적으로 정해야 하며 컬렉션 fetch와 페이징의 제약도 고려합니다.
+
+</details>
+
+
+
+### W111. 카테고리 상세에 모든 품목을 중첩할 때 고려할 것은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=111)
+
+1. 응답 크기와 N+1, 필요하면 별도 품목 페이징이다
+2. JSON이면 조회 비용이 없다
+3. nested DTO면 SQL이 자동 최적화된다
+4. 모든 품목의 비밀번호를 포함한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 응답 크기와 N+1, 필요하면 별도 품목 페이징이다
+
+응답 구조와 조회 계획은 함께 검토해야 합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W293. FR-CAT-003 카테고리 상세 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 없는 카테고리 ID 는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=293)
+
+1. 404
+2. 200
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 404
+
+현재 ErrorCode의 대상 미존재 오류는 404입니다. 접근 권한 등 선행 조건은 충족했다고 가정합니다.
+
+</details>
 ## FR-CAT-004 카테고리 정보 수정
 
-개념 빈칸:
+개념 4지 선다:
 
-- 전체 갱신은 ____, 부분 갱신은 ____ HTTP 메서드가 자연스럽다.
-- 이름 변경 시에도 중복 검증은 ____.
 
-구현 TODO:
+### W108. 전체 수정과 부분 수정의 HTTP 메서드 조합은?
 
-- Controller: `PUT /api/categories/{categoryId}` 또는 `PATCH /api/categories/{categoryId}`
-- Service:
-  - ADMIN 권한 확인
-  - 카테고리 조회
-  - 새 이름이 기존과 다르면 중복 확인
-  - `category.update(name, description)`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=108)
 
-테스트 TODO:
+1. GET / TRACE
+2. OPTIONS / HEAD
+3. PUT / PATCH
+4. DELETE / CONNECT
 
-- 다른 카테고리가 이미 쓰는 이름으로 변경하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · PUT / PATCH
+
+PUT은 전체 표현 교체, PATCH는 부분 변경 계약에 사용합니다.
+
+</details>
+
+
+
+### W103. 카테고리명 중복 검사의 다층 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=103)
+
+1. 화면 label만 표시
+2. DB 연결 포트를 비교
+3. Service existsByName과 DB unique
+4. 엔티티 createdAt만 비교
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · Service existsByName과 DB unique
+
+사용자 오류 안내와 경쟁 요청의 무결성을 서로 보완합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W294. FR-CAT-004 카테고리 정보 수정: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 다른 카테고리가 이미 쓰는 이름으로 변경하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=294)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-CAT-005 카테고리 삭제
 
-개념 빈칸:
+개념 4지 선다:
 
-- 소속 품목이 있는 카테고리를 삭제하면 품목의 FK 가 ____ 될 수 있다.
 
-구현 TODO:
+### W104. 소속 품목이 있는 카테고리 삭제의 현재 정책은?
 
-- Repository: `itemRepository.countBy____(categoryId)`
-- Service: count > 0 이면 `CATEGORY_HAS_ITEMS`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=104)
 
-테스트 TODO:
+1. 품목을 함께 무조건 삭제한다
+2. CATEGORY_HAS_ITEMS로 거부한다
+3. 품목 카테고리를 존재하지 않는 ID로 바꾼다
+4. 모든 품목을 단종 상태로 자동 변경한다
 
-- 품목이 있는 카테고리 삭제 시 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · CATEGORY_HAS_ITEMS로 거부한다
+
+현재 구현은 소속 품목이 있으면 삭제를 차단합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W295. FR-CAT-005 카테고리 삭제: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 품목이 있는 카테고리 삭제 시 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=295)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-ITEM-001 품목 등록
 
-개념 빈칸:
+개념 4지 선다:
 
-- 품목코드는 ____ 식별자이므로 DB unique 와 Service 중복 검사를 함께 둔다.
-- 품목은 반드시 하나의 ____ 에 속해야 한다.
-- 단가는 `____` 타입으로 저장해 부동소수점 오차를 막는다.
 
-구현 TODO:
+### W040. 품목코드 중복을 안전하게 차단하는 조합은?
 
-- Request DTO: `itemCode`, `name`, `categoryId`, `unit`, `unitPrice`, `safetyStock`
-- Repository:
-  - `itemRepository.existsBy____(itemCode)`
-  - `categoryRepository.findById(categoryId)`
-- Service:
-  - ADMIN 권한 확인
-  - 품목코드 중복 확인
-  - 카테고리 존재 확인
-  - `Item.create(category, itemCode, name, unit, unitPrice, safetyStock)`
-- Controller: `POST /api/____`
-- Response: `itemId`, `itemCode`, `name`, `categoryName`, `unitPrice`, `status`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=40)
 
-테스트 TODO:
+1. 화면의 경고 문구만 표시
+2. Service 사전 검사와 DB unique 제약
+3. Repository exists 검사만으로 동시성까지 보장
+4. 등록 이후 이름만 비교
 
-- 중복 품목코드는 HTTP ____ 와 `DUPLICATE_ITEM_CODE`.
-- 존재하지 않는 카테고리는 HTTP ____ 와 `CATEGORY_NOT_FOUND`.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · Service 사전 검사와 DB unique 제약
+
+사전 검사는 친절한 오류를, unique 제약은 경쟁 요청의 최종 방어를 제공합니다.
+
+</details>
+
+
+
+### W179. 품목이 반드시 속해야 하는 마스터는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=179)
+
+1. HttpSession
+2. Notice
+3. PasswordEncoder
+4. Category
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · Category
+
+Item은 하나의 카테고리를 참조하며 저장·변경 때 존재 여부를 검증합니다.
+
+</details>
+
+
+
+### W021. 금액을 BigDecimal로 계산하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=21)
+
+1. double이 모든 십진 금액을 정확히 표현하기 때문이다
+2. 십진 금액의 정밀도와 반올림 정책을 명시하기 위해서다
+3. BigDecimal은 비교와 반올림이 전혀 필요 없기 때문이다
+4. 문자열 연결만으로 금액 합계를 계산하기 위해서다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 십진 금액의 정밀도와 반올림 정책을 명시하기 위해서다
+
+BigDecimal을 적절한 생성·스케일·반올림 정책과 함께 사용합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W296. FR-ITEM-001 품목 등록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 중복 품목코드는 HTTP ____ 와 `DUPLICATE_ITEM_CODE`.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=296)
+
+1. 200
+2. 401
+3. 403
+4. 400
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W297. FR-ITEM-001 품목 등록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 존재하지 않는 카테고리는 HTTP ____ 와 `CATEGORY_NOT_FOUND`.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=297)
+
+1. 200
+2. 404
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 404
+
+현재 ErrorCode의 대상 미존재 오류는 404입니다. 접근 권한 등 선행 조건은 충족했다고 가정합니다.
+
+</details>
 ## FR-ITEM-002 품목 목록 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 목록 조회는 데이터가 많을 수 있으므로 ____ 를 적용한다.
-- Entity 목록을 그대로 응답하지 않고 `Page<ItemResponse>` 로 ____ 한다.
 
-구현 TODO:
+### W043. Pageable의 계층 전달 흐름은?
 
-- Controller: `GET /api/items?page=0&size=20&sort=itemCode,asc`
-- Service: `itemRepository.findAll(pageable)` → `page.____(ItemResponse::from)`
-- Response DTO 에는 BigDecimal unitPrice 가 포함된다 (JSON 직렬화 시 문자열로 가야 안전한지 검토).
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=43)
 
-테스트 TODO:
+1. Controller → Service → Repository
+2. Entity → CSS → Session
+3. DB → README → 브라우저 쿠키
+4. Repository → 비밀번호 해시
 
-- size=2 로 조회하면 응답 content 크기는 최대 ____ 이다.
-- 로그인하지 않은 사용자 조회는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · Controller → Service → Repository
+
+페이지·크기·정렬 조건을 필요한 검증을 거쳐 조회 계층으로 전달합니다.
+
+</details>
+
+
+
+### W137. ItemResponse.from(item) 정적 팩토리의 역할은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=137)
+
+1. 엔티티에서 공개할 응답 필드를 일관되게 변환한다
+2. 새 엔티티를 항상 DB에 저장한다
+3. 사용자 비밀번호를 복호화한다
+4. 모든 페이지를 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 엔티티에서 공개할 응답 필드를 일관되게 변환한다
+
+DTO 생성·매핑 책임을 한곳에 모으는 패턴입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W280. 다른 기본·최대 크기 정책이 개입하지 않을 때 size=2 페이지의 content 최대 개수는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=280)
+
+1. 1
+2. 2
+3. 20
+4. 전체 행 수
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 2
+
+마지막 페이지는 2보다 작을 수 있지만 요청한 페이지 크기를 넘지 않습니다.
+
+</details>
+### W298. FR-ITEM-002 품목 목록 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 로그인하지 않은 사용자 조회는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=298)
+
+1. 200
+2. 400
+3. 403
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 401
+
+보호 API에 인증 세션이 없으면 AUTHENTICATION_REQUIRED로 401을 응답합니다.
+
+</details>
 ## FR-ITEM-003 품목 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 상세 조회는 PathVariable 로 ____ 를 받는다.
-- LAZY 로 묶인 Category 는 DTO 변환 시점에 접근되므로 트랜잭션이 살아 있어야 한다. 또는 ____ 으로 함께 로드한다.
 
-구현 TODO:
+### W250. 품목 상세 경로 /api/items/{id}의 PathVariable이 나타내는 것은?
 
-- Repository: `findById(itemId)` 또는 상세 전용 fetch join.
-- Service:
-  - 품목 없으면 `ErrorCode.____`
-  - Service 안에서 DTO 변환
-- Controller: `GET /api/items/{____}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=250)
 
-테스트 TODO:
+1. 로그인 사용자 비밀번호
+2. HTTP 상태 코드
+3. DB 서버 포트
+4. 조회할 품목 ID
 
-- 없는 품목 ID 조회 시 HTTP ____.
-- 응답에 카테고리명과 단가가 포함된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 조회할 품목 ID
+
+인증·역할 확인과 별도로 조회 대상 식별자를 해석합니다.
+
+</details>
+
+
+
+### W120. OSIV=false에서 LAZY 관계를 DTO로 변환할 위치는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=120)
+
+1. 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+2. 브라우저가 JPA 프록시를 조회하게 한다
+3. 트랜잭션이 끝난 뒤 모든 관계를 처음 읽는다
+4. JSON 응답에 EntityManager를 넣는다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+
+영속성 컨텍스트가 종료된 뒤의 지연 로딩을 피하도록 조회와 변환을 설계합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W299. FR-ITEM-003 품목 상세 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 없는 품목 ID 조회 시 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=299)
+
+1. 404
+2. 200
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 404
+
+현재 ErrorCode의 대상 미존재 오류는 404입니다. 접근 권한 등 선행 조건은 충족했다고 가정합니다.
+
+</details>
 ## FR-ITEM-004 품목 정보 수정
 
-개념 빈칸:
+개념 4지 선다:
 
-- 수정 시 Service 가 setter 를 직접 부르기보다 Entity 의 ____ 메서드를 쓴다.
-- 카테고리 변경은 새 categoryId 가 실제 존재하는지 먼저 ____ 한다.
 
-구현 TODO:
+### W122. setter 대신 도메인 메서드를 사용하는 장점은?
 
-- Request DTO: `name`, `categoryId`, `unit`, `unitPrice`, `safetyStock`
-- Service:
-  - 품목 조회
-  - categoryId 가 있으면 카테고리 조회 + `item.changeCategory(category)`
-  - `item.updateProfile(...)`
-- Controller: `PUT /api/items/{itemId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=122)
 
-테스트 TODO:
+1. 모든 SQL이 없어지고 DB가 불필요해진다
+2. 권한 검사가 무조건 자동 생성된다
+3. 모든 필드를 외부에 무제한 공개한다
+4. 업무 의미와 불변식 검증을 변경 지점에 모은다
 
-- 존재하지 않는 카테고리로 변경하면 HTTP ____.
-- 수정 후 상세 조회에서 변경값이 ____ 된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 업무 의미와 불변식 검증을 변경 지점에 모은다
+
+changeCategory·discontinue 같은 메서드는 허용된 상태 변경을 표현합니다.
+
+</details>
+
+
+
+### W121. 품목의 카테고리를 바꾸기 전에 할 일은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=121)
+
+1. 존재하지 않는 ID도 그대로 저장한다
+2. 새 카테고리 존재를 확인하고 도메인 변경 메서드를 호출한다
+3. 모든 과거 라인을 삭제한다
+4. 카테고리 ID를 서버 포트로 바꾼다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 새 카테고리 존재를 확인하고 도메인 변경 메서드를 호출한다
+
+참조 무결성 확인과 의미 있는 변경 동작을 분리해 수행합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W300. FR-ITEM-004 품목 정보 수정: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 존재하지 않는 카테고리로 변경하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=300)
+
+1. 200
+2. 400
+3. 404
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 404
+
+현재 ErrorCode의 대상 미존재 오류는 404입니다. 접근 권한 등 선행 조건은 충족했다고 가정합니다.
+
+</details>
+### W281. 품목 수정이 정상 커밋된 뒤 상세 재조회에서 기대할 결과는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=281)
+
+1. 항상 이전 값만 보인다
+2. 수정한 품목이 자동 삭제된다
+3. 변경된 값이 보인다
+4. 모든 품목이 같은 값이 된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 변경된 값이 보인다
+
+트랜잭션 커밋 뒤 재조회로 저장 결과를 확인합니다.
+
+</details>
 ## FR-ITEM-005 품목 단종 처리
 
-개념 빈칸:
+개념 4지 선다:
 
-- 단종은 hard delete 대신 ____ 로 처리해 과거 발주/수주 라인을 보존한다.
 
-구현 TODO:
+### W020. 단종 시 삭제 대신 DISCONTINUED를 사용하는 이유는?
 
-- Entity: `ItemStatus.DISCONTINUED`
-- 도메인 메서드: `item.____()`
-- Controller: `PATCH /api/items/{itemId}/discontinue`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=20)
 
-테스트 TODO:
+1. 신규 주문에 단종 품목을 강제로 추가하기 위해서다
+2. 과거 주문 라인의 참조와 거래 이력을 보존하기 위해서다
+3. 재고를 무조건 0으로 만들기 위해서다
+4. DB 백업 없이 테이블을 초기화하기 위해서다
 
-- 단종 후 신규 발주 라인에 포함하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · 과거 주문 라인의 참조와 거래 이력을 보존하기 위해서다
+
+단종은 신규 사용 제한이며 과거 데이터를 파괴하는 삭제와 다릅니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W301. FR-ITEM-005 품목 단종 처리: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 단종 후 신규 발주 라인에 포함하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=301)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ---
 
 ## FR-ITEM-006 품목 검색
 
-개념 빈칸:
+개념 4지 선다:
 
-- 검색 조건이 이름/코드/카테고리로 늘어나면 단순 메서드 이름 쿼리가 ____ 질 수 있다.
-- 검색 결과도 목록이므로 ____ 를 유지한다.
 
-구현 TODO:
+### W136. 복잡해진 메서드 이름 쿼리를 정리하는 기준은?
 
-- Controller: `GET /api/items?keyword=usb&categoryId=3`
-- Repository:
-  - 단순 버전: `findByNameContainingOrItemCodeContaining(...)`
-  - 확장 전략은 [FR-PARTNER-006 거래처 검색](#fr-partner-006-거래처-검색)의 `@Query` 또는 Specification/Querydsl 선택 기준을 재사용
-- Service:
-  - keyword 가 blank 면 전체 조회
-  - keyword 를 trim 한다.
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=136)
 
-테스트 TODO:
+1. 메서드 이름을 무한히 늘린다
+2. Controller에 SQL 문자열을 모두 붙인다
+3. 가독성·조합 조건·조인 요구에 따라 Query나 Specification을 선택한다
+4. 조회 조건을 문서에서 삭제한다
 
-- 이름 일부로 검색하면 해당 품목만 나온다.
-- 카테고리 조건과 keyword 조건을 함께 주면 두 조건을 ____ 한다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 가독성·조합 조건·조인 요구에 따라 Query나 Specification을 선택한다
+
+명시 쿼리와 동적 조건 추상화의 목적에 맞게 선택합니다.
+
+</details>
+
+
+
+### W043. Pageable의 계층 전달 흐름은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=43)
+
+1. Controller → Service → Repository
+2. Entity → CSS → Session
+3. DB → README → 브라우저 쿠키
+4. Repository → 비밀번호 해시
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · Controller → Service → Repository
+
+페이지·크기·정렬 조건을 필요한 검증을 거쳐 조회 계층으로 전달합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W252. 카테고리와 keyword를 함께 제한하는 품목 검색의 결합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=252)
+
+1. 두 조건을 무조건 OR로 결합
+2. 카테고리 조건 AND keyword 조건
+3. 카테고리 조건을 항상 무시
+4. keyword를 비밀번호로 저장
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 카테고리 조건 AND keyword 조건
+
+동일 카테고리 안에서 이름·코드 조건을 검색하려면 범위 조건과 검색 조건을 AND로 묶습니다.
+
+</details>
 ## FR-ITEM-007 페이징
 
 공통 `Page` 개념, `Pageable` 파라미터, 기본값, 허용하지 않는 sort 검증은 [FR-PARTNER-007 페이징](#fr-partner-007-페이징)을 단일 기준으로 사용합니다. 여기에는 품목에만 다른 계약을 적습니다.
 
-구현 TODO:
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
-- 허용 sort 컬럼: `id`, `itemCode`, `name`, ____
-- 검색 조건과 `Pageable`을 같은 Repository 호출에 전달하는 방법: ____
-- `Page<Item>`을 `PageResponse<ItemSummary>`로 변환하는 위치: ____
+### W245. 품목 정렬을 id·itemCode·name·createdAt으로 제한하는 과제에서 허용할 필드는?
 
-테스트 TODO:
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=245)
 
-- keyword·categoryId 필터 후에도 `totalElements`와 `totalPages`가 필터 결과를 기준으로 계산된다.
-- 품목에서 허용하지 않는 sort 컬럼은 공통 오류 계약으로 거절된다.
+1. password
+2. salt
+3. createdAt
+4. sessionId
 
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · createdAt
+
+이 문제는 명시한 정렬 허용 정책을 전제로 합니다. 현재 Controller 기본 정렬은 createdAt 내림차순이며 허용 목록 검증은 별도 구현 과제입니다.
+
+</details>
+### W273. Specification 검색 조건과 페이징을 함께 전달하는 호출은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=273)
+
+1. findAll(passwordEncoder, session)
+2. deleteAll(pageable)
+3. findById(cssColor)
+4. findAll(specification, pageable)
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · findAll(specification, pageable)
+
+JpaSpecificationExecutor의 조건과 Pageable을 함께 사용해 필터된 페이지를 조회합니다.
+
+</details>
+### W120. OSIV=false에서 LAZY 관계를 DTO로 변환할 위치는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=120)
+
+1. 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+2. 브라우저가 JPA 프록시를 조회하게 한다
+3. 트랜잭션이 끝난 뒤 모든 관계를 처음 읽는다
+4. JSON 응답에 EntityManager를 넣는다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+
+영속성 컨텍스트가 종료된 뒤의 지연 로딩을 피하도록 조회와 변환을 설계합니다.
+
+</details>
 ---
 
 # 4. 발주(구매) 기능
 
 ## FR-PO-001 발주서 작성
 
-개념 빈칸:
+개념 4지 선다:
 
-- 발주서는 ____ + ____ 의 헤더-라인 구조다.
-- 새 발주의 초기 상태는 `PurchaseOrderStatus.____`.
-- 헤더와 라인은 ____ 트랜잭션으로 묶어야 한다.
-- 거래처 유형이 SUPPLIER 또는 ____ 인지 검증한다.
 
-구현 TODO:
+### W185. 주문 헤더-라인 구조의 구성은?
 
-- Request DTO: `partnerId`, `orderDate`, `dueDate`, `lines: List<LineDto>`
-  - LineDto: `itemId`, `quantity`, `unitPrice`
-- Service:
-  - 현재 사용자 ID 확인 (`writerId`)
-  - 거래처 조회 + 유형 검증
-  - 라인 검증:
-    - 라인 ≥ 1 (`EMPTY_ORDER_LINES`)
-    - 각 라인 품목 존재 + 상태 ACTIVE
-    - 수량 > 0
-  - 라인별 `lineAmount = quantity × unitPrice`
-  - 헤더 `totalAmount = sum(lineAmount)`
-  - 발주번호 채번
-  - 참조 구현은 `PurchaseOrder`에 다른 aggregate의 `partnerId`, `writerId` 저장
-  - 참조 구현은 라인에 `itemId`를 저장하고 헤더-라인만 연관관계/cascade 사용
-  - starter의 `@ManyToOne` 대안과 차이는 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)에 따라 비교
-- Controller: `POST /api/purchase-orders`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=185)
 
-테스트 TODO:
+1. 비밀번호와 세션 쿠키
+2. 카테고리 한 개와 CSS 색상
+3. JDK와 Gradle 캐시
+4. 주문 공통 정보와 여러 품목·수량·단가 라인
 
-- 라인이 0개면 HTTP ____.
-- 단종 품목 라인은 HTTP ____.
-- CUSTOMER 전용 거래처는 HTTP ____.
-- 작성 성공 시 status 는 ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 주문 공통 정보와 여러 품목·수량·단가 라인
+
+헤더는 거래처·작성일 같은 공통 정보, 라인은 개별 주문 항목을 표현합니다.
+
+</details>
+
+
+
+### W023. 신규 발주를 만드는 팩토리의 초기 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=23)
+
+1. DRAFT
+2. RECEIVED
+3. APPROVED
+4. CANCELED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · DRAFT
+
+작성과 요청·승인·입고를 구분하기 위해 초깃값을 DRAFT로 설정합니다.
+
+</details>
+
+
+
+### W046. 발주 헤더와 라인을 같은 트랜잭션으로 저장하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=46)
+
+1. 헤더 저장 후 실패한 라인은 영구 누락시킨다
+2. 조회 속도가 항상 정확히 두 배가 된다
+3. 트랜잭션이 외래키를 없애 준다
+4. 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
+
+주문 구성 요소는 함께 성공하거나 함께 실패해야 합니다.
+
+</details>
+
+
+
+### W048. 발주 거래처 유형 검증은 어디에서 수행해야 하는가?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=48)
+
+1. 화면 필터만으로 충분하다
+2. Service에서 SUPPLIER 또는 BOTH인지 검사한다
+3. 브라우저 북마크에서 검사한다
+4. DB 포트 번호에서 검사한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · Service에서 SUPPLIER 또는 BOTH인지 검사한다
+
+화면 조건은 우회 가능하므로 업무 계층에서 거래처 유형을 확인합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W302. FR-PO-001 발주서 작성: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 라인이 0개면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=302)
+
+1. 200
+2. 401
+3. 403
+4. 400
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W303. FR-PO-001 발주서 작성: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 단종 품목 라인은 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=303)
+
+1. 400
+2. 200
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W304. FR-PO-001 발주서 작성: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? CUSTOMER 전용 거래처는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=304)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W023. 신규 발주를 만드는 팩토리의 초기 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=23)
+
+1. DRAFT
+2. RECEIVED
+3. APPROVED
+4. CANCELED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · DRAFT
+
+작성과 요청·승인·입고를 구분하기 위해 초깃값을 DRAFT로 설정합니다.
+
+</details>
 ## FR-PO-002 발주 요청 (submit)
 
-개념 빈칸:
+개념 4지 선다:
 
-- DRAFT 와 REQUESTED 를 분리하면 ____ 저장 기능을 자연스럽게 표현할 수 있다.
-- 발주 요청은 `DRAFT → ____` 전이다.
 
-구현 TODO:
+### W060. 수주 작성과 확정 API를 분리하는 장점은?
 
-- Service:
-  - 작성자 본인 확인
-  - 현재 상태가 DRAFT 인지 확인
-  - 라인 비어있지 않은지 재확인
-  - `po.submit()`
-- Controller: `PATCH /api/purchase-orders/{poId}/submit`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=60)
 
-테스트 TODO:
+1. 확정 전에 자동으로 출고한다
+2. 트랜잭션을 모두 제거한다
+3. 임시 작성과 최종 확정의 상태·검증 시점을 구분한다
+4. 권한 검사를 브라우저에만 둔다
 
-- DRAFT 발주는 submit 성공.
-- 이미 REQUESTED 발주를 다시 submit 하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 임시 작성과 최종 확정의 상태·검증 시점을 구분한다
+
+현재 프로젝트는 작성과 confirm 상태 전이를 구분합니다.
+
+</details>
+
+
+
+### W181. 발주 결재 요청의 정상 전이는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=181)
+
+1. DRAFT → RECEIVED
+2. DRAFT → REQUESTED
+3. APPROVED → DRAFT
+4. RECEIVED → REQUESTED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · DRAFT → REQUESTED
+
+작성자가 유효한 DRAFT 발주를 요청하며 이미 요청된 상태를 재요청하면 상태 오류가 됩니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W305. FR-PO-002 발주 요청 (submit): 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 이미 REQUESTED 발주를 다시 submit 하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=305)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-PO-003 내 발주서 목록
 
-개념 빈칸:
+개념 4지 선다:
 
-- IDOR 공격을 막으려면 URL 의 writerId 보다 인증 사용자 기반 ____ 조건을 쓴다.
 
-구현 TODO:
+### W124. 본인 발주 목록의 소유권 기준은?
 
-- Repository: `findByWriterId(currentUserId, pageable)`
-- Service: current user 의 발주만 조회
-- Controller: `GET /api/purchase-orders/____`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=124)
 
-테스트 TODO:
+1. 요청 쿼리 writerId를 인증 없이 신뢰한다
+2. 클라이언트 이름만 비교한다
+3. 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+4. 모든 사용자에게 전체 목록을 반환한다
 
-- A 사용자가 B 사용자의 발주를 목록에서 볼 수 ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+
+URL 값 조작에 의한 IDOR를 서버 인증 정보 기반 조회로 방지합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W282. A 사용자의 내 발주 목록에 B가 작성한 발주는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=282)
+
+1. 포함되지 않는다
+2. 모두 포함된다
+3. 자동으로 A의 발주가 된다
+4. 비밀번호로 정렬된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 포함되지 않는다
+
+현재 인증 사용자 ID를 작성자 조건으로 사용해야 합니다.
+
+</details>
 ## FR-PO-004 발주서 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 상세 조회는 본인 또는 ADMIN/MANAGER만 가능하도록 ____ 검증을 한다.
-- 응답에 헤더와 라인을 함께 담을 때 nested DTO 구조를 쓰면 ____ 한 번에 끝낼 수 있다.
 
-구현 TODO:
+### W126. 발주 상세 조회를 허용하는 현재 정책은?
 
-- Repository: `findById(poId)` 또는 라인까지 fetch join.
-- Service:
-  - 발주 없으면 `PURCHASE_ORDER_NOT_FOUND`
-  - 본인 여부(`writerId == currentUserId`) 또는 ADMIN/MANAGER 여부 확인
-- Controller: `GET /api/purchase-orders/{poId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=126)
 
-테스트 TODO:
+1. 작성자 또는 ADMIN/MANAGER
+2. 아무 비로그인 사용자
+3. 작성자가 아닌 USER만
+4. 공급사 이메일을 입력한 사람 모두
 
-- 작성자가 아닌 USER 는 HTTP ____.
-- ADMIN/MANAGER는 다른 사용자의 발주도 조회 가능하다.
-- 응답에 lines 배열이 헤더와 함께 포함된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · 작성자 또는 ADMIN/MANAGER
+
+역할과 작성자 소유권을 인증된 사용자 기준으로 검사합니다.
+
+</details>
+
+
+
+### W247. 헤더와 라인 DTO를 함께 반환할 때의 장점은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=247)
+
+1. 하나의 응답이면 반드시 SQL도 한 번만 실행된다
+2. nested 구조면 비밀번호를 포함해도 안전하다
+3. 서비스 트랜잭션이 필요 없어지게 된다
+4. 화면이 한 상세 응답에서 필요한 구성 정보를 얻는다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 화면이 한 상세 응답에서 필요한 구성 정보를 얻는다
+
+HTTP 요청 횟수와 SQL 조회 횟수는 다릅니다. 응답 구조와 조회 계획을 따로 설계합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W306. FR-PO-004 발주서 상세 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 작성자가 아닌 USER 는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=306)
+
+1. 200
+2. 400
+3. 403
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ## FR-PO-005 발주서 취소
 
-개념 빈칸:
+개념 4지 선다:
 
-- 취소는 본인의 ____, ____, ____ 상태 발주만 허용한다.
-- 취소를 별도 상태로 둘 경우 enum 에 ____ 를 추가한다.
 
-구현 TODO:
+### W125. 작성자 발주 취소가 허용되는 현재 상태 조합은?
 
-- Entity: `po.cancelByOwner(currentUserId)`
-- Service:
-  - 본인 여부 확인 (도메인 메서드 내부에서)
-  - 상태 검증 (`DRAFT`, `REQUESTED`, `APPROVED`)
-- Controller: `PATCH /api/purchase-orders/{poId}/cancel`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=125)
 
-테스트 TODO:
+1. RECEIVED·CANCELED·REJECTED
+2. RECEIVED만
+3. DRAFT·REQUESTED·APPROVED
+4. 모든 상태
 
-- APPROVED 발주를 본인이 취소하면 상태가 ____가 된다.
-- RECEIVED 발주를 본인이 취소 시도하면 HTTP ____.
-- 타인의 DRAFT 발주 취소 시도는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · DRAFT·REQUESTED·APPROVED
+
+현재 PurchaseOrder는 입고 후 작성자 취소를 허용하지 않습니다.
+
+</details>
+
+
+
+### W254. 발주 취소가 성공하면 설정되는 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=254)
+
+1. RECEIVED
+2. CONFIRMED
+3. SHIPPED
+4. CANCELED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · CANCELED
+
+현재 발주는 작성자의 DRAFT·REQUESTED·APPROVED 취소만 허용합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W254. 발주 취소가 성공하면 설정되는 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=254)
+
+1. RECEIVED
+2. CONFIRMED
+3. SHIPPED
+4. CANCELED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · CANCELED
+
+현재 발주는 작성자의 DRAFT·REQUESTED·APPROVED 취소만 허용합니다.
+
+</details>
+### W307. FR-PO-005 발주서 취소: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? RECEIVED 발주를 본인이 취소 시도하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=307)
+
+1. 400
+2. 200
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W308. FR-PO-005 발주서 취소: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 타인의 DRAFT 발주 취소 시도는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=308)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ## FR-PO-006 ~ 007 발주 승인/반려
 
-개념 빈칸:
+개념 4지 선다:
 
-- 승인/반려는 상태 전이이므로 같은 요청을 두 번 보내도 데이터가 이상해지지 않도록 ____ 을 검증한다.
-- 동시에 두 관리자가 승인하면 ____ 락 또는 ____ 락을 고려한다.
-- 반려 사유는 빈 문자열이 아니어야 하므로 `@____` 를 적용한다.
 
-구현 TODO:
+### W051. REQUESTED가 아닌 발주의 승인·반려를 막는 설계는?
 
-- Service:
-  - ADMIN 또는 MANAGER 권한 확인
-  - 발주 조회
-  - `po.approve(approverUserId)` 또는 `po.reject(approverUserId, reason)`
-- Controller:
-  - `PATCH /api/admin/purchase-orders/{poId}/approve`
-  - `PATCH /api/admin/purchase-orders/{poId}/reject`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=51)
 
-테스트 TODO:
+1. 도메인 전이 메서드에 상태 가드를 둔다
+2. 화면 버튼만 숨긴다
+3. 승인 후 작성자 이메일을 바꾼다
+4. DTO 필드 이름을 바꾸면 충분하다
 
-- REQUESTED 발주 승인 성공.
-- 이미 승인된 발주 재승인은 HTTP ____.
-- 반려 사유 blank 는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 1번** · 도메인 전이 메서드에 상태 가드를 둔다
+
+Service 인가와 별도로 도메인 메서드가 상태 불변식을 보호합니다.
+
+</details>
+
+
+
+### W184. 경쟁 상태 변경을 다루는 두 가지 DB 잠금 방식은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=184)
+
+1. 낙관적 락과 비관적 락
+2. HTML 락과 CSS 락
+3. 세션 글꼴과 북마크
+4. 문자열 escape와 URL encoding
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 낙관적 락과 비관적 락
+
+버전 충돌 감지와 DB 잠금은 서로 다른 전략이며 경쟁 수준과 업무 요구로 선택합니다.
+
+</details>
+
+
+
+### W074. NotBlank·Positive·Size·Pattern의 역할 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=74)
+
+1. 공백 금지·양수·길이/개수·정규식 검증
+2. DB 생성·로그인·정렬·출고 처리
+3. 모두 같은 문자열 길이 검사
+4. 모두 권한 검사
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 공백 금지·양수·길이/개수·정규식 검증
+
+각 어노테이션은 적용 타입과 검사하는 입력 조건이 다릅니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W309. FR-PO-006 ~ 007 발주 승인/반려: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 이미 승인된 발주 재승인은 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=309)
+
+1. 200
+2. 401
+3. 403
+4. 400
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W310. FR-PO-006 ~ 007 발주 승인/반려: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 반려 사유 blank 는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=310)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-PO-008 입고 처리
 
-개념 빈칸:
+개념 4지 선다:
 
-- 입고는 `APPROVED → ____` 전이다.
-- 입고 시 향후 ____ 반영(증가)이 자연스럽다.
 
-구현 TODO:
+### W182. 발주 입고의 정상 전이는?
 
-- Service:
-  - ADMIN 또는 MANAGER 권한 확인
-  - 발주 조회
-  - 상태 APPROVED 검증
-  - `po.receive()`, `receivedAt = now()`
-  - 같은 트랜잭션에서 라인별 재고 +quantity
-  - 같은 품목의 최초 재고 생성 경합을 막기 위한 잠금 순서 결정
-- Controller: `PATCH /api/admin/purchase-orders/{poId}/receive`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=182)
 
-테스트 TODO:
+1. DRAFT → RECEIVED
+2. REQUESTED → APPROVED
+3. APPROVED → RECEIVED
+4. CANCELED → RECEIVED
 
-- APPROVED 가 아닌 발주 입고 시도는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · APPROVED → RECEIVED
+
+입고는 승인된 발주만 가능하며 재고 증가와 같은 트랜잭션에서 처리합니다.
+
+</details>
+
+
+
+### W183. 발주 입고가 성공하면 재고는 어떻게 변하는가?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=183)
+
+1. 각 라인 수량만큼 항상 감소한다
+2. 현재고가 무조건 0이 된다
+3. 안전재고가 자동 삭제된다
+4. 각 라인의 입고 수량만큼 증가한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 각 라인의 입고 수량만큼 증가한다
+
+StockService가 입고 수량을 반영하며 중복 입고와 경쟁 요청을 방어합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W311. FR-PO-008 입고 처리: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? APPROVED 가 아닌 발주 입고 시도는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=311)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-PO-009 관리자 발주 목록
 
-개념 빈칸:
+개념 4지 선다:
 
-- 관리자 발주 목록은 개인의 `/my` 와 달리 전체 발주를 ____ 조건으로 조회한다.
 
-구현 TODO:
+### W127. 관리자 발주 목록의 기본 검색 조건은?
 
-- Controller: `GET /api/admin/purchase-orders`
-- Query param: `status`, `partnerId`, `from`, `to`
-- 권한: `@PreAuthorize("hasAnyRole('____', '____')")`
-- Service:
-  - status + partnerId 조합 분기
-  - 조건이 없으면 `findAll(pageable)`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=127)
 
-테스트 TODO:
+1. 비밀번호와 세션 쿠키
+2. CSS 색상과 글꼴
+3. 조회수와 JWT 서명
+4. 상태와 거래처 조건
 
-- USER 가 `/api/admin/purchase-orders` 호출하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 상태와 거래처 조건
+
+현재 관리자 목록은 status·partnerId 선택 조건을 사용합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W312. FR-PO-009 관리자 발주 목록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? USER 가 `/api/admin/purchase-orders` 호출하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=312)
+
+1. 403
+2. 200
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ---
 
 # 5. 공지사항 기능
 
 ## FR-NOTICE-001 공지 등록
 
-개념 빈칸:
+개념 4지 선다:
 
-- 공지 등록은 ____ 권한만 가능하다.
-- 제목과 내용은 `@____` 로 필수 검증한다.
 
-구현 TODO:
+### W057. 공지 등록·수정·삭제의 권한을 보장하는 곳은?
 
-- Request DTO: `title`, `content`, `important`
-- Service:
-  - ADMIN 권한 확인
-  - writerId 저장
-  - `viewCount = ____`
-- Controller: `POST /api/notices`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=57)
 
-테스트 TODO:
+1. 화면 버튼 표시 여부만 확인한다
+2. Service에서 ADMIN 여부를 검증한다
+3. 공지 제목에 ADMIN이 있으면 허용한다
+4. 조회수에 비례해 권한을 부여한다
 
-- USER 가 공지 등록하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · Service에서 ADMIN 여부를 검증한다
+
+여러 호출 경로에서 동일한 권한 규칙을 지켜야 합니다.
+
+</details>
+
+
+
+### W074. NotBlank·Positive·Size·Pattern의 역할 조합은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=74)
+
+1. 공백 금지·양수·길이/개수·정규식 검증
+2. DB 생성·로그인·정렬·출고 처리
+3. 모두 같은 문자열 길이 검사
+4. 모두 권한 검사
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 공백 금지·양수·길이/개수·정규식 검증
+
+각 어노테이션은 적용 타입과 검사하는 입력 조건이 다릅니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W313. FR-NOTICE-001 공지 등록: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? USER 가 공지 등록하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=313)
+
+1. 403
+2. 200
+3. 400
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ## FR-NOTICE-002 공지 목록 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 공지 목록은 로그인 사용자 모두가 볼 수 있지만, 등록/수정/삭제는 ____ 만 가능하다.
-- 중요 공지 우선 정렬은 `important ____ , createdAt ____`.
 
-구현 TODO:
+### W057. 공지 등록·수정·삭제의 권한을 보장하는 곳은?
 
-- Repository: `findAll(pageable)` with Sort
-- Service: 기본 정렬을 important desc + createdAt desc 로 구성
-- Controller: `GET /api/notices`
-- Response: 목록 DTO 는 긴 `content` 대신 ____ 를 둘 수 있다.
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=57)
 
-테스트 TODO:
+1. 화면 버튼 표시 여부만 확인한다
+2. Service에서 ADMIN 여부를 검증한다
+3. 공지 제목에 ADMIN이 있으면 허용한다
+4. 조회수에 비례해 권한을 부여한다
 
-- important=true 공지가 일반 공지보다 먼저 나온다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · Service에서 ADMIN 여부를 검증한다
+
+여러 호출 경로에서 동일한 권한 규칙을 지켜야 합니다.
+
+</details>
+
+
+
+### W029. 중요 공지를 먼저, 같은 중요도에서 최신 공지를 보여 주는 정렬은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=29)
+
+1. important ASC, createdAt ASC
+2. important DESC, createdAt DESC
+3. viewCount ASC만 적용
+4. 제목 길이만 오름차순
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · important DESC, createdAt DESC
+
+참조 구현은 중요도·생성시각·ID 내림차순으로 순서를 안정화합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W115. 공지 목록에 전체 content를 담을 때의 비용은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=115)
+
+1. 응답 크기가 무조건 줄어든다
+2. DB unique가 없어도 된다
+3. 목록 조회수가 반드시 0이 된다
+4. 긴 본문 때문에 페이로드와 전송·렌더링 비용이 커질 수 있다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 긴 본문 때문에 페이로드와 전송·렌더링 비용이 커질 수 있다
+
+목록 요약과 상세 본문 응답을 분리할 수 있습니다.
+
+</details>
 ## FR-NOTICE-003 공지 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- GET 상세 조회에서 조회수를 증가시키면 검색 봇/미리보기 요청으로 조회수가 ____ 수 있다.
-- 원자적 조회수 증가는 `UPDATE notice SET view_count = view_count + ____` 형태가 안전하다.
 
-구현 TODO:
+### W114. GET에서 조회수를 늘릴 때 주의할 점은?
 
-- Service:
-  - 공지 조회
-  - 조회수 증가 정책 선택: 상세 조회 안에서 증가 또는 별도 `PATCH /view`
-  - 상세 DTO 반환
-- Repository:
-  - `@Modifying @Query` 로 조회수 증가
-- Controller: `GET /api/notices/{noticeId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=114)
 
-테스트 TODO:
+1. GET은 기술적으로 쓰기를 절대 수행하지 못한다
+2. 재요청·봇·캐시가 조회수 의미에 영향을 줄 수 있다
+3. 조회수 증가가 인증을 대체한다
+4. PATCH를 쓰면 중복 요청이 항상 사라진다
 
-- 상세 조회 후 viewCount 가 1 증가한다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 재요청·봇·캐시가 조회수 의미에 영향을 줄 수 있다
+
+별도 증가 API도 가능한 대안이며 어느 방식이든 집계 의미와 원자성을 정해야 합니다.
+
+</details>
+
+
+
+### W135. 조회수 원자적 증가 쿼리의 핵심은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=135)
+
+1. DB에서 viewCount = viewCount + 1을 직접 실행한다
+2. 조회한 값을 브라우저에서 1 더해 덮어쓴다
+3. 항상 viewCount=1로 저장한다
+4. 공지 ID를 조회수로 바꾼다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · DB에서 viewCount = viewCount + 1을 직접 실행한다
+
+Modifying Query와 트랜잭션에서 DB가 증가 연산을 수행해 유실을 줄입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-NOTICE-004 공지 수정
 
-개념 빈칸:
+개념 4지 선다:
 
-- 수정 권한은 작성자 여부보다 PRD 기준 ____ 권한이 핵심이다.
 
-구현 TODO:
+### W057. 공지 등록·수정·삭제의 권한을 보장하는 곳은?
 
-- Request DTO: 등록 DTO의 `title`, `content`, `important` 계약을 재사용
-- Service:
-  - ADMIN 권한 확인
-  - 공지 조회
-  - `notice.update(...)`
-- Controller: `PUT /api/notices/{noticeId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=57)
 
-테스트 TODO:
+1. 화면 버튼 표시 여부만 확인한다
+2. Service에서 ADMIN 여부를 검증한다
+3. 공지 제목에 ADMIN이 있으면 허용한다
+4. 조회수에 비례해 권한을 부여한다
 
-- USER 수정 시도는 HTTP ____.
-- 제목 blank 는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · Service에서 ADMIN 여부를 검증한다
+
+여러 호출 경로에서 동일한 권한 규칙을 지켜야 합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W314. FR-NOTICE-004 공지 수정: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? USER 수정 시도는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=314)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
+### W315. FR-NOTICE-004 공지 수정: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 제목 blank 는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=315)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-NOTICE-005 공지 삭제
 
-개념 빈칸:
+개념 4지 선다:
 
-- 공지 삭제는 실제 삭제 또는 `deleted` 플래그를 두는 ____ delete 중 선택할 수 있다.
 
-구현 TODO:
+### W255. 현재 공지 삭제 API의 저장 정책은?
 
-- Service:
-  - ADMIN 권한 확인
-  - 공지 조회
-  - delete 또는 soft delete
-- Controller: `DELETE /api/notices/{noticeId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=255)
 
-테스트 TODO:
+1. 모든 공지를 비활성화 플래그로만 처리한다
+2. ADMIN 권한을 확인하고 해당 공지 행을 실제 삭제한다
+3. 아무 USER가 전체 공지를 삭제한다
+4. 공지 삭제 시 발주를 함께 삭제한다
 
-- 삭제 후 목록에 노출되지 않는다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · ADMIN 권한을 확인하고 해당 공지 행을 실제 삭제한다
+
+NoticeService.delete는 권한 확인 후 delete를 호출합니다. soft delete는 대안 설계입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-NOTICE-006 중요 공지 표시
 
-개념 빈칸:
+개념 4지 선다:
 
-- `important` 는 Boolean 이지만 정렬에서는 true 를 먼저 두기 위해 ____ 정렬을 사용한다.
 
-구현 TODO:
+### W058. 중요 공지 우선 목록의 핵심 정렬은?
 
-- Entity: `Boolean important`
-- Repository/Service sort:
-  - `Sort.by(Sort.Direction.____, "important").and(Sort.by(Sort.Direction.____, "createdAt"))`
-- 화면: 중요 공지는 badge 또는 상단 고정 영역으로 표시할 수 있다.
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=58)
 
-테스트 TODO:
+1. important 내림차순
+2. important 오름차순
+3. 작성자 이메일 길이순
+4. 조회수 0인 공지만 선택
 
-- important=false 최신글보다 important=true 이전글이 먼저 나오는지 확인한다.
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · important 내림차순
+
+중요도가 같으면 생성시각과 ID 등으로 순서를 안정화합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ---
 
@@ -1257,158 +3530,492 @@ Then 201과 생성된 품목 DTO를 받고 DB의 status는 ACTIVE다
 
 ## FR-SO-001 수주서 작성
 
-개념 빈칸:
+개념 4지 선다:
 
-- 수주서도 발주서와 같은 ____-____ 구조다.
-- 거래처 유형이 CUSTOMER 또는 ____ 인지 검증한다.
-- 새 수주의 초기 상태는 `SalesOrderStatus.____`.
 
-구현 TODO:
+### W185. 주문 헤더-라인 구조의 구성은?
 
-- Request DTO: `partnerId`, `orderDate`, `shipDate`, `lines: List<LineDto>`
-- Service:
-  - 현재 사용자 조회
-  - 거래처 조회 + 유형 검증
-  - 라인 검증 (≥ 1, 품목 존재, 수량 > 0)
-  - 총금액 계산
-  - 수주번호 채번
-  - `SalesOrder.create(...)`
-- Controller: `POST /api/sales-orders`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=185)
 
-테스트 TODO:
+1. 비밀번호와 세션 쿠키
+2. 카테고리 한 개와 CSS 색상
+3. JDK와 Gradle 캐시
+4. 주문 공통 정보와 여러 품목·수량·단가 라인
 
-- 라인 0개는 HTTP ____.
-- SUPPLIER 전용 거래처는 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · 주문 공통 정보와 여러 품목·수량·단가 라인
+
+헤더는 거래처·작성일 같은 공통 정보, 라인은 개별 주문 항목을 표현합니다.
+
+</details>
+
+
+
+### W062. 신규 수주의 거래처 유형 검증은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=62)
+
+1. SUPPLIER 전용만 허용한다
+2. Service에서 CUSTOMER 또는 BOTH를 허용한다
+3. 브라우저 필터만 검사한다
+4. 거래처 유형을 무시한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · Service에서 CUSTOMER 또는 BOTH를 허용한다
+
+수주는 판매 흐름이므로 고객 역할이 있는 거래처를 요구합니다.
+
+</details>
+
+
+
+### W180. 새 수주의 초기 상태는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=180)
+
+1. COMPLETED
+2. DRAFT
+3. SHIPPED
+4. CANCELED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · DRAFT
+
+작성 후 confirm을 통해 CONFIRMED로 전이합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W316. FR-SO-001 수주서 작성: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 라인 0개는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=316)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W317. FR-SO-001 수주서 작성: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? SUPPLIER 전용 거래처는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=317)
+
+1. 200
+2. 401
+3. 403
+4. 400
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-SO-002 수주 확정
 
-개념 빈칸:
+개념 4지 선다:
 
-- 확정은 `DRAFT → ____` 전이다.
 
-구현 TODO:
+### W256. 수주 확정의 정상 상태 전이는?
 
-- Service:
-  - 작성자 본인 확인
-  - 상태 DRAFT 검증
-  - 라인 재확인
-  - `so.confirm()`
-- Controller: `PATCH /api/sales-orders/{soId}/confirm`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=256)
+
+1. CONFIRMED → SHIPPED
+2. SHIPPED → COMPLETED
+3. DRAFT → CONFIRMED
+4. COMPLETED → DRAFT
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · DRAFT → CONFIRMED
+
+확정과 출고·완료는 별도 명령과 검증 경계를 갖습니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-SO-003 내 수주서 목록
 
-개념 빈칸:
+개념 4지 선다:
 
-- "내 수주 목록"은 내가 ____ 한 수주서 목록이다.
+
+### W257. 내 수주 목록에 포함되는 주문의 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=257)
+
+1. 모든 고객사의 전체 발주
+2. 다른 사용자만 작성한 수주
+3. 현재 사용자가 작성한 수주
+4. 공지 조회수 0인 수주
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 현재 사용자가 작성한 수주
+
+인증 사용자 ID의 작성자 조건을 사용해 본인 목록을 조회합니다.
+
+</details>
+
+
 - 처리자로서의 목록은 별도 `pending` API 로 분리한다.
 
-구현 TODO:
-
-- Repository: `findByWriterId(currentUserId, pageable)`
-- Service: current user 를 writerId 로 사용
-- Controller: `GET /api/sales-orders/____`
-
-테스트 TODO:
-
-- A 작성 수주서 목록에 B 작성 수주서는 보이지 않는다.
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ## FR-SO-005 수주서 상세 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 상세 조회는 작성자, 처리자(매니저) 또는 ____ 만 허용한다.
-- ADMIN 전체 조회 허용은 Service 에서 role 기반으로 ____ 해야 한다.
 
-구현 TODO:
+### W187. 현재 수주 상세 조회가 허용되는 사용자는?
 
-- Service:
-  - 수주서 조회
-  - currentUserId 가 writerId 또는 managerId 인지 확인
-  - currentRole 이 ADMIN 이면 전체 조회 허용
-  - 아니면 `ErrorCode.____`
-- Controller: `GET /api/sales-orders/{soId}`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=187)
 
-테스트 TODO:
+1. 모든 비로그인 사용자
+2. 작성자 또는 ADMIN/MANAGER
+3. 작성자가 아닌 USER만
+4. 공지 작성자만
 
-- 작성자도 처리자도 아니고 ADMIN 도 아닌 사용자 접근은 HTTP ____.
-- 상세 응답에 lines 배열이 포함된다.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 2번** · 작성자 또는 ADMIN/MANAGER
+
+현재 requireAccess는 작성자와 두 관리 역할을 허용합니다. 과거 과제의 담당자 제한과 구분합니다.
+
+</details>
+
+
+
+### W132. ADMIN 전체 수주 조회를 Service에 노출할 때 필요한 계약은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=132)
+
+1. 요청 본문의 isAdmin=true만 신뢰한다
+2. 관리자 계정 비밀번호를 검색 조건으로 공개한다
+3. 항상 전체 엔티티 그래프를 응답한다
+4. 인증 사용자 정보와 검색·페이지 조건을 받아 관리자 권한을 확인한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 인증 사용자 정보와 검색·페이지 조건을 받아 관리자 권한을 확인한다
+
+검색 계약과 실행 권한을 서버에서 함께 검증합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W318. 작성자가 아닌 USER가 타인의 수주 상세 API를 조회할 때 응답은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=318)
+
+1. 200
+2. 400
+3. 403
+4. 401
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 403
+
+로그인된 사용자에게 해당 역할·소유권이 없으면 ACCESS_DENIED로 403을 응답합니다.
+
+</details>
 ## FR-SO-006 ~ 008 수주 출고/완료/취소
 
-개념 빈칸:
+개념 4지 선다:
 
 - 상태 전이:
-  - `CONFIRMED → ____` (출고)
-  - `____ → COMPLETED` (완료)
-  - `DRAFT/CONFIRMED/SHIPPED → ____` (취소)
-- 매니저 권한은 ____ 또는 ADMIN.
-- 취소 사유는 ____.
 
-구현 TODO:
+### W064. 수주 출고·완료 상태 전이의 올바른 규칙은?
 
-- Service:
-  - 권한 확인
-  - 상태 검증
-  - 도메인 메서드 호출: `so.ship()`, `so.complete()`, `so.cancel(reason)`
-- Controller:
-  - `PATCH /api/sales-orders/{soId}/ship`
-  - `PATCH /api/sales-orders/{soId}/complete`
-  - `PATCH /api/sales-orders/{soId}/cancel`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=64)
 
-테스트 TODO:
+1. DRAFT에서 바로 완료한다
+2. COMPLETED에서 다시 출고한다
+3. CANCELED에서 재고를 차감한다
+4. CONFIRMED에서 출고하고 SHIPPED에서 완료한다
 
-- CONFIRMED 가 아닌 상태에서 ship 호출은 HTTP ____.
-- 취소 사유 blank 는 HTTP ____.
-- 완료된 수주를 취소하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 4번** · CONFIRMED에서 출고하고 SHIPPED에서 완료한다
+
+종료 상태 추가 전이는 차단하고 취소 가능 상태를 따로 검증합니다.
+
+</details>
+
+
+
+### W064. 수주 출고·완료 상태 전이의 올바른 규칙은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=64)
+
+1. DRAFT에서 바로 완료한다
+2. COMPLETED에서 다시 출고한다
+3. CANCELED에서 재고를 차감한다
+4. CONFIRMED에서 출고하고 SHIPPED에서 완료한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · CONFIRMED에서 출고하고 SHIPPED에서 완료한다
+
+종료 상태 추가 전이는 차단하고 취소 가능 상태를 따로 검증합니다.
+
+</details>
+
+
+
+### W189. 현재 수주 취소의 올바른 정책은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=189)
+
+1. 비로그인 누구나 완료 수주를 취소한다
+2. 작성자 또는 ADMIN/MANAGER가 허용 상태에서 사유를 입력한다
+3. 사유를 넣으면 모든 종료 상태도 취소한다
+4. USER가 URL ID만 바꾸면 타인 수주 취소가 가능하다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 작성자 또는 ADMIN/MANAGER가 허용 상태에서 사유를 입력한다
+
+DRAFT·CONFIRMED·SHIPPED에서만 취소하며 출고 후 취소는 재고를 복원합니다.
+
+</details>
+
+
+
+### W259. 현재 수주 출고·완료 처리가 허용되는 역할은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=259)
+
+1. USER만
+2. 비로그인만
+3. SUPPLIER 또는 CUSTOMER
+4. ADMIN 또는 MANAGER
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · ADMIN 또는 MANAGER
+
+역할 검증 뒤 허용 상태·재고 등 업무 조건도 검사합니다.
+
+</details>
+
+
+
+### W067. 수주 취소 사유 정책은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=67)
+
+1. 모든 취소는 사유 없이 처리한다
+2. 사유가 있으면 완료 상태도 무조건 취소한다
+3. 공백이 아닌 사유를 요구한다
+4. 사유를 비밀번호 필드에 저장한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 공백이 아닌 사유를 요구한다
+
+사유 검증과 취소 가능한 상태 검증을 모두 수행합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W319. FR-SO-006 ~ 008 수주 출고/완료/취소: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? CONFIRMED 가 아닌 상태에서 ship 호출은 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=319)
+
+1. 400
+2. 200
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W320. FR-SO-006 ~ 008 수주 출고/완료/취소: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 취소 사유 blank 는 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=320)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
+### W321. FR-SO-006 ~ 008 수주 출고/완료/취소: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 완료된 수주를 취소하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=321)
+
+1. 200
+2. 401
+3. 400
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-SO-009 수주 상태 조회
 
-개념 빈칸:
+개념 4지 선다:
 
-- 상태값은 `DRAFT`, `CONFIRMED`, `SHIPPED`, `COMPLETED`, `CANCELED` 를 ____ 으로 관리한다.
-- 목록에서 status 조건을 받으면 통계/관리 화면에서 ____ 필터가 가능하다.
 
-구현 TODO:
+### W271. 주문 상태를 임의 문자열 대신 enum으로 관리하는 목적은?
 
-- Query param: `status=CONFIRMED`
-- Repository: `findByStatus(status, pageable)` 또는 관리자 조건별 메서드
-- Response: 상태 enum 문자열 + 상태 변경 일시(`confirmedAt`, `shippedAt`, `completedAt`) 포함
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=271)
 
-테스트 TODO:
+1. 모든 상태 전이가 자동 허용된다
+2. DB 잠금이 필요 없어지게 한다
+3. 허용 상태 집합을 명시하고 잘못된 상태 표현을 줄인다
+4. 사용자에게 관리자 권한을 부여한다
 
-- status=CONFIRMED 요청 시 출고된 수주는 제외된다.
-- 종료 상태(`COMPLETED`/`CANCELED`)에서 추가 전이를 시도하면 HTTP ____.
+<details>
+<summary>정답·해설 보기</summary>
 
+**정답: 3번** · 허용 상태 집합을 명시하고 잘못된 상태 표현을 줄인다
+
+enum 정의만으로 전이 규칙이 지켜지지는 않습니다. 도메인 메서드의 상태 가드도 필요합니다.
+
+</details>
+
+
+
+### W258. 수주 목록의 status 검색 조건은 무엇을 제한하는가?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=258)
+
+1. 사용자의 비밀번호 길이
+2. 조회 시점의 수주 상태
+3. 거래처 사업자번호 형식
+4. 웹 브라우저 버전
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 조회 시점의 수주 상태
+
+상태 조건은 작성자·거래처·기간·페이지 조건과 요구에 맞게 조합합니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
+
+### W322. FR-SO-009 수주 상태 조회: 다음 API 검증 시나리오의 HTTP 빈칸에 알맞은 값은? 종료 상태(`COMPLETED`/`CANCELED`)에서 추가 전이를 시도하면 HTTP ____.
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=322)
+
+1. 200
+2. 400
+3. 401
+4. 403
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 400
+
+현재 ErrorCode의 입력·중복·상태 등 해당 업무 오류는 400입니다. 다른 인증·CSRF·존재 조건은 정상이라고 가정합니다.
+
+</details>
 ## FR-SO-004 처리 대기 수주서
 
-개념 빈칸:
+개념 4지 선다:
 
-- "처리 대기"는 보통 `____` 상태의 수주서를 의미한다.
 
-구현 TODO:
+### W188. 현재 처리 대기 수주 목록의 상태 조건은?
 
-- Repository: `findByStatus(SalesOrderStatus.CONFIRMED, pageable)`
-- 권한: `@PreAuthorize("hasAnyRole('MANAGER','ADMIN')")`
-- Controller: `GET /api/sales-orders/pending`
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=188)
+
+1. DRAFT만
+2. COMPLETED만
+3. CONFIRMED
+4. CANCELED만
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · CONFIRMED
+
+현재 SalesOrderService.pending은 출고 전 CONFIRMED 목록을 조회합니다. 완료 대기는 별도 SHIPPED 목록입니다.
+
+</details>
+
+
+
+4지 선다 구현 확인: 위 문항에서 선택한 규칙을 정답·해설과 대조합니다.
 
 ---
 
 # 7. 기능별 공통 테스트 체크리스트
 
-각 기능을 구현할 때 아래 체크리스트를 최소 1개 이상 채우세요.
+아래 대표 4지 선다 문항을 풀고 선택지·정답·해설의 규칙을 기능별 테스트와 대조합니다.
 
-| 분류 | 질문 | 내 답 |
-|---|---|---|
-| 성공 | 정상 요청의 HTTP status 는? | ____ |
-| 검증 | 필수값 누락 시 어떤 ErrorCode 인가? | ____ |
-| 권한 | USER/ADMIN/MANAGER 중 누가 가능한가? | ____ |
-| 소유자 | 본인 데이터만 봐야 하는가? | ____ |
-| 상태 | 허용되는 상태 전이는? | ____ |
-| 트랜잭션 | 실패 시 함께 rollback 되어야 하는 데이터는? | ____ |
-| DTO | 응답에서 숨겨야 할 필드는? | ____ |
-| 동시성 | 중복 승인/중복 등록 같은 race 가 있는가? | ____ |
-| 도메인 규칙 | 거래처 유형/품목 상태 검증을 어디서 하는가? | ____ |
-| 헤더-라인 | 라인 검증을 헤더 저장 전/후 중 어디서 하는가? | ____ |
+| 분류 | 4지 선다 문항 |
+|---|---|
+| 성공 | [W389. 현재 발주 생성 API가 정상적으로 새 주문을 만들었을 때 HTTP 상태는?](workbook-questions.md#w389) |
+| 검증 | [W275. 필수 DTO 입력 검증 실패의 현재 공통 업무 코드는?](workbook-questions.md#w275) |
+| 권한 | [W113. 카테고리 변경·조회 권한의 현재 정책은?](workbook-questions.md#w113) |
+| 소유자 | [W124. 본인 발주 목록의 소유권 기준은?](workbook-questions.md#w124) |
+| 상태 | [W051. REQUESTED가 아닌 발주의 승인·반려를 막는 설계는?](workbook-questions.md#w051) |
+| 트랜잭션 | [W046. 발주 헤더와 라인을 같은 트랜잭션으로 저장하는 이유는?](workbook-questions.md#w046) |
+| DTO | [W177. 응답 DTO에서 제외해야 할 정보는?](workbook-questions.md#w177) |
+| 동시성 | [W056. 같은 발주를 두 관리자가 동시에 승인하면 필요한 대응은?](workbook-questions.md#w056) |
+| 도메인 규칙 | [W161. DTO·Entity·Service·DB 검증 책임의 조합은?](workbook-questions.md#w161) |
+| 헤더-라인 | [W267. 신규 주문의 헤더를 저장하기 전에 해야 할 일은?](workbook-questions.md#w267) |
 
 공통 매트릭스를 작성한 뒤에는 같은 질문을 다시 반복하지 않고 [12단계: 완료 정의로 끝내기](#12단계-완료-정의로-끝내기)의 체크리스트로 누락 여부를 최종 확인합니다.
 
@@ -1762,9 +4369,66 @@ MySQL 프로필에서는 Flyway가 `src/main/resources/db/migration/mysql`의 �
 
 DB 실패를 구분하는 질문:
 
-- `Connection refused`인가, 인증 실패인가, DB 이름 오류인가? ____
-- Flyway checksum/version 충돌인가, Hibernate schema validation 실패인가? ____
-- H2로 잘못 기동되어 데이터가 사라진 것처럼 보이는가? ____
+
+### W263. Connection refused와 DB 인증 실패를 구분하는 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=263)
+
+1. 항상 JPA enum 선언 순서를 바꾼다
+2. 브라우저 북마크를 삭제한다
+3. 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+4. Flyway SQL 전체를 무조건 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+
+네트워크 접속 실패와 서버 접속 후 인증 거절은 원인 범위가 다릅니다.
+
+</details>
+
+
+
+### W262. Flyway 검증 실패와 Hibernate validate 실패의 차이는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=262)
+
+1. 전자는 마이그레이션 이력, 후자는 엔티티와 실제 스키마 일치를 확인한다
+2. 둘 다 비밀번호를 해시한다
+3. 둘 다 CSRF 토큰 만료를 뜻한다
+4. 두 실패는 모두 로그아웃하면 해결된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 전자는 마이그레이션 이력, 후자는 엔티티와 실제 스키마 일치를 확인한다
+
+checksum·version 문제와 매핑·컬럼·타입 불일치를 서로 다른 검증 경계에서 진단합니다.
+
+</details>
+
+
+
+### W264. 영속 데이터가 사라진 듯 보일 때 먼저 확인할 설정은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=264)
+
+1. HTML의 글꼴만 확인한다
+2. 활성 프로필과 실제 JDBC URL이 임시 H2인지 확인한다
+3. 문제집 정답 위치만 확인한다
+4. README 파일 확장자만 확인한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 활성 프로필과 실제 JDBC URL이 임시 H2인지 확인한다
+
+기본 in-memory H2는 재시작 시 데이터가 초기화됩니다. 영속 MySQL 연결과 구분해야 합니다.
+
+</details>
+
+
 
 ## 8.9 업데이트와 롤백
 
@@ -1905,16 +4569,160 @@ tail -n 50 "$SCM_HOME/logs/scm.err.log"
 
 운영 실습 기록:
 
-| 항목 | 내 기록 |
-|---|---|
-| 배포 commit / release ID | ____ |
-| JAR SHA-256 (`shasum -a 256`) | ____ |
-| 실행 Java / 빌드 도구 버전 | ____ |
-| 활성 profile / DB endpoint | ____ |
-| smoke test 결과 | ____ |
-| 직전 정상 release | ____ |
-| DB backup / 복구 확인 | ____ |
-| 발견한 장애와 해결 근거 | ____ |
+아래 4지 선다에서 검증 기준을 선택하고 정답·해설을 확인합니다.
+
+### W325. 워크북에 의존성 버전을 따로 복사해 관리하지 않는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=325)
+
+1. 버전이 있으면 JDK가 실행되지 않기 때문이다
+2. 루트 빌드·Wrapper 설정과 문서의 버전 불일치를 줄이기 위해서다
+3. 문서의 모든 버전이 항상 자동으로 변경되기 때문이다
+4. 라이브러리 업데이트가 검증을 필요로 하지 않기 때문이다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 루트 빌드·Wrapper 설정과 문서의 버전 불일치를 줄이기 위해서다
+
+코드의 정식 설정을 기준으로 문서를 동기화하고 변경된 조합을 검증합니다.
+
+</details>
+
+
+### W264. 영속 데이터가 사라진 듯 보일 때 먼저 확인할 설정은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=264)
+
+1. HTML의 글꼴만 확인한다
+2. 활성 프로필과 실제 JDBC URL이 임시 H2인지 확인한다
+3. 문제집 정답 위치만 확인한다
+4. README 파일 확장자만 확인한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 활성 프로필과 실제 JDBC URL이 임시 H2인지 확인한다
+
+기본 in-memory H2는 재시작 시 데이터가 초기화됩니다. 영속 MySQL 연결과 구분해야 합니다.
+
+</details>
+
+
+### W232. H2와 실제 MySQL의 차이를 검증하는 방법은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=232)
+
+1. H2 테스트만으로 모든 MySQL 동작을 확정한다
+2. MySQL 버전 문자열만 문서에 쓴다
+3. 실제 MySQL에서 mysqlSchemaTest 등 프로필별 검증을 수행한다
+4. 테스트 없이 ddl-auto=update로 바꾼다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 실제 MySQL에서 mysqlSchemaTest 등 프로필별 검증을 수행한다
+
+Flyway 적용과 JPA validate를 실제 MySQL에서 별도로 확인합니다.
+
+</details>
+
+
+### W236. 기본 SCM 프로그램의 로그인 주소와 실행 명령은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=236)
+
+1. python3 questions.tsv / localhost:3306/login
+2. node quiz.css / localhost:443/db
+3. ./gradlew bootRun / http://localhost:8080/login
+4. git status / localhost:8000/mysql
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · ./gradlew bootRun / http://localhost:8080/login
+
+기본 서버 포트는 8080이며 문제집의 정적 서버 8000과 구분합니다.
+
+</details>
+
+
+### W263. Connection refused와 DB 인증 실패를 구분하는 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=263)
+
+1. 항상 JPA enum 선언 순서를 바꾼다
+2. 브라우저 북마크를 삭제한다
+3. 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+4. Flyway SQL 전체를 무조건 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 리스닝·주소·포트 연결과 사용자·비밀번호·권한 증거를 각각 확인한다
+
+네트워크 접속 실패와 서버 접속 후 인증 거절은 원인 범위가 다릅니다.
+
+</details>
+
+
+### W262. Flyway 검증 실패와 Hibernate validate 실패의 차이는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=262)
+
+1. 전자는 마이그레이션 이력, 후자는 엔티티와 실제 스키마 일치를 확인한다
+2. 둘 다 비밀번호를 해시한다
+3. 둘 다 CSRF 토큰 만료를 뜻한다
+4. 두 실패는 모두 로그아웃하면 해결된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 전자는 마이그레이션 이력, 후자는 엔티티와 실제 스키마 일치를 확인한다
+
+checksum·version 문제와 매핑·컬럼·타입 불일치를 서로 다른 검증 경계에서 진단합니다.
+
+</details>
+
+
+### W401. 검증 단계가 제공해야 하는 근거는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=401)
+
+1. 성공이라고 적은 문장만
+2. 아직 실행하지 않은 테스트 이름만
+3. 라이브러리 버전 문자열만
+4. 적절한 테스트의 실행 명령과 실제 결과
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 적절한 테스트의 실행 명령과 실제 결과
+
+실행한 검사와 결과를 기록합니다. 환경상 실행하지 못한 검증은 성공으로 기록하지 않습니다.
+
+</details>
+
+
+### W166. 트러블슈팅 문서를 작성하는 올바른 순서는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=166)
+
+1. 문제 원인 없이 기술명만 나열한다
+2. 실패한 모든 증거를 삭제한다
+3. 해결하지 않은 문제를 성공했다고 적는다
+4. 재현 가능한 문제·원인·해결·배운 점과 검증을 남긴다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 재현 가능한 문제·원인·해결·배운 점과 검증을 남긴다
+
+독자가 같은 조건에서 확인할 수 있는 근거를 함께 기록합니다.
+
+</details>
+
+
 
 공식 참고 자료:
 

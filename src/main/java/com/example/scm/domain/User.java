@@ -16,6 +16,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 사용자 한 명의 정보를 저장하는 양식입니다.
+ * id는 다른 사람과 구별하는 번호이고, password에는 실제 비밀번호 대신 해시를 저장합니다.
+ *
  * 사용자 엔티티. users 테이블의 한 행과 1:1로 대응되는 클래스다.
  *
  * <p>학습 모듈 01: BaseTimeEntity → UserRole → 이 클래스 순서로 읽는다. 로그인에서 이
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
  * - 엔티티를 세션이나 API 응답에 그대로 노출하지 않는다 → LoginUser / UserResponse DTO 로
  *   변환해서 전달한다(필요한 필드만 노출 + 엔티티 변경이 응답에 파급되지 않게).
  */
+// @Entity: 이 양식을 데이터베이스에 저장합니다. @Getter: 각 칸의 값을 읽는 함수를 자동으로 만듭니다.
 @Entity
 @Getter
 @Table(name = "users")
@@ -46,6 +50,7 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Column(nullable = false, length = 50)
+    // String은 글자, Long은 큰 정수입니다. 위의 id는 번호이고 이 name은 이름입니다.
     private String name;
 
     /**

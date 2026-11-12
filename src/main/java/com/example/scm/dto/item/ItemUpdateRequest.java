@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 기존 물건의 이름, 분류, 가격, 안전재고를 고칠 때 받는 양식입니다.
+ * 물건 코드는 과거 기록과 연결되는 식별값이므로 이 수정 양식에는 넣지 않습니다.
+ *
  * 품목 수정 REST API의 JSON 본문을 받는 DTO.
  * 등록 후 식별 기준으로 쓰이는 품목코드는 변경할 수 없으므로 이 DTO에 포함하지 않는다.
  */

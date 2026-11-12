@@ -3,6 +3,9 @@ package com.example.scm.common.exception;
 import lombok.Getter;
 
 /**
+ * 업무 규칙 때문에 작업을 계속할 수 없다고 알리는 신호입니다.
+ * 예를 들어 재고가 3개인데 5개를 출고하려 하면, 왜 안 되는지 담아 작업을 멈춥니다.
+ *
  * 비즈니스 규칙 위반을 표현하는 표준 예외.
  *
  * <p>학습 모듈 15: ErrorCode를 먼저 읽은 다음 이 예외가 코드를 운반하는 방식을 본다.

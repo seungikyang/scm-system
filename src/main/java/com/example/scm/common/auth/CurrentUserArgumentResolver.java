@@ -10,6 +10,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
+ * 서버에 저장된 로그인 정보를 꺼내 함수에 전달하는 도우미입니다.
+ * 브라우저가 보낸 사용자 번호를 믿는 대신, 서버가 기억하는 로그인 사용자를 사용합니다.
+ *
  * 컨트롤러 파라미터 주입기(ArgumentResolver).
  * 학습 모듈 34의 마지막 구현 파일이다. LoginInterceptor가 요청을 통과시킨 뒤 이 객체가
  * 컨트롤러 인자 값을 만드는 순서를 확인한다.
@@ -26,6 +29,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     /** {@code @CurrentUser}가 붙었고 타입이 LoginUser 계열일 때만 이 리졸버가 개입한다. */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
+        // 이름표(@CurrentUser)와 자료형(LoginUser)이 둘 다 맞아야 이 도우미가 값을 준비합니다.
         return parameter.hasParameterAnnotation(CurrentUser.class)
                 && LoginUser.class.isAssignableFrom(parameter.getParameterType());
     }
@@ -38,6 +42,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpSession session = request.getSession(false);
         if (session == null) {
+            // null은 '로그인 정보 없음'을 뜻합니다. 허용 여부는 로그인 검사와 Service가 판단합니다.
             return null;
         }
         return session.getAttribute(SessionConst.LOGIN_USER);

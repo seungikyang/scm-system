@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
+ * 브라우저의 분류 화면 요청을 받아 담당 Service에 일을 맡깁니다.
+ * Model은 화면에 넣을 자료 꾸러미이고 반환하는 문자열은 사용할 HTML 화면 파일의 이름입니다.
+ *
  * 카테고리 목록·상세·등록·수정·삭제 화면을 연결하는 MVC 컨트롤러.
  * 학습 모듈 25에서 CategoryApiController 다음에 읽고 BindingResult, Model,
  * RedirectAttributes가 각각 언제 쓰이는지 찾는다.

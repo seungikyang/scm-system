@@ -3,6 +3,9 @@ package com.example.scm.common.auth;
 import com.example.scm.domain.enums.UserRole;
 
 /**
+ * 로그인한 사람의 번호, 이름, 이메일, 역할만 적은 작은 출입증입니다.
+ * 비밀번호는 넣지 않습니다. 세션은 이 출입증을 잠시 보관하는 서버 쪽 기억 공간입니다.
+ *
  * 세션에 저장하는 변경 불가능한 로그인 사용자 DTO.
  *
  * <p>학습 모듈 34: LoginUser → SessionConst → LoginInterceptor → CurrentUser →

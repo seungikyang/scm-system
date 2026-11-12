@@ -407,6 +407,17 @@ class PurchaseOrderServiceTest {
         }
 
         @Test
+        @DisplayName("작성자 본인은 MANAGER라도 자기 발주를 승인·반려할 수 없다 → ACCESS_DENIED")
+        void approveAndReject_ownOrder_denied() {
+            PurchaseOrder po = po(100L, manager.id(), PurchaseOrderStatus.REQUESTED);
+            given(purchaseOrderRepository.findById(100L)).willReturn(Optional.of(po));
+            assertCode(() -> service.approve(100L, manager), ErrorCode.ACCESS_DENIED);
+            assertCode(() -> service.reject(100L, "본인 반려", manager), ErrorCode.ACCESS_DENIED);
+            assertThat(po.getStatus()).isEqualTo(PurchaseOrderStatus.REQUESTED);
+            assertThat(po.getApproverId()).isNull();
+        }
+
+        @Test
         @DisplayName("AC-019 정상 반려: REQUESTED→REJECTED, rejectReason/approverId 기록 (OQ-11)")
         void reject_success() {
             PurchaseOrder po = po(100L, writer.id(), PurchaseOrderStatus.REQUESTED);
@@ -458,9 +469,9 @@ class PurchaseOrderServiceTest {
             given(purchaseOrderRepository.findByIdWithLines(100L)).willReturn(Optional.of(po));
             given(itemRepository.findAllByIdForUpdate(List.of(10L, 11L))).willReturn(List.of());
             // 10번 품목 재고 없음 → 생성, 11번 품목 재고 있음(5) → 증가
-            given(stockRepository.findByItemId(10L)).willReturn(Optional.empty());
+            given(stockRepository.findByItemIdForUpdate(10L)).willReturn(Optional.empty());
             Stock existing = new Stock(11L, 5);
-            given(stockRepository.findByItemId(11L)).willReturn(Optional.of(existing));
+            given(stockRepository.findByItemIdForUpdate(11L)).willReturn(Optional.of(existing));
             given(stockRepository.save(any(Stock.class))).willAnswer(inv -> inv.getArgument(0));
 
             PurchaseOrderStatusResponse res = service.receive(100L, admin);
@@ -480,7 +491,7 @@ class PurchaseOrderServiceTest {
             PurchaseOrder po = po(100L, writer.id(), PurchaseOrderStatus.REQUESTED);
             given(purchaseOrderRepository.findByIdWithLines(100L)).willReturn(Optional.of(po));
             assertCode(() -> service.receive(100L, admin), ErrorCode.INVALID_STATUS);
-            verify(stockRepository, never()).findByItemId(anyLong());
+            verify(stockRepository, never()).findByItemIdForUpdate(anyLong());
             verify(stockRepository, never()).save(any());
         }
 

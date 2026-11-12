@@ -21,6 +21,10 @@ class MySqlMigrationContractTest {
                 "db/migration/mysql/V1__baseline_schema.sql")
                 .getContentAsString(StandardCharsets.UTF_8);
 
+        String extension = new ClassPathResource("db/migration/mysql/V2__sales_orders_and_notices.sql")
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertThat(extension).contains("CREATE TABLE sales_orders", "CREATE TABLE sales_order_lines", "CREATE TABLE notices",
+                "CONSTRAINT uk_so_order_number UNIQUE", "CONSTRAINT fk_sol_so FOREIGN KEY");
         assertThat(migration)
                 .contains("CREATE TABLE users")
                 .contains("CREATE TABLE purchase_orders")

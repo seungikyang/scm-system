@@ -23,6 +23,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 프로그램을 처음 켰을 때 연습용 계정과 물건 자료를 준비합니다.
+ * 이미 자료가 있으면 다시 넣지 않습니다. 로그인 예제 계정은 이곳에서 만들어집니다.
+ *
  * 학습용 로그인 계정과 예시 데이터를 애플리케이션 시작 시 넣는다.
  *
  * <p>{@link CommandLineRunner} 구현체이므로 Spring Boot 기동이 끝난 뒤 {@code run()}이
@@ -58,12 +61,14 @@ public class DataInitializer implements CommandLineRunner {
 
         seedUsers();
         seedPartners();
+        // 물건은 분류 번호가 필요하므로, 분류를 먼저 저장하고 받은 번호로 물건을 연결합니다.
         seedCategoriesAndItems();
 
         log.info("[DataInitializer] 시드 데이터 생성 완료.");
     }
 
     private void seedUsers() {
+        // 예제 비밀번호도 원문 대신 해시로 바꿉니다. encode는 저장용, matches는 로그인 확인용입니다.
         String encoded = passwordEncoder.encode(SEED_PASSWORD);
         userRepository.save(User.builder()
                 .email("admin@scm.com").password(encoded).name("관리자").role(UserRole.ADMIN).build());

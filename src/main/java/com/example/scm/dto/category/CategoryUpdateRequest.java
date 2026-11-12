@@ -6,7 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** 카테고리 수정 REST API의 JSON 본문과 입력 검증 규칙을 담는 DTO. */
+/**
+ * 기존 분류를 고칠 때 받는 이름과 설명입니다.
+ * 등록 요청과 구분해 수정에 필요한 값만 받도록 만든 양식입니다.
+ *
+ * 카테고리 수정 REST API의 JSON 본문과 입력 검증 규칙을 담는 DTO.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

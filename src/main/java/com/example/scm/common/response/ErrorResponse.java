@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 /**
+ * API 요청이 실패했을 때 보내는 오류 안내 양식입니다.
+ * 오류 번호와 설명, 발생 시각을 함께 담아 요청한 쪽이 원인을 알 수 있게 합니다.
+ *
  * REST API가 오류일 때 반환하는 공통 JSON 모양.
  *
  * <p>학습 모듈 15: ErrorCode와 BusinessException을 읽은 뒤 실패 응답의 최종 모양을

@@ -17,6 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 우리 회사에 물건을 공급하거나 우리 물건을 사 가는 회사의 정보입니다.
+ * SUPPLIER는 공급사, CUSTOMER는 고객사, BOTH는 두 역할을 모두 하는 거래처입니다.
+ *
  * 거래처 엔티티. 물건을 공급하는 곳(SUPPLIER), 사가는 곳(CUSTOMER), 둘 다(BOTH)를 구분한다.
  *
  * <p>학습 모듈 02: PartnerType과 PartnerStatus를 먼저 보고 이 클래스의 canSupply와
@@ -95,7 +98,12 @@ public class Partner extends BaseTimeEntity {
         return this.status == PartnerStatus.ACTIVE;
     }
 
-    /** 도메인 헬퍼: 이 거래처가 "파는 쪽"인가? 발주 작성 시 공급사 선택 목록 제한에 사용된다. */
+    /** 우리 회사의 물건을 사는 고객사인지 확인합니다. 수주를 작성할 때 사용합니다. */
+    public boolean canBuy() {
+        return partnerType == PartnerType.CUSTOMER || partnerType == PartnerType.BOTH;
+    }
+
+    /** 우리 회사에 물건을 공급하는 거래처인지 확인합니다. 발주를 작성할 때 사용합니다. */
     public boolean canSupply() {
         return this.partnerType == PartnerType.SUPPLIER || this.partnerType == PartnerType.BOTH;
     }

@@ -1,78 +1,67 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/PurchaseOrderService.java (create)
-// 목표: 발주서(헤더 + 라인)를 같은 트랜잭션으로 저장하세요.
-//       TRD 3.7.5, 3.8.3, 3.10.1 참고.
+// 발주서 작성 Service (TRD 3.8.3, 3.10.1) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=10
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// TODO 01: 헤더 + 라인 정합성을 위해 어떤 어노테이션?
-@____
-public PurchaseOrderResponse create(Long currentUserId, PurchaseOrderCreateRequest request) {
+// 선택형 [W039] 여러 저장 작업의 트랜잭션 경계는 어디에 두는가?
+//    1. CSS 선택자에 둔다
+//    2. HTML 버튼 이름에 둔다
+//    3. 업무 작업을 묶는 Service의 프록시 호출 메서드에 둔다
+//    4. 각 SQL 로그 줄에 둔다
+//    정답·해설: practice/workbook-questions.md#w039
+//    정답: 3번 · Service 경계에서 여러 Repository 작업이 함께 성공·실패하도록 묶습니다.
 
-    // TODO 02: 작성자(사용자) 존재 확인.
-    User writer = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.____));
+// 선택형 [W046] 발주 헤더와 라인을 같은 트랜잭션으로 저장하는 이유는?
+//    1. 헤더 저장 후 실패한 라인은 영구 누락시킨다
+//    2. 조회 속도가 항상 정확히 두 배가 된다
+//    3. 트랜잭션이 외래키를 없애 준다
+//    4. 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
+//    정답·해설: practice/workbook-questions.md#w046
+//    정답: 4번 · 주문 구성 요소는 함께 성공하거나 함께 실패해야 합니다.
 
-    // TODO 03: 거래처 조회.
-    Partner partner = partnerRepository.findById(request.getPartnerId())
-        .orElseThrow(() -> new BusinessException(ErrorCode.____));
+// 선택형 [W047] 신규 발주 라인의 기본 검증 흐름은?
+//    1. 수량만 확인하고 없는 품목도 허용한다
+//    2. 단종 품목을 우선 선택한다
+//    3. 품목 존재·활성 상태·양수 수량을 확인한다
+//    4. 금액 문자열 길이만 검사한다
+//    정답·해설: practice/workbook-questions.md#w047
+//    정답: 3번 · 존재·품목 상태·수량은 서버에서 모두 확인해야 합니다.
 
-    // TODO 04: 거래처가 발주 가능한 유형인지 확인 (SUPPLIER 또는 BOTH).
-    if (partner.getPartnerType() != PartnerType.SUPPLIER
-            && partner.getPartnerType() != PartnerType.____) {
-        throw new BusinessException(ErrorCode.PARTNER_TYPE_MISMATCH);
-    }
-    if (partner.getStatus() != PartnerStatus.ACTIVE) {
-        throw new BusinessException(ErrorCode.INVALID_STATUS);
-    }
+// 선택형 [W048] 발주 거래처 유형 검증은 어디에서 수행해야 하는가?
+//    1. 화면 필터만으로 충분하다
+//    2. Service에서 SUPPLIER 또는 BOTH인지 검사한다
+//    3. 브라우저 북마크에서 검사한다
+//    4. DB 포트 번호에서 검사한다
+//    정답·해설: practice/workbook-questions.md#w048
+//    정답: 2번 · 화면 조건은 우회 가능하므로 업무 계층에서 거래처 유형을 확인합니다.
 
-    // TODO 05: 라인이 비어 있으면?
-    if (request.getLines() == null || request.getLines().isEmpty()) {
-        throw new BusinessException(ErrorCode.____);
-    }
+// 선택형 [W049] 동시 발주번호 채번의 안전한 전략은?
+//    1. count + 1만 읽으면 항상 유일하다
+//    2. 사용자 이름만 발주번호로 쓴다
+//    3. 같은 번호를 허용하고 나중에 주문을 삭제한다
+//    4. DB unique와 충돌 재시도 등 동시성 대책을 결합한다
+//    정답·해설: practice/workbook-questions.md#w049
+//    정답: 4번 · 참조 구현은 최대 번호와 unique 충돌의 독립 트랜잭션 재시도를 사용합니다.
 
-    // TODO 06: 날짜 범위 검증 (orderDate <= dueDate).
-    if (request.getDueDate() != null
-            && request.getOrderDate().isAfter(request.getDueDate())) {
-        throw new BusinessException(ErrorCode.____);
-    }
+// 선택형 [W050] 발주 금액 계산 책임의 필수 조건은?
+//    1. 클라이언트 금액을 그대로 신뢰한다
+//    2. 서버에서 수량×단가와 라인 합계를 재계산한다
+//    3. 화면에 보이면 서버에는 저장하지 않는다
+//    4. 승인자 ID를 금액으로 사용한다
+//    정답·해설: practice/workbook-questions.md#w050
+//    정답: 2번 · 도메인·Service 배치보다 입력 변조에도 동일한 계산 규칙이 적용되는 것이 핵심입니다.
 
-    // 발주번호 채번 (예: PO-20260526-0001)
-    String orderNumber = orderNumberGenerator.next("PO", LocalDate.now());
+// 선택형 [W267] 신규 주문의 헤더를 저장하기 전에 해야 할 일은?
+//    1. 헤더만 먼저 독립 커밋하고 오류 라인을 버린다
+//    2. 클라이언트 금액을 그대로 저장한다
+//    3. 라인 존재·품목·수량·단가 등 입력과 업무 규칙을 검증한다
+//    4. 검증은 상세 화면을 볼 때만 한다
+//    정답·해설: practice/workbook-questions.md#w267
+//    정답: 3번 · 사전 검증과 주문 전체 트랜잭션으로 부분 저장과 잘못된 주문을 방지합니다.
 
-    PurchaseOrder po = PurchaseOrder.create(
-        orderNumber,
-        partner,
-        writer.getId(),
-        request.getOrderDate(),
-        request.getDueDate()
-    );
-
-    // TODO 07: 라인 검증 + 추가.
-    for (PurchaseOrderCreateRequest.LineDto lineDto : request.getLines()) {
-        Item item = itemRepository.findById(lineDto.getItemId())
-            .orElseThrow(() -> new BusinessException(ErrorCode.____));
-
-        // TODO 08: 단종 품목 거부.
-        if (item.getStatus() == ItemStatus.____) {
-            throw new BusinessException(ErrorCode.ITEM_DISCONTINUED);
-        }
-
-        // TODO 09: 수량 검증.
-        if (lineDto.getQuantity() == null || lineDto.getQuantity() ____ 0) {
-            throw new BusinessException(ErrorCode.INVALID_INPUT);
-        }
-
-        po.addLine(item, lineDto.getQuantity(), lineDto.getUnitPrice());
-    }
-
-    // TODO 10: 헤더 + 라인 저장. cascade = ALL 이면 헤더만 save 해도 됩니다.
-    PurchaseOrder saved = purchaseOrderRepository.____(po);
-
-    return PurchaseOrderResponse.from(saved);
-}
-
-// 학습 질문:
-// Q1. 라인 검증을 헤더 save 전에 끝내는 이유는?
-//     A:
-// Q2. 거래처 유형 검증을 화면이 아닌 Service 에서 해야 하는 이유는?
-//     A:
-// Q3. 발주번호 채번이 동시성 이슈가 있다면 어떻게 막을까?
-//     A:
+// 선택형 [W383] 품목 라인이 없는 신규 발주 작성에 대응하는 현재 업무 오류 코드는?
+//    1. EMPTY_ORDER_LINES
+//    2. ITEM_NOT_FOUND
+//    3. INVALID_DATE_RANGE
+//    4. DUPLICATE_ITEM_CODE
+//    정답·해설: practice/workbook-questions.md#w383
+//    정답: 1번 · PurchaseOrderService는 라인이 비어 있는 요청을 EMPTY_ORDER_LINES로 거부합니다. 헤더만 저장되는 부분 주문을 만들지 않습니다.

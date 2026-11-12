@@ -16,6 +16,9 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
+ * 발주서를 작성할 때 공급사, 주문일, 물건 목록을 받습니다.
+ * 각 줄에 물건 번호·수량·단가를 담고 총금액은 입력받지 않습니다. 서버가 직접 계산합니다.
+ *
  * REST JSON 본문과 Web 발주 폼이 함께 사용하는 발주 작성 DTO.
  *
  * <p>학습 모듈 17: 바깥 DTO의 필수값을 먼저 보고, {@code @Valid}가 중첩 LineRequest의
@@ -29,6 +32,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Setter
 @NoArgsConstructor
 public class PurchaseOrderCreateRequest {
+    // DTO는 입력값을 운반하는 양식입니다. 이 양식 자체가 데이터베이스에 저장되는 발주서는 아닙니다.
 
     @NotNull(message = "공급사는 필수입니다.")
     private Long partnerId;
@@ -38,7 +42,7 @@ public class PurchaseOrderCreateRequest {
     private LocalDate orderDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate dueDate;                        // nullable
+    private LocalDate dueDate;                        // 납기일은 선택 입력이므로 비워 둘 수 있습니다.
 
     @NotEmpty(message = "발주 라인은 최소 1건 이상이어야 합니다.")
     // @NotEmpty는 목록 크기만 검사하므로 [null]처럼 내용이 없는 행도 별도로 차단한다.
@@ -49,6 +53,7 @@ public class PurchaseOrderCreateRequest {
     @Setter
     @NoArgsConstructor
     public static class LineRequest {
+        // 한 줄의 입력 양식입니다. lines는 이 양식을 여러 개 담아 '물건 A, 물건 B'를 함께 받습니다.
 
         @NotNull(message = "품목은 필수입니다.")
         private Long itemId;

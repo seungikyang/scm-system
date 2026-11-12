@@ -12,6 +12,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
+ * 물건 자료를 데이터베이스에서 찾거나 저장하는 창구입니다.
+ * 데이터베이스는 자료를 모아 두는 전자 장부입니다. Spring이 함수 이름이나 조회식을 보고 실제 작업을 준비합니다.
+ *
  * 품목 DB 접근 인터페이스.
  *
  * <p>학습 모듈 07: JpaRepository의 기본 CRUD → 메서드 이름 쿼리 → Pageable 개념 순으로
@@ -37,7 +40,13 @@ public interface ItemRepository
 
     /** 최초 재고 행 생성까지 품목별로 직렬화해 Stock UNIQUE 경합을 방지한다. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    // 잠근 품목을 다른 입고·출고 작업도 같은 방식으로 잠그려 하면, 이 저장 묶음이 끝날 때까지 기다립니다.
     // JPQL의 Item/id는 Java 엔티티/필드 이름이다. Hibernate가 DB용 SQL로 변환한다.
     @Query("select i from Item i where i.id in :itemIds order by i.id")
     List<Item> findAllByIdForUpdate(@Param("itemIds") Collection<Long> itemIds);
+
+    /** 주문을 저장하는 동안 품목이 단종되지 않도록 읽기 잠금을 건다. 주문끼리는 서로 기다리지 않는다. */
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select i from Item i where i.id in :itemIds order by i.id")
+    List<Item> findAllByIdForShare(@Param("itemIds") Collection<Long> itemIds);
 }

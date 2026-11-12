@@ -1,65 +1,75 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/exception/GlobalExceptionHandler.java
-// 목표: 모든 컨트롤러의 예외를 한 곳에서 변환하세요. TRD 3.9 참고.
+// GlobalExceptionHandler (TRD 3.9) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=16
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// TODO 01: 모든 @RestController 에 공통 적용되는 어노테이션은?
-@____
-public class GlobalExceptionHandler {
+// 선택형 [W071] RestControllerAdvice의 역할은?
+//    1. 모든 엔티티를 자동 삭제한다
+//    2. HTML의 CSS를 컴파일한다
+//    3. 세션 쿠키를 DB 기본키로 바꾼다
+//    4. 여러 API 컨트롤러의 예외를 공통 응답으로 처리한다
+//    정답·해설: practice/workbook-questions.md#w071
+//    정답: 4번 · ExceptionHandler와 함께 API 예외 처리 책임을 모읍니다.
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+// 선택형 [W072] 업무·입력 검증·예상 밖 예외를 구분하는 이유는?
+//    1. 모든 예외의 스택을 사용자에게 공개한다
+//    2. 검증 실패를 성공으로 응답한다
+//    3. 사용자 오류와 내부 오류를 서로 맞는 계약으로 응답한다
+//    4. 업무 예외가 나면 테스트를 삭제한다
+//    정답·해설: practice/workbook-questions.md#w072
+//    정답: 3번 · 알려진 ErrorCode와 검증 메시지를 처리하고 내부 오류 정보는 노출을 제한합니다.
 
-    // ===== 비즈니스 예외 =====
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusiness(BusinessException e) {
-        ErrorCode code = e.getErrorCode();
-        // TODO 02: HTTP status 와 본문 body 를 어떻게 만들까?
-        return ResponseEntity
-            .status(code.____)
-            .body(ErrorResponse.of(code, e.getMessage()));
-    }
+// 선택형 [W073] DTO 검증 오류에서 필드별 메시지를 모으는 방법은?
+//    1. 비밀번호 해시를 메시지로 출력한다
+//    2. JSESSIONID를 오류 코드로 쓴다
+//    3. 모든 필드를 SQL 문자열로 연결한다
+//    4. BindingResult의 FieldError를 순회해 필드와 메시지를 추출한다
+//    정답·해설: practice/workbook-questions.md#w073
+//    정답: 4번 · 검증 예외의 바인딩 결과에 필드 이름과 기본 메시지가 들어 있습니다.
 
-    // ===== Bean Validation 예외 (@Valid) =====
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
-        // TODO 03: BindingResult 에서 필드명 + 메시지 리스트를 어떻게 모을지 채우세요.
-        List<ErrorResponse.FieldErrorItem> fields = e.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(fe -> new ErrorResponse.FieldErrorItem(fe.getField(), fe.____()))
-            .toList();
+// 선택형 [W275] 필수 DTO 입력 검증 실패의 현재 공통 업무 코드는?
+//    1. ACCESS_DENIED
+//    2. INVALID_INPUT
+//    3. ITEM_NOT_FOUND
+//    4. INTERNAL_ERROR
+//    정답·해설: practice/workbook-questions.md#w275
+//    정답: 2번 · 현재 API 예외 처리기는 입력 검증 실패를 400과 INVALID_INPUT으로 전달합니다.
 
-        ErrorResponse body = new ErrorResponse(
-            400,
-            ErrorCode.INVALID_INPUT.getCode(),
-            "입력값 검증에 실패했습니다.",
-            LocalDateTime.now(),
-            fields
-        );
-        return ResponseEntity.badRequest().body(body);
-    }
+// 선택형 [W332] RestControllerAdvice와 ControllerAdvice의 차이는?
+//    1. 후자는 예외를 처리할 수 없다
+//    2. 전자는 Repository만 처리한다
+//    3. 전자는 ResponseBody 의미를 포함하며 후자는 View 등 다른 응답 방식도 사용할 수 있다
+//    4. 둘 다 DB 스키마를 생성한다
+//    정답·해설: practice/workbook-questions.md#w332
+//    정답: 3번 · 응답 표현과 적용 대상에 맞춰 API·Web 예외 처리기를 구분합니다.
 
-    // ===== 접근 권한 예외 =====
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
-        return ResponseEntity
-            .status(403)
-            .body(ErrorResponse.of(ErrorCode.____, e.getMessage()));
-    }
+// 선택형 [W333] 예상 밖 예외의 상세 메시지 공개가 위험한 이유는?
+//    1. 모든 메시지가 자동으로 BCrypt 해시가 되기 때문이다
+//    2. 오류 메시지가 DTO 검증을 대신하기 때문이다
+//    3. 내부 구조·SQL·경로·비밀정보가 노출될 수 있다
+//    4. 세션 ID를 공개해야만 오류를 진단할 수 있기 때문이다
+//    정답·해설: practice/workbook-questions.md#w333
+//    정답: 3번 · 사용자에게 안정적인 오류 계약을 응답하고 서버에서 필요한 진단 정보를 관리합니다.
 
-    // ===== 알 수 없는 예외 =====
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnknown(Exception e) {
-        // TODO 04: 로그는 어떤 레벨로 남기는 게 좋을까요?
-        log.____("Unexpected error", e);
-        return ResponseEntity
-            .status(500)
-            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR, null));
-    }
-}
+// 선택형 [W334] 컨트롤러 그룹별로 Advice를 나누는 방법은?
+//    1. basePackages·annotations 등 적용 범위를 명시하고 우선순위를 검토한다
+//    2. 어노테이션 이름만 다르게 바꾼다
+//    3. 같은 타입의 핸들러를 무제한 중복 선언한다
+//    4. 모든 컨트롤러가 직접 스택을 출력한다
+//    정답·해설: practice/workbook-questions.md#w334
+//    정답: 1번 · 예외 처리 대상·응답 형식·Advice 간 적용 순서를 일관되게 구성합니다.
 
-// 학습 질문:
-// Q1. @RestControllerAdvice 와 @ControllerAdvice 의 차이는?
-//     A:
-// Q2. 예외 메시지를 그대로 사용자에게 노출하면 안 되는 경우는?
-//     A:
-// Q3. 동일 예외 타입이라도 패키지별로 어드바이스를 분리할 수 있는가?
-//     A:
+// 선택형 [W385] 예외 처리기에서 HTTP 상태와 오류 DTO 본문을 함께 구성하는 반환 타입은?
+//    1. HttpSession
+//    2. Pageable
+//    3. ResponseEntity<ErrorResponse>
+//    4. EntityManager
+//    정답·해설: practice/workbook-questions.md#w385
+//    정답: 3번 · ResponseEntity.status(...).body(...)로 상태와 본문을 지정할 수 있습니다. 도메인 예외의 HTTP 변환은 API 처리기의 책임입니다.
+
+// 선택형 [W386] 현재 ApiExceptionHandler가 예상 밖 서버 예외를 기록하는 로그 수준은?
+//    1. TRACE
+//    2. ERROR
+//    3. DEBUG
+//    4. INFO
+//    정답·해설: practice/workbook-questions.md#w386
+//    정답: 2번 · 예상 밖 예외는 log.error로 요청 경로와 예외 증거를 남깁니다. 클라이언트 응답에는 내부 상세를 노출하지 않습니다.

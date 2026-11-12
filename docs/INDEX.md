@@ -17,18 +17,22 @@
 | 7 | [`PORTFOLIO_GUIDE.md`](./PORTFOLIO_GUIDE.md) | 데모, 이력서, 면접 준비 |
 | - | [`GLOSSARY.md`](./GLOSSARY.md) | 용어가 낯설 때 찾는 치트시트(상시 참조) |
 
+현재 실행 모듈은 인증·마스터·발주·입고/재고·수주·공지사항입니다. 수주와 공지도 API와 웹 화면을 제공합니다.
+
 ## 2. 구현 계약
 
 | 문서 | 기준 내용 | 갱신 시점 |
 |---|---|---|
 | [`API_SPEC.md`](./API_SPEC.md) | 실제 제공하는 REST API와 에러 형식 | Controller/DTO/권한 변경 시 |
 | [`ERD.md`](./ERD.md) | 현재 엔티티, Flyway 테이블과 스키마 변경 규칙 | Entity/Repository/DB 변경 시 |
-| [`STATE_MACHINE.md`](./STATE_MACHINE.md) | 발주 상태 전이와 권한 | 상태·권한 규칙 변경 시 |
+| [`STATE_MACHINE.md`](./STATE_MACHINE.md) | 발주·수주 상태 전이와 권한 | 상태·권한 규칙 변경 시 |
 | [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) | 장애, 동시성, 구현 차이 | 원인과 해결을 확인했을 때 |
 | [`HEALTH_CHECK.md`](./HEALTH_CHECK.md) | 동작 점검, 오류 수정, 검증 결과와 한계 | 실행·회귀 검증을 완료했을 때 |
 | [`../practice/DESIGN_DECISIONS.md`](../practice/DESIGN_DECISIONS.md) | 참조 구현의 설계 선택 | 대안 중 정책을 확정할 때 |
 
 ## 3. 학습 자료
+
+[SW 기술 4지선다 3000제](../practice/sw-quiz/index.html)는 별도 서버 없이 브라우저로 열어 풉니다. 프로그램과 문제집의 실행 방법은 [루트 README](../README.md)에 정리되어 있습니다.
 
 | 문서 | 사용법 |
 |---|---|
@@ -43,7 +47,7 @@
 
 | 문서 | 성격 |
 |---|---|
-| [`../scm_system_PRD_TRD.md`](../scm_system_PRD_TRD.md) | 최초 제품·기술 요구사항. 구현과 차이가 있어도 원본을 보존한다. |
+| [scm_system_PRD_TRD.md](scm_system_PRD_TRD.md) | 제품·기술 요구사항 원본과 3.19절 면접 4지 선다 |
 | [`../history.html`](../history.html) | 프로젝트 선택부터 구현까지의 시간순 기록이다. |
 
 ## 5. 문서 동기화 규칙
@@ -54,3 +58,9 @@
 - 상태 또는 권한이 바뀌면 `STATE_MACHINE`, API 권한표, Service 테스트를 함께 갱신한다.
 - 구현 범위가 바뀌면 `README`, 이 문서, `index.html`의 상태 배지를 함께 갱신한다.
 - 원본 PRD/TRD와 다르게 결정했다면 `TROUBLESHOOTING`에 차이와 이유를 남긴다.
+
+## 객관식 학습 자료
+
+- [모듈·개념·보안·설계·면접 4지 선다 403제](../practice/sw-quiz/index.html?bank=workbook)
+- [원본 PRD/TRD 3.19 면접 질문의 객관식 버전](INTERVIEW_QUIZ.md)
+- [전체 문항·정답·해설](../practice/workbook-questions.md)

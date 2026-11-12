@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 브라우저에서 물건을 등록하거나 수정할 때 사용하는 입력 양식입니다.
+ * from 함수가 저장된 값을 옮겨 주면 수정 화면에서 기존 정보를 확인할 수 있습니다.
+ *
  * 품목 등록/수정 폼 객체 (Web). th:object="${itemForm}".
  */
 @Getter

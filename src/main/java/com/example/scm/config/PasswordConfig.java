@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
+ * 비밀번호를 안전하게 확인하는 도구를 준비합니다.
+ * 해시는 비밀번호를 원문으로 저장하지 않도록 만든 값입니다. 확인은 BCrypt 도구가 맡습니다.
+ *
  * 비밀번호 해시 생성·검증기를 Spring Bean으로 등록한다.
  *
  * <p>학습 모듈 33: JpaAuditingConfig → 이 클래스 → WebMvcConfig 순서로 읽는다.

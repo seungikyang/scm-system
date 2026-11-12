@@ -2,8 +2,10 @@ package com.example.scm.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,5 +98,44 @@ class RequestValidationIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("error"))
                 .andExpect(model().attribute("code", "INVALID_INPUT"));
+    }
+
+    @Test
+    @DisplayName("소수 수량은 정수로 잘라 저장하지 않고 입력 오류로 거부한다")
+    void fractionalQuantity_isRejectedInsteadOfTruncated() throws Exception {
+        long countBefore = purchaseOrderRepository.count();
+
+        // 수정 전에는 1.5가 조용히 1로 바뀌어 요청과 다른 수량의 발주가 저장되었다.
+        mockMvc.perform(post("/api/purchase-orders")
+                        .sessionAttr(SessionConst.LOGIN_USER, USER)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"partnerId":1,"orderDate":"2026-09-06","lines":[{"itemId":1,"quantity":1.5}]}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_INPUT"));
+
+        assertThat(purchaseOrderRepository.count()).isEqualTo(countBefore);
+    }
+
+    @Test
+    @DisplayName("검색 조건 변환 오류 응답에 내부 클래스 이름을 노출하지 않는다")
+    void bindingFailureMessage_hidesInternalTypeNames() throws Exception {
+        mockMvc.perform(get("/api/items?status=BAD").sessionAttr(SessionConst.LOGIN_USER, USER))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", containsString("status")))
+                .andExpect(jsonPath("$.message", not(containsString("com.example"))))
+                .andExpect(jsonPath("$.message", not(containsString("java.lang"))));
+    }
+
+    @Test
+    @DisplayName("오류 화면에서도 로그인 사용자의 메뉴와 로그아웃 버튼을 유지한다")
+    void errorView_keepsLoggedInNavigation() throws Exception {
+        // 오류 화면에는 GlobalModelAdvice의 currentUser가 없으므로 세션의 로그인 정보로 메뉴를 그려야 한다.
+        mockMvc.perform(get("/items/999999").sessionAttr(SessionConst.LOGIN_USER, USER))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error"))
+                .andExpect(content().string(containsString("로그아웃")))
+                .andExpect(content().string(containsString("내 발주")));
     }
 }

@@ -89,12 +89,14 @@ public ResponseEntity<ErrorResponse> handleOptimisticLock(OptimisticLockingFailu
 ### 해결
 - `order_number`에 UNIQUE 제약(`uk_po_order_number`)을 두어 최종 방어선으로 삼았습니다.
 - `OrderNumberGenerator`는 건수가 아니라 **당일 최대 발주번호의 suffix + 1**을 계산해 삭제·공백의 영향을 받지 않습니다. 9999를 넘으면 5자리 번호를 조용히 만들지 않고 명시적으로 실패합니다.
-- 각 저장 시도를 `PurchaseOrderPersistenceService`의 **독립 트랜잭션(`REQUIRES_NEW`)** 으로 실행합니다. UNIQUE 충돌로 실패한 영속성 컨텍스트는 즉시 폐기하고 다음 번호로 재시도합니다(최대 5회).
+- 각 저장 시도를 `PurchaseOrderPersistenceService`의 **독립 트랜잭션(`REQUIRES_NEW`)** 으로 실행합니다. UNIQUE 충돌로 실패한 영속성 컨텍스트는 즉시 폐기하고 다음 번호로 재시도합니다(최대 10회).
 - 실패한 번호가 실제로 존재하는지 확인해 **발주번호 충돌만** 재시도합니다. 금액 범위 등 다른 무결성 오류는 채번 오류로 숨기지 않습니다.
 - `PurchaseOrderConcurrencyIntegrationTest`는 두 스레드가 같은 `0001`을 계산해 한쪽이 UNIQUE 충돌한 뒤 서로 다른 번호로 저장되는 흐름을 실제로 검증합니다.
 
 ### 알려진 한계 (주의)
-- 재시도는 최대 5회이므로 같은 날짜에 5건을 크게 넘는 생성 요청이 정확히 동시에 몰리는 환경에서는 일부 요청이 실패할 수 있습니다.
+- 예전에는 충돌 직후 바로 재시도해서, 동시에 몰린 요청들이 다시 같은 번호를 계산하고 또 부딪혔습니다. 10건 동시 생성 시 1~4건이 5회 재시도를 모두 쓰고 `INTERNAL_ERROR`로 실패했습니다.
+- 지금은 `OrderNumberRetry`가 재시도 전에 무작위 대기(지터, 상한 5ms에서 두 배씩 늘려 최대 200ms)를 두어 요청들을 흩어 놓습니다. 수주번호 채번도 같은 규칙을 씁니다.
+- 그래도 재시도 횟수에는 상한이 있으므로, 수십 건 이상이 정확히 동시에 몰리는 환경에서는 일부 요청이 실패할 수 있습니다.
 - 높은 처리량이 필요한 운영 환경에서는 별도 시퀀스 테이블 또는 DB 네임드 락 도입을 권장합니다.
 
 ### 배운 점
@@ -132,7 +134,7 @@ public ResponseEntity<ErrorResponse> handleOptimisticLock(OptimisticLockingFailu
 
 그 외 확정 사항(PRD와 동일 방향): 동시 승인은 `@Version` 낙관적 락(OQ-5), 발주 취소는 사유 없음(OQ-8), DRAFT 수정 API 미제공(OQ-9), 상태 이력 엔티티 미도입(타임스탬프로 대체, OQ-10), 반려 시 approverId 기록(OQ-11), INACTIVE 거래처 발주는 `INVALID_STATUS` 재사용(OQ-12), 라인 단가 누락 시 품목 표준단가(OQ-13), 발주번호 일자별 4자리 시퀀스(OQ-14).
 
-> ⚠️ **PRD 원본(`scm_system_PRD_TRD.md`)은 수정하지 않았습니다.** 위 차이는 구현·문서 기준입니다.
+> [초기 PRD/TRD](scm_system_PRD_TRD.md)의 업무 요구사항은 보존했습니다. 문서는 `docs/` 아래로 옮기고 3.19절 면접 질문을 선택지 4개·정답·해설로 전환했습니다. 위 차이는 구현·문서 기준입니다.
 
 ---
 
@@ -178,3 +180,11 @@ QA 보고서(`_workspace/04_qa_report.md`)에서 BLOCKER/MAJOR는 0건이며, �
 - [`API_SPEC.md`](API_SPEC.md) — REST API 명세, 에러 코드
 - [`ERD.md`](ERD.md) — 엔티티/테이블 구조
 - [`STATE_MACHINE.md`](STATE_MACHINE.md) — 발주 상태 전이
+
+
+## 수주 출고·취소와 공지 동시 조회
+
+- PRD는 출고 재고 정책을 구체화하지 않았지만 COMPLETED 이전 취소를 허용합니다. 출고 시 재고를 차감하고 SHIPPED 취소 시 복원하는 정책을 적용했습니다. 부분 출고는 제공하지 않습니다.
+- 수주 행 잠금으로 같은 수주의 중복 출고·취소를 차단하고, Item 행 잠금을 기존 발주 입고와 공유하여 서로 다른 주문의 재고 변경도 직렬화합니다. 상태와 재고는 한 트랜잭션이므로 재고 부족 시 전체 롤백됩니다.
+- 공지 조회수는 `view_count = view_count + 1`로 원자적 증가합니다. Notice에는 DynamicUpdate를 적용하여 본문 수정이 동시에 증가한 조회수를 덮어쓰지 않습니다.
+- MockMvc의 기본 요청은 servletPath가 비어 있습니다. 미인증 API 테스트에서는 실제 서블릿 경로를 명시하여 LoginInterceptor의 JSON 401 응답을 검증합니다.

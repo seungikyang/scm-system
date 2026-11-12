@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
+ * 여러 화면에서 공통으로 쓰는 로그인 사용자 정보를 전달합니다.
+ * 모든 화면에서 사용자 이름과 역할을 보여 줄 때 같은 준비 작업을 반복하지 않게 합니다.
+ *
  * 모든 웹 화면의 Model에 로그인 사용자를 공통으로 넣는다.
  *
  * <p>학습 모듈 35의 시작점이다. 이 파일 → ItemWebController → layout.html → item 템플릿
@@ -20,6 +23,7 @@ public class GlobalModelAdvice {
 
     @ModelAttribute("currentUser")
     public LoginUser currentUser(@CurrentUser LoginUser loginUser) {
+        // currentUser라는 이름으로 모든 웹 화면에 전달하므로 공통 메뉴도 로그인 이름을 표시할 수 있습니다.
         return loginUser;
     }
 }

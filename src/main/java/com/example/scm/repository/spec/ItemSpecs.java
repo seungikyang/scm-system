@@ -10,6 +10,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 /**
+ * 물건 검색에서 선택한 조건을 모아 한 번에 적용합니다.
+ * AND는 모든 조건을 만족해야 한다는 뜻입니다. 비어 있는 조건은 검색에서 제외합니다.
+ *
  * 사용자가 입력한 값만 WHERE 절에 넣는 품목 동적 검색 조건.
  *
  * <p>학습 모듈 09: ItemRepository의 기본 파생 쿼리(모듈 07)를 이해한 뒤 읽는다.</p>
@@ -24,13 +27,16 @@ public final class ItemSpecs {
 
     public static Specification<Item> search(ItemSearchForm form) {
         return (root, query, cb) -> {
+            // Predicate는 '이 물건을 검색 결과에 넣을까?'를 판단하는 조건 한 개입니다.
             List<Predicate> predicates = new ArrayList<>();
             if (form != null) {
                 if (StringUtils.hasText(form.getName())) {
-                    predicates.add(cb.like(root.get("name"), "%" + form.getName().trim() + "%"));
+                    // %는 앞뒤에 어떤 글자가 와도 된다는 뜻입니다. '볼트'로 '볼트 M6'도 찾습니다.
+                    // 대소문자를 무시하고, 검색어 속 %·_는 글자 그대로 찾는다(LikePatterns 참고).
+                    predicates.add(LikePatterns.containsIgnoreCase(cb, root.get("name"), form.getName()));
                 }
                 if (StringUtils.hasText(form.getItemCode())) {
-                    predicates.add(cb.like(root.get("itemCode"), "%" + form.getItemCode().trim() + "%"));
+                    predicates.add(LikePatterns.containsIgnoreCase(cb, root.get("itemCode"), form.getItemCode()));
                 }
                 if (form.getCategoryId() != null) {
                     predicates.add(cb.equal(root.get("categoryId"), form.getCategoryId()));

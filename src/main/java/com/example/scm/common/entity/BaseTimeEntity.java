@@ -10,6 +10,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
+ * 자료를 언제 만들고 언제 고쳤는지 적는 공통 양식입니다.
+ * 여러 자료가 이 클래스를 상속하면 같은 시간 기록 코드를 매번 만들 필요가 없습니다.
+ *
  * 모든 엔티티의 생성/수정 시각을 자동 기록하는 공통 부모.
  *
  * <p>학습 모듈 01: User보다 먼저 읽고 상속되는 두 필드를 확인한다. Auditing을 켜는
@@ -24,6 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
+    // abstract는 이 양식만으로 자료를 만들지 않고, User나 Item 같은 실제 자료가 물려받아 쓰게 합니다.
 
     /** 최초 저장 시각. 이후 수정되지 않는다(updatable = false). */
     @CreatedDate

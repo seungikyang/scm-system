@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 물건을 같은 종류끼리 묶는 분류의 정보입니다.
+ * 예를 들어 연필과 공책을 문구류로 묶을 수 있습니다. 같은 분류 이름은 중복해서 저장하지 않습니다.
+ *
  * 품목 분류 카테고리. name 에 unique 제약으로 동일 분류명 중복을 막는다.
  *
  * <p>학습 모듈 02: Category를 먼저 읽고 Partner로 이동한다. 이 단계에서는 컬럼과

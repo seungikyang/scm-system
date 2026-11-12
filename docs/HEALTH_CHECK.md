@@ -70,3 +70,69 @@ docker build -t scm-system .
 
 - [Spring Boot H2 Web Console](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.h2-web-console): 콘솔 모듈과 경로 설정, CSRF·프레임 설정.
 - [Spring Boot Database Initialization](https://docs.spring.io/spring-boot/how-to/data-initialization.html): Flyway starter와 자동 마이그레이션, JPA 초기화 순서.
+
+
+## 2026-10-03 수주·공지 구현 검증
+
+- 수주 작성·확정·목록·상세·출고·완료·사유 입력 취소와 공지 CRUD·검색·페이징·중요 공지 정렬·조회수를 API/웹 화면으로 구현했습니다.
+- `SalesAndNoticeIntegrationTest` 17개에서 권한·CSRF·입력 검증, 금액 계산, 재고 부족 시 전체 롤백, 중복 품목, 동시 채번, 동시 출고·취소, 동시 공지 조회와 수정 중 조회수 보존을 검증했습니다.
+- `./gradlew portfolioCheck --no-daemon`: 기본 테스트 132개 성공, 실패/오류/건너뜀 0, bootJar 생성, 저장소 경계 검사 성공.
+- 별도 테스트용 MySQL 8.4.11 컨테이너에서 `mysqlSchemaTest`: 1개 성공. Flyway V1/V2 자동 적용 후 Hibernate 스키마 검증 성공. 기존 데이터베이스는 사용하지 않았습니다.
+- `git diff --check` 및 `./scripts/verify-repository-boundary.sh` 성공. 개인 풀이 공간과 starter 빈칸은 유지했습니다.
+
+
+## 2026-10-10 학습 자료 전체를 4지 선다로 통일
+
+- 코드 답안을 직접 작성하던 40개 모듈의 학습 파일 45개를 모두 선택지 4개·정답·해설이 있는 문제집으로 재작성했습니다. 생성기는 TSV와 원문 연결표에서 전체 학습 파일을 재생성합니다.
+- 기능 워크북의 구현 답안 블록 45곳, 빈칸 카드 1곳, 기록 표 2곳을 선택형 확인 문항으로 전환했습니다. 학습 기록 양식도 문항 선택·채점·복습 방식으로 바꿨습니다.
+- HTML 목차의 40개 모듈 링크가 `?bank=workbook&module=NN`으로 해당 모듈을 엽니다. 브라우저 문제집은 모듈 URL 선택을 지원하고 문제집 전환 시 모듈 조건을 초기화합니다.
+- `practiceStatus`는 모듈별 문항 수를, `practiceCheck`는 선택지·정답·분야 연결 검사를 제공합니다. 두 명령의 실제 실행을 확인했습니다.
+- `docs/scm_system_PRD_TRD.md`에 요구사항·설계와 면접 12문항의 선택형 학습본을 제공하고 학습 목차·문서 지도·README를 연결했습니다. SCM 모듈 403문항과 SW 기술 2,000문항의 기존 풀이 데이터는 유지했습니다.
+- `./gradlew test bootJar --no-daemon`: 전체 기본 테스트 145개 성공, 실패·오류·건너뜀 0, 실행 가능한 JAR 생성. 최종 문서 갱신 후 워크북 관련 테스트 17개도 성공했습니다.
+- Chrome에서 40개 모듈의 필터·4개 선택지·목차 링크, 채점·기록 복원, 문제집 전환, 모듈 번호 처리와 390px 화면을 확인했습니다.
+- 생성기 재실행 전후 56개 출력 파일이 동일했습니다. 선택형 문항 밖의 서술·빈칸 답안 0개, JavaScript 구문·Git 공백·저장소 경계 검사 성공.
+
+## 2026-10-10 남은 서술형 학습 질문의 4지 선다 전환
+
+- starter의 TODO·구현 중 질문 79곳을 4개 선택지와 정답·해설 링크로 전환했습니다. 요구사항 계약 표·공통 테스트 표·표준 루프 질문도 선택형 문항으로 연결했습니다.
+- 설정값·오류 처리·학습 루프 문항 40개를 추가해 전환 워크북을 403문항으로 갱신했습니다. 기존 363문항의 번호·보기·정답·해설과 저장 키는 해시 비교로 호환성을 확인했습니다.
+- `remaining_choices.tsv`와 `conversion_map.json`의 `inlineQuestions`에서 추가 문항·출처를 관리합니다. 생성기는 Markdown 코드 예시를 포함한 주석을 동기화하며, 재생성 전후 54개 출력 파일의 해시가 동일했습니다.
+- `./gradlew test --tests com.example.scm.practice.SwQuizBankTest --tests com.example.scm.practice.WorkbookStructureTest --no-daemon`: 16개 성공, 실패·오류·건너뜀 0. 선택지·정답·문서 일치와 남은 서술형 질문 감사를 포함합니다.
+- Chrome 파일 직접 열기에서 403문항 표시, 신규 문항 채점·해설·검색·분야 필터·북마크 저장, 기존 기록 복원, 390px 화면과 SW 기술 2,000제 전환을 확인했습니다.
+- JavaScript 구문 검사, `git diff --check`, 저장소 경계 검사 성공.
+
+## 2026-10-10 SW 기술 4지선다 2,000제 확장 검증
+
+- 기본 SW 기술 문제집에 1,500문항을 추가해 20개 분야 × 100문항 = 2,000문항으로 확장했습니다. 각 문항은 선택지 4개·정답 1개·해설을 포함합니다.
+- 추가 문항은 분야별 15개 주제를 개념 확인·상황 판단·원리 설명·적용 사례·오개념 점검으로 복습하도록 구성했습니다.
+- 기존 1~500번의 질문·보기·정답·해설과 저장 키를 유지했습니다. 확장 전 전체 데이터의 SHA-256 비교로 기존 풀이 기록 호환성을 검증합니다.
+- 생성기와 테스트가 원본 TSV 일치, 고유 질문 2,000개, 분야별 100개, 정답 위치별 500개를 검증합니다. 화면·목차·실행 안내를 2,000제 기준으로 갱신했습니다.
+- `./gradlew test --tests com.example.scm.practice.SwQuizBankTest --tests com.example.scm.practice.WorkbookStructureTest --no-daemon`: 14개 성공, 실패·오류·건너뜀 0.
+- Chrome에서 파일 직접 열기(`file://`), 기존 기록 복원, 2,000번 채점·북마크 저장·새로고침 복원, 검색, 분야 필터, 오답 복습, 무작위 순서, 390px 화면과 별도 363문항 워크북 전환을 확인했습니다.
+
+## 2026-10-03 SW 기술 4지선다 500제와 실행 안내
+
+- 루트 README에 SCM 프로그램, Docker, 4지선다 문제집 직접 열기, 선택적인 Python 정적 서버, Windows/macOS/Linux 명령을 정리했습니다.
+- 20개 분야에 각각 25문항을 작성했습니다. 각 문항은 질문·선택지 4개·정답 1개·해설을 포함하며 분야별 프로젝트 참조 링크를 제공합니다.
+- 원본 questions.tsv와 생성 questions.js를 분리했습니다. 생성기와 SwQuizBankTest가 500문항, 고유 질문/ID, 중복 없는 선택지, 분야 분포, 정답 분포(각 위치 125개), 해설 및 원본 일치를 검증합니다.
+- `SwQuizBankTest` 2개와 `WorkbookStructureTest` 9개 통과. JavaScript 구문 검사와 저장소 경계 검사 통과.
+- Playwright 브라우저에서 HTTP로 채점·재도전·오답 필터·북마크·검색·무작위 순서·새로고침 후 기록 복원·390px 모바일 화면을 확인했습니다. 외부 CDN이나 fetch 의존성이 없는 정적 script 구성이며, 파일 직접 열기 절차도 README에 안내했습니다.
+- `./gradlew bootRun --args='--server.port=18080' --no-daemon`으로 프로그램 기동 후 `/login` HTTP 200 확인. 검증용 프로세스는 종료했습니다.
+
+## 2026-10-03 수주 관리·주문 통계 확장 검증
+
+- ADMIN/MANAGER의 전체 수주 조회 화면/API를 추가했습니다. 상태·고객사·수주일 복합 필터, 페이지 이동 시 조건 유지, 출고된 수주의 완료 처리 진입을 제공합니다.
+- 관리자/매니저 대시보드에 주문일 기준 기간별 발주·수주 상태별 건수와 금액 통계 및 JSON API를 추가했습니다. 기간 기본값은 이번 달 1일~오늘이며, 주문이 없는 상태는 0으로 반환합니다.
+- 수주 목록의 고객사/작성자 표시값을 페이지 단위로 일괄 조회해 행별 추가 조회를 줄였습니다.
+- `OrderManagementIntegrationTest` 5개 성공: 타 작성자의 출고 수주 완료 처리, 복합 검색/경계일/페이징, 여러 라인 주문의 헤더 단위 금액 집계, 빈 통계/기간 기본값, 인증·권한·잘못된 기간과 형식 오류.
+- `./gradlew portfolioCheck --no-daemon`: 기본 테스트 139개 성공(실패/오류/건너뜀 0), bootJar 생성, 저장소 경계 검사 성공.
+- `git diff --check` 및 `./scripts/verify-repository-boundary.sh` 성공. 이번 추가 기능 검증은 H2 기반이며 실제 MySQL 테스트는 재실행하지 않았습니다. 스키마 변경은 없습니다.
+
+## 2026-10-24 과목별 이어풀기 완성
+
+- 중단 전 추가된 JavaScript 회귀 테스트에서 과목별 마지막 문항 복원 7건이 실패했습니다. `study-state.js`에 과목별 위치 검증·복원을 구현하고, `quiz.js`의 과목 카드·선택 메뉴·모듈 링크와 연결했습니다.
+- 과목별 위치가 없는 기존 기록은 `currentId`로 마지막 과목의 위치를 복원합니다. 기존 저장 키·답안·북마크를 유지하고, 소속 과목과 문항 번호가 맞지 않는 위치 기록은 제외합니다.
+- `node --test src/test/js/study-state.test.cjs`: 15건 통과. GitHub Actions의 기존 `verify` 작업에도 같은 검사를 추가했습니다.
+- Playwright의 실제 Chromium에서 SW 3000제·SCM 워크북 403제의 과목 카드·선택 메뉴 전환, 미제출 보기 보존, 새로고침, 모듈 링크의 위치 복원, 명시한 문항 링크 우선순위와 문제집별 기록 분리를 확인했습니다. HTTP 주소에서 검증했습니다.
+- `./gradlew portfolioCheck --no-daemon`: Java 테스트 250건, JAR 생성, 저장소 경계 검사 통과. `git diff --check`와 `./scripts/verify-repository-boundary.sh`도 통과했습니다.
+- MySQL·Docker 실행, 파일을 직접 연 브라우저와 원격 GitHub Actions 실행은 이번 검증에 포함하지 않았습니다.

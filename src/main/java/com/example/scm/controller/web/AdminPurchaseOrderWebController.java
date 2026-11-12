@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
+ * 브라우저의 발주 화면 요청을 받아 담당 Service에 일을 맡깁니다.
+ * Model은 화면에 넣을 자료 꾸러미이고 반환하는 문자열은 사용할 HTML 화면 파일의 이름입니다.
+ *
  * 관리자와 매니저의 발주 승인·반려·입고 화면을 연결하는 MVC 컨트롤러.
  *
  * <p>학습 모듈 35에서 사용자용 PurchaseOrderWebController 다음에 읽고 같은 상세/상태
@@ -54,7 +57,7 @@ public class AdminPurchaseOrderWebController {
         model.addAttribute("totalPages", orders.getTotalPages());
         model.addAttribute("totalElements", orders.getTotalElements());
         model.addAttribute("statusOptions", PurchaseOrderStatus.values());
-        model.addAttribute("partners", purchaseOrderService.getSupplierOptions());
+        model.addAttribute("partners", purchaseOrderService.getSupplierSearchOptions(loginUser));
         model.addAttribute("selectedStatus", status != null ? status.name() : null);
         model.addAttribute("selectedPartnerId", partnerId);
         model.addAttribute("isAdminView", true);

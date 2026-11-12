@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  공지 한 개의 상세 화면입니다. th:text는 글을 HTML 명령으로 실행하지 않고 글자 그대로 보여 줍니다.
+  조회수 증가는 NoticeService가 처리하고, 여기서는 전달받은 조회수를 표시합니다.
+-->
+<head th:replace="~{fragments/layout :: head('SCM')}"></head>
+<body><nav th:replace="~{fragments/layout :: nav}"></nav><main>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="page-header"><h1 th:text="${notice.title}"></h1><a class="btn btn-ghost" th:href="@{/notices}">목록</a></div>
+<div class="card"><strong th:if="${notice.important}">중요 공지</strong>
+<p class="muted" th:text="|${notice.writerName} · ${notice.createdAt} · 조회 ${notice.viewCount}|"></p>
+<div style="white-space:pre-wrap;overflow-wrap:anywhere" th:text="${notice.content}"></div>
+<div th:if="${currentUser.isAdmin()}" class="form-actions">
+<a class="btn btn-primary" th:href="@{/notices/{id}/edit(id=${notice.id})}">수정</a>
+<form th:action="@{/notices/{id}/delete(id=${notice.id})}" method="post"><button class="btn btn-danger" type="submit">삭제</button></form></div></div>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

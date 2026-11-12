@@ -17,6 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 물건 한 종류의 코드, 이름, 가격, 안전재고를 저장합니다.
+ * 연필이라는 물건의 기본 정보이며, 창고에 몇 개 있는지는 별도의 Stock에서 기록합니다.
+ *
  * 품목 엔티티.
  *
  * <p>학습 모듈 03: 모듈 02의 Category를 이해한 뒤 ItemStatus → 이 클래스 순서로 읽는다.

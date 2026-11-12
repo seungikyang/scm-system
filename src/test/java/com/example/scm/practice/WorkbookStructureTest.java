@@ -27,7 +27,7 @@ class WorkbookStructureTest {
             IntStream.rangeClosed(0, 39).boxed().collect(Collectors.toCollection(TreeSet::new));
 
     @Test
-    @DisplayName("00~39 starter 모듈이 빠짐없이 있고 각 모듈에 학습 빈칸이 있다")
+    @DisplayName("00~39 starter 모듈이 빠짐없이 있고 모두 선택형 문제집이다")
     void starterModules_areComplete() throws IOException {
         Path starter = Path.of("practice", "starter");
         Set<Integer> actual = new TreeSet<>();
@@ -44,7 +44,9 @@ class WorkbookStructureTest {
                             .map(this::read)
                             .collect(Collectors.joining("\n"));
                 }
-                assertThat(content).as("%s의 학습 빈칸", directory).contains("____");
+                assertThat(content).as("%s의 선택형 문제집", directory)
+                        .contains("4지 선다", "정답·해설 보기")
+                        .doesNotContain("TODO", "// A:", "# A:");
             }
         }
         assertThat(actual).isEqualTo(EXPECTED_MODULES);
@@ -68,7 +70,7 @@ class WorkbookStructureTest {
                 .contains("./gradlew practiceStatus")
                 .contains("핵심 트랙")
                 .contains("확장 트랙")
-                .contains("실패 사례 3개")
+                .contains("오답 복습")
                 .contains("../index.html")
                 .contains("LOOP_ENGINEERING.md");
 
@@ -151,7 +153,7 @@ class WorkbookStructureTest {
 
         assertThat(workbook)
                 .containsOnlyOnce("| Controller | HTTP 요청/응답, 인증 사용자 주입, DTO 검증 |")
-                .containsOnlyOnce("Spring Data 의 `Page` 는 content 뿐 아니라")
+                .containsOnlyOnce("## FR-PARTNER-007 페이징")
                 .containsOnlyOnce("### 기능별 구현 증거 기록표")
                 .containsOnlyOnce("### 8.4.1 릴리스 스테이징 공통 절차")
                 .contains("[FR-PARTNER-007 페이징](#fr-partner-007-페이징)")
@@ -178,8 +180,9 @@ class WorkbookStructureTest {
                 .contains("ADMIN/MANAGER, 상태 변경 + 재고 증가 원자성")
                 .doesNotContain("본인 + DRAFT/REQUESTED 상태만");
         assertThat(answers)
-                .contains("`DRAFT`, `REQUESTED`, `APPROVED`")
-                .contains("승인·반려·입고는 `ADMIN` 또는 `MANAGER`");
+                .contains("DRAFT·REQUESTED·APPROVED")
+                .contains("[W054]")
+                .contains("ADMIN 또는 MANAGER");
     }
 
     @Test
@@ -193,6 +196,10 @@ class WorkbookStructureTest {
 
         assertThat(modules).hasSize(EXPECTED_MODULES.size());
         assertThat(new TreeSet<>(modules)).isEqualTo(EXPECTED_MODULES);
+        String html = Files.readString(Path.of("index.html"));
+        for (int module : EXPECTED_MODULES) {
+            assertThat(html).containsOnlyOnce("practice/sw-quiz/index.html?bank=workbook&amp;module=%02d".formatted(module));
+        }
     }
 
     @Test
@@ -206,7 +213,7 @@ class WorkbookStructureTest {
                 continue;
             }
 
-            String filePart = href.split("#", 2)[0];
+            String filePart = href.split("[?#]", 2)[0];
             assertThat(Path.of(filePart))
                     .as("index.html 로컬 링크: %s", href)
                     .exists();

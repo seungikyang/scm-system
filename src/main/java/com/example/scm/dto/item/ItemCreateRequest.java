@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 새 물건을 등록할 때 코드, 이름, 분류, 가격 등을 받습니다.
+ * 가격과 안전재고에 음수를 넣지 못하게 입력 규칙을 붙여 두었습니다.
+ *
  * 품목 등록 REST API의 JSON 본문을 받는 DTO.
  * 애너테이션은 필수 여부·문자 길이·숫자 범위를 컨트롤러 진입 시점에 검증한다.
  * 학습 모듈 17에서 NotBlank → NotNull → 숫자 범위 순으로 제약을 읽고, 모듈 18에서
@@ -21,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ItemCreateRequest {
 
+    // @NotBlank는 공백뿐인 글도 막습니다. @Size는 최대 글자 수를 정합니다.
     @NotBlank(message = "품목코드는 필수입니다.")
     @Size(max = 50)
     private String itemCode;
@@ -29,6 +33,7 @@ public class ItemCreateRequest {
     @Size(max = 150)
     private String name;
 
+    // @NotNull은 분류 번호를 빠뜨리지 말라는 규칙입니다. 번호가 실제로 존재하는지는 Service가 확인합니다.
     @NotNull(message = "카테고리는 필수입니다.")
     private Long categoryId;
 
@@ -36,6 +41,8 @@ public class ItemCreateRequest {
     @Size(max = 20)
     private String unit;
 
+    // BigDecimal은 금액을 정확하게 계산하는 자료형입니다. 소수점 오차를 줄이기 위해 사용합니다.
+    // @PositiveOrZero는 0 이상, @Digits는 정수·소수 자릿수 제한을 뜻합니다.
     @NotNull(message = "단가는 필수입니다.")
     @PositiveOrZero(message = "단가는 0 이상이어야 합니다.")
     @Digits(integer = 13, fraction = 2, message = "단가는 정수 13자리, 소수 2자리 이하여야 합니다.")

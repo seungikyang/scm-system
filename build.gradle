@@ -51,6 +51,11 @@ dependencies {
 }
 
 tasks.named('test') {
+    // 워크북 테스트가 직접 읽는 자료도 입력으로 추적해 문항 수정 시 다시 검증한다.
+    // Git 제외 개인 풀이 파일은 테스트 입력에 포함하지 않는다.
+    inputs.files(fileTree('practice') { exclude 'workspace/**' })
+    inputs.files(fileTree('docs') { include '**/*.md' })
+    inputs.files('index.html', '.gitignore', 'gradle/wrapper/gradle-wrapper.properties')
     useJUnitPlatform {
         excludeTags 'mysql'
     }
@@ -127,13 +132,18 @@ def practiceNotesTemplate = layout.projectDirectory.file('practice/LEARNING_NOTE
 
 tasks.register('practiceInit', Copy) {
     group = 'practice'
-    description = 'starter 원본을 보존한 채 개인 풀이 공간(practice/workspace)을 만든다.'
+    description = '4지 선다 학습 파일을 개인 학습 공간(practice/workspace)에 복사한다.'
     outputs.upToDateWhen { false }
     from practiceStarterDir
     from(practiceNotesTemplate) {
         rename { 'LEARNING_NOTES.md' }
     }
     into practiceWorkspaceDir
+    filesMatching('LEARNING_NOTES.md') {
+        filter { String line ->
+            line.replace('(sw-quiz/', '(../sw-quiz/').replace('(answers.md', '(../answers.md')
+        }
+    }
 
     doFirst {
         File workspace = practiceWorkspaceDir.asFile
@@ -145,70 +155,65 @@ tasks.register('practiceInit', Copy) {
 
     doLast {
         println '학습 공간 생성 완료: practice/workspace'
-        println './gradlew practiceStatus 로 남은 빈칸을 확인하세요.'
+        println './gradlew practiceStatus 로 모듈별 4지 선다 문항 수를 확인하세요.'
     }
+}
+
+// 브라우저와 같은 문제 자료를 읽어 학습 문항을 안내한다.
+def readPracticeQuestionBank = {
+    String script = layout.projectDirectory.file('practice/sw-quiz/workbook-questions.js')
+            .asFile.getText('UTF-8')
+    String marker = 'window.SCM_WORKBOOK_QUIZ_BANK = '
+    int start = script.indexOf(marker)
+    if (start < 0) {
+        throw new GradleException('모듈 문제 자료를 읽을 수 없습니다.')
+    }
+    String json = script.substring(start + marker.length()).trim()
+    if (!json.endsWith(';')) {
+        throw new GradleException('모듈 문제 자료의 형식이 잘못되었습니다.')
+    }
+    new groovy.json.JsonSlurper().parseText(json.substring(0, json.length() - 1))
 }
 
 tasks.register('practiceStatus') {
     group = 'practice'
-    description = '개인 풀이 공간의 모듈별 남은 빈칸과 체크리스트 수를 보여준다.'
+    description = '40개 모듈의 4지 선다 문항 수와 문제집 실행 방법을 보여준다.'
 
     doLast {
-        File root = practiceWorkspaceDir.asFile.exists()
-                ? practiceWorkspaceDir.asFile
-                : practiceStarterDir.asFile
-        if (root == practiceStarterDir.asFile) {
-            println 'practice/workspace가 없어 starter 원본의 초기 상태를 표시합니다.'
+        def bank = readPracticeQuestionBank()
+        println String.format('%-10s %10s', 'MODULE', 'QUESTIONS')
+        bank.categories.each { category ->
+            int count = bank.questions.count { it.category == category.id }
+            println String.format('%-10s %10d', category.id, count)
         }
-
-        Map<String, Map<String, Integer>> summary = new TreeMap<>()
-        fileTree(root).files.findAll { it.isFile() }.each { File file ->
-            String relative = root.toPath().relativize(file.toPath()).toString()
-            List<String> pathParts = relative.tokenize(File.separator)
-            if (pathParts.size() < 2) {
-                return
-            }
-            String module = pathParts[0]
-            String content = file.getText('UTF-8')
-            Map<String, Integer> counts = summary.computeIfAbsent(module) {
-                [blanks: 0, checks: 0]
-            }
-            counts.blanks += (content =~ /____/).count
-            counts.checks += (content =~ /- \[ \]/).count
-        }
-
-        println String.format('%-32s %8s %10s', 'MODULE', 'BLANKS', 'UNCHECKED')
-        summary.each { module, counts ->
-            println String.format('%-32s %8d %10d', module, counts.blanks, counts.checks)
-        }
-        int totalBlanks = summary.values().sum { it.blanks } ?: 0
-        int totalChecks = summary.values().sum { it.checks } ?: 0
-        println "남은 빈칸: ${totalBlanks}, 미완료 체크: ${totalChecks}"
+        println "총 ${bank.questions.size()}문항 · 선택지 4개 · 정답과 해설"
+        println '문제집: practice/sw-quiz/index.html → SCM 모듈 워크북'
+        println '풀이 기록과 오답 복습은 브라우저 문제집에서 확인합니다.'
     }
 }
 
 tasks.register('practiceCheck') {
     group = 'practice'
-    description = '개인 풀이 공간에 미작성 빈칸/체크 항목이 남았는지 검사한다(정답 채점은 아님).'
+    description = '모듈 문제집의 선택지·정답·분야 연결을 확인한다.'
 
     doLast {
-        File root = practiceWorkspaceDir.asFile
-        if (!root.exists()) {
-            throw new GradleException('먼저 ./gradlew practiceInit 을 실행하세요.')
+        def bank = readPracticeQuestionBank()
+        if (!(bank.questions instanceof List) || bank.questions.isEmpty()) {
+            throw new GradleException('문항이 없는 문제집입니다.')
         }
-        int blanks = 0
-        int unchecked = 0
-        fileTree(root).files.findAll { it.isFile() }.each { File file ->
-            String content = file.getText('UTF-8')
-            blanks += (content =~ /____/).count
-            unchecked += (content =~ /- \[ \]/).count
+        Set categories = bank.categories.collect { it.id } as Set
+        Set ids = [] as Set
+        bank.questions.each { question ->
+            if (!ids.add(question.id) || !categories.contains(question.category)
+                    || !(question.options instanceof List) || question.options.size() != 4
+                    || question.options.toSet().size() != 4
+                    || question.options.any { !(it instanceof String) || it.isBlank() }
+                    || !(question.answer instanceof Number) || question.answer < 0 || question.answer > 3
+                    || !(question.explanation instanceof String) || question.explanation.isBlank()) {
+                throw new GradleException("선택형 문항 형식 오류: ${question.id}")
+            }
         }
-        if (blanks > 0 || unchecked > 0) {
-            throw new GradleException(
-                    "워크북 미완료: 빈칸 ${blanks}개, 미완료 체크 ${unchecked}개. " +
-                            './gradlew practiceStatus 로 위치를 좁혀 보세요.')
-        }
-        println '형식상 모든 빈칸과 체크리스트를 완료했습니다.'
-        println '이 검사는 정답 여부를 채점하지 않습니다. answers.md 및 설명 질문으로 검토하세요.'
+        println "4지 선다 문제집 구조 검사 통과: ${bank.questions.size()}문항"
+        println '정답 채점과 오답 복습은 브라우저 문제집에서 실행합니다.'
     }
 }

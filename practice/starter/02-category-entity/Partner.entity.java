@@ -1,140 +1,107 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/domain/Partner.java
-// 목표: 거래처 엔티티와 PartnerType / PartnerStatus enum 을 채우세요.
-//       TRD 3.3.2, 3.5.2, 3.6.2 참고.
-//
-// 주의: 02 폴더 안에 Category 와 Partner 가 함께 있습니다.
-//       두 엔티티 모두 마스터 데이터지만 도메인 의미가 다르므로 별도 파일로 두었습니다.
+// Category 엔티티 / Partner 엔티티 (TRD 3.3.2 ~ 3.3.3, 3.5.2 ~ 3.5.3, 3.6.2) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=02
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ===== PartnerType enum =====
-public enum PartnerType {
-    // TODO 01: 공급사 / 고객사 / 양쪽 세 가지를 채우세요.
-    ____, ____, ____
-}
+// 선택형 [W007] UserRole을 EnumType.STRING으로 저장하는 이유는?
+//    1. enum 선언 순서가 바뀌어도 저장된 이름의 의미를 유지하기 위해서다
+//    2. 권한 검사가 자동으로 생기기 때문이다
+//    3. DB 용량이 항상 ORDINAL보다 작기 때문이다
+//    4. 알 수 없는 enum 값도 모두 허용하기 때문이다
+//    정답·해설: practice/workbook-questions.md#w007
+//    정답: 1번 · STRING은 이름을 저장합니다. enum 이름 변경에는 별도 마이그레이션이 필요합니다.
 
-// ===== PartnerStatus enum =====
-public enum PartnerStatus {
-    // TODO 02: 활성 / 비활성 두 가지를 채우세요.
-    ____, ____
-}
+// 선택형 [W009] 카테고리명에 unique 제약을 두는 목적은?
+//    1. 모든 카테고리가 같은 이름을 갖게 하기 위해서다
+//    2. 품목 조회를 무조건 한 쿼리로 줄이기 위해서다
+//    3. 동일한 이름의 카테고리 중복을 차단하기 위해서다
+//    4. 관리자 권한을 부여하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w009
+//    정답: 3번 · 사용자에게 식별되는 이름의 중복은 Service 검사와 DB 제약으로 막습니다.
 
-// ===== Partner entity =====
-@Entity
-@Table(name = "partners",
-       uniqueConstraints = {
-           // TODO 03: 사업자번호는 유일 식별자입니다. 어떤 제약을 추가할까요?
-           @UniqueConstraint(name = "uk_partner_business_number", columnNames = "____")
-       })
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class Partner {
+// 선택형 [W010] Category→Item 컬렉션을 추가할 때의 올바른 판단은?
+//    1. 탐색 편의와 양방향 동기화 비용을 함께 고려한다
+//    2. 양방향 관계면 모든 N+1이 자동 사라진다
+//    3. 단방향 관계는 JPA에서 금지되어 있다
+//    4. mappedBy가 있는 쪽이 항상 외래키를 갱신한다
+//    정답·해설: practice/workbook-questions.md#w010
+//    정답: 1번 · 양방향 매핑은 탐색을 돕지만 관계 양쪽을 일관되게 관리해야 합니다.
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+// 선택형 [W011] DB 문자열 컬럼 길이와 입력 검증의 관계는?
+//    1. 모든 컬럼을 VARCHAR(1)로 통일한다
+//    2. 컬럼 길이가 있으면 NotBlank는 필요 없다
+//    3. DB 길이는 비밀번호 해시 알고리즘을 결정한다
+//    4. 도메인 최대 길이에 맞춰 DB 컬럼과 DTO 제약을 정한다
+//    정답·해설: practice/workbook-questions.md#w011
+//    정답: 4번 · DB 저장 한도와 사용자 입력 계약을 함께 맞춰 예측 가능한 검증을 제공합니다.
 
-    @Column(nullable = false, length = 150)
-    private String name;
+// 선택형 [W012] 사업자번호 unique 제약의 목적은?
+//    1. 서로 다른 사업체의 번호를 같게 만든다
+//    2. 같은 사업체가 중복 거래처로 등록되는 것을 막는다
+//    3. 공급사만 자동으로 고객사로 바꾼다
+//    4. 사업자번호를 세션 ID로 사용한다
+//    정답·해설: practice/workbook-questions.md#w012
+//    정답: 2번 · 업무 식별자에 대한 최종 중복 방어선입니다.
 
-    // TODO 04: 사업자번호 컬럼. 길이/유일성 제약을 채우세요.
-    @Column(nullable = false, length = ____, unique = true)
-    private String businessNumber;
+// 선택형 [W013] 사업자번호 정규화를 설계할 때 올바른 기준은?
+//    1. 화면에서만 하이픈을 제거하고 서버는 원문을 비교한다
+//    2. 조회마다 서로 다른 규칙으로 번호를 바꾼다
+//    3. 정규화하면 DB unique가 불필요해진다
+//    4. 중복 비교와 저장 전에 동일한 정규화 규칙을 적용한다
+//    정답·해설: practice/workbook-questions.md#w013
+//    정답: 4번 · 어느 계층에 두더라도 모든 입력 경로의 비교·저장 표현이 같아야 합니다.
 
-    // TODO 05: enum 을 DB 에 어떻게 저장하면 enum 순서 변경에도 안전할까요?
-    @Enumerated(EnumType.____)
-    @Column(nullable = false, length = 20)
-    private PartnerType partnerType;
+// 선택형 [W014] PartnerType과 canSupply·canBuy 헬퍼의 목적은?
+//    1. DB 연결 비밀번호를 생성한다
+//    2. 공급·판매 가능 여부를 도메인 규칙으로 모은다
+//    3. INACTIVE 거래처도 항상 주문을 허용한다
+//    4. 고객사와 공급사의 의미를 제거한다
+//    정답·해설: practice/workbook-questions.md#w014
+//    정답: 2번 · SUPPLIER·CUSTOMER·BOTH의 업무 의미를 헬퍼에 모으면 조건 중복을 줄일 수 있습니다.
 
-    private String contactName;
-    private String phone;
-    private String email;
-    private String address;
+// 선택형 [W015] PartnerStatus의 올바른 값 조합은?
+//    1. ACTIVE / INACTIVE
+//    2. DRAFT / RECEIVED
+//    3. ADMIN / USER
+//    4. ASC / DESC
+//    정답·해설: practice/workbook-questions.md#w015
+//    정답: 1번 · 거래처 활성 여부는 주문 상태나 사용자 역할과 다른 enum입니다.
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private PartnerStatus status;
+// 선택형 [W016] 거래처를 비활성화한 뒤 과거 주문은 어떻게 관리하는가?
+//    1. 과거 주문과 라인을 모두 자동 삭제한다
+//    2. 모든 과거 주문의 작성자를 바꾼다
+//    3. 과거 이력은 보존하고 신규 주문 사용을 차단한다
+//    4. 비활성화하면 외래키 검사가 사라진다
+//    정답·해설: practice/workbook-questions.md#w016
+//    정답: 3번 · 상태 변경으로 신규 사용을 제한하면서 거래 이력을 유지합니다.
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+// 선택형 [W361] SUPPLIER·CUSTOMER·BOTH enum과 두 boolean 역할 플래그를 비교하면?
+//    1. 두 플래그는 어떤 조합도 자동으로 항상 유효하다
+//    2. enum은 허용 조합을 명시하고 플래그는 조합 유효성 정책을 별도로 정해야 한다
+//    3. enum은 DB에 저장할 수 없다
+//    4. BOTH를 저장하면 공지 관리자 권한이 생긴다
+//    정답·해설: practice/workbook-questions.md#w361
+//    정답: 2번 · 현재 업무에서 허용하는 역할 조합과 확장 요구에 맞춰 표현 방식을 선택합니다.
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+// 선택형 [W374] 현재 참조 구현의 거래처 등록 API에서 partnerType이 null이면 올바른 처리는?
+//    1. 항상 BOTH로 바꿔 저장한다
+//    2. 사용자 역할을 거래처 유형으로 저장한다
+//    3. null을 문자열 NULL로 저장한다
+//    4. 필수 입력 검증으로 거부한다
+//    정답·해설: practice/workbook-questions.md#w374
+//    정답: 4번 · PartnerCreateRequest는 partnerType에 @NotNull을 선언합니다. starter의 기본값 선택 예시는 대안 연습이므로 현재 API 정책과 혼동하지 않습니다.
 
-    // ===== 정적 팩토리 =====
-    public static Partner create(String name,
-                                 String businessNumber,
-                                 PartnerType partnerType,
-                                 String contactName,
-                                 String phone,
-                                 String email,
-                                 String address) {
-        Partner p = new Partner();
-        p.name = name.trim();
-        // TODO 06: 사업자번호의 공백을 제거하는 시점은? DTO / Service / Entity 중 어디?
-        p.businessNumber = businessNumber.replaceAll("\\s+", "");
-        // TODO 07: partnerType 이 null 이면 어떤 기본값?
-        p.partnerType = (partnerType == null) ? PartnerType.____ : partnerType;
-        p.contactName = contactName;
-        p.phone = phone;
-        p.email = email;
-        p.address = address;
-        // TODO 08: 신규 거래처의 초기 상태는?
-        p.status = PartnerStatus.____;
-        return p;
-    }
+// 선택형 [W375] 별도 상태를 지정하지 않은 신규 거래처의 현재 초기 상태는?
+//    1. ACTIVE
+//    2. INACTIVE
+//    3. DRAFT
+//    4. DISCONTINUED
+//    정답·해설: practice/workbook-questions.md#w375
+//    정답: 1번 · Partner 생성자는 상태를 지정하지 않았을 때 PartnerStatus.ACTIVE를 사용합니다.
 
-    // ===== 도메인 메서드 =====
-    public void update(String name,
-                       String businessNumber,
-                       PartnerType partnerType,
-                       String contactName,
-                       String phone,
-                       String email,
-                       String address) {
-        if (name != null && !name.isBlank()) this.name = name.trim();
-        if (businessNumber != null && !businessNumber.isBlank()) {
-            this.businessNumber = businessNumber.replaceAll("\\s+", "");
-        }
-        if (partnerType != null) this.partnerType = partnerType;
-        this.contactName = contactName;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-    }
-
-    public void deactivate() {
-        // TODO 09: 이미 INACTIVE 인 거래처를 다시 비활성화하면 어떻게 할까요?
-        if (this.status == PartnerStatus.____) {
-            throw new IllegalStateException("이미 비활성 상태입니다.");
-        }
-        this.status = PartnerStatus.INACTIVE;
-    }
-
-    public void activate() {
-        this.status = PartnerStatus.ACTIVE;
-    }
-
-    // ===== 도메인 규칙 헬퍼 =====
-    public boolean canSupply() {
-        // TODO 10: 발주(매입) 가능한 유형은 SUPPLIER 또는 ____ 이다.
-        return this.partnerType == PartnerType.SUPPLIER
-            || this.partnerType == PartnerType.____;
-    }
-
-    public boolean canBuy() {
-        // 수주(판매) 가능한 유형은 CUSTOMER 또는 BOTH.
-        return this.partnerType == PartnerType.CUSTOMER
-            || this.partnerType == PartnerType.BOTH;
-    }
-}
-
-// 학습 질문:
-// Q1. 사업자번호의 공백/하이픈 정규화를 Service 가 아닌 Entity 에서 하는 트레이드오프는?
-//     A:
-// Q2. canSupply()/canBuy() 같은 도메인 헬퍼를 두는 이유는?
-//     A:
-// Q3. PartnerType 을 SUPPLIER / CUSTOMER / BOTH 세 enum 으로 둔 vs SUPPLIER + CUSTOMER 두 개 Flag 컬럼으로 둔 차이는?
-//     A:
-// Q4. INACTIVE 거래처로 작성된 과거 발주/수주 이력을 어떻게 처리해야 하는가?
-//     A:
+// 선택형 [W376] 재비활성화를 예외로 거부하는 starter 가드에서 검사할 거래처 상태는?
+//    1. ACTIVE
+//    2. DRAFT
+//    3. INACTIVE
+//    4. RECEIVED
+//    정답·해설: practice/workbook-questions.md#w376
+//    정답: 3번 · 해당 starter의 IllegalStateException 가드는 이미 INACTIVE인지 검사하는 연습입니다. 현재 실행되는 Partner.deactivate는 INACTIVE 재대입을 허용하므로 전제를 구분합니다.

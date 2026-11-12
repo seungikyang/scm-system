@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
+ * 발주서에 날짜와 순번으로 된 번호를 붙입니다.
+ * 예: PO-20261003-0001. 같은 날의 마지막 번호를 찾아 다음 순번을 정합니다.
+ *
  * 사람이 읽기 쉬운 발주번호를 만드는 컴포넌트(채번기).
  *
  * <p>학습 모듈 10: PurchaseOrderService의 작성 흐름에서 generate 호출을 먼저 찾은 뒤
@@ -33,6 +36,8 @@ public class OrderNumberGenerator {
         String datePart = date.format(DATE_FORMAT);
         String dayPrefix = PREFIX + datePart + "-";
         String latestOrderNumber = purchaseOrderRepository.findMaxOrderNumber(dayPrefix);
+        // 번호를 만드는 순간에는 다른 요청도 같은 번호를 고를 수 있습니다. 저장할 때 중복을 검사합니다.
+        // 오늘 번호가 하나도 없으면 1번, 있으면 마지막 순번에 1을 더합니다.
         long sequence = (latestOrderNumber == null)
                 ? 1
                 : parseSequence(latestOrderNumber, dayPrefix) + 1;
@@ -40,6 +45,7 @@ public class OrderNumberGenerator {
             throw new BusinessException(ErrorCode.INTERNAL_ERROR,
                     "당일 발주번호가 9999건을 초과했습니다.");
         }
+        // %04d는 1을 0001처럼 네 자리로 맞춰 쓰라는 뜻입니다.
         return String.format("%s%04d", dayPrefix, sequence);
     }
 

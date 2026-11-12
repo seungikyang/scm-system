@@ -12,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
+ * 요청을 받는 순서와 로그인 정보 전달 도우미를 등록합니다.
+ * 로그인 문지기 검사를 먼저 거친 다음, 화면을 담당하는 함수로 요청을 보냅니다.
+ *
  * Spring MVC의 공통 동작을 등록하는 설정 클래스.
  *
  * <p>학습 모듈 33에서는 두 MVC 확장 지점이 등록된다는 사실만 확인한다. 다음 모듈 34에서

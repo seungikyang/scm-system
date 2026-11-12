@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 다른 프로그램이 URL로 요청하는 물건 관련 작업의 접수 창구입니다.
+ * 요청을 Service 담당자에게 전달하고 결과를 JSON 자료로 보냅니다. API는 프로그램끼리 요청과 결과를 주고받는 통로입니다.
+ *
  * 품목 CRUD를 JSON으로 제공하는 REST 컨트롤러.
  *
  * <p>학습 모듈 18: create → list → detail → update → discontinue 순서로 HTTP 메서드,
@@ -44,6 +47,7 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
+    // GET은 조회, POST는 새 자료 등록, PUT은 수정, PATCH는 일부 변경, DELETE는 삭제 요청에 사용합니다.
     @PostMapping
     public ResponseEntity<ItemDetailView> create(@Valid @RequestBody ItemCreateRequest request,
                                                  @CurrentUser LoginUser loginUser) {

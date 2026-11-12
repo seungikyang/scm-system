@@ -222,4 +222,25 @@ SQL을 관찰하려면 실행 중인 학습 서버를 종료한 뒤 macOS/Linux�
 
 `portfolioCheck`의 기본 테스트는 실제 MySQL 전용 테스트를 제외합니다. 별도 DB가 필요한 `mysqlSchemaTest`의 준비 방법은 [README](../README.md)에 있습니다. Docker는 빌드 환경과 실행 환경을 이미지로 준비하고, Compose는 app과 MySQL을 함께 실행합니다. [GitHub Actions](../.github/workflows/ci.yml)는 `main`으로 push하거나 Pull Request를 올릴 때 기본 검사·컨테이너 빌드·MySQL 검증을 자동 수행합니다. 이러한 변경 시 자동 검사를 CI(지속적 통합)라고 합니다.
 
-이제 [코드 지도](../practice/REFERENCE_MAP.md)에서 현재 모듈에 해당하는 파일을 골라 “이 기술이 해결하는 문제 → 요청을 받는 곳 → 규칙을 실행하는 곳 → 결과를 확인하는 테스트”를 자신의 말로 적어 보세요.
+## 9. 기술 이해 4지 선다 확인
+
+[코드 지도](../practice/REFERENCE_MAP.md)에서 관련 구현과 테스트를 찾고, 아래 문항의 답을 고르세요.
+
+<a id="w402"></a>
+### W402. 루프의 설명 단계에서 이해를 확인하는 방식은?
+
+[브라우저에서 풀기](../practice/sw-quiz/index.html?bank=workbook&question=402)
+
+1. 선택한 설계와 대안·검증 근거를 코드와 대조한다
+2. 기술 이름만 나열한다
+3. 실패 사례를 모두 감춘다
+4. 검증하지 않은 기능을 구현했다고 주장한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 선택한 설계와 대안·검증 근거를 코드와 대조한다
+
+선택 이유는 실제 구현과 증거로 뒷받침합니다. 객관식 정답·해설을 실제 코드에 적용해 이해를 확인합니다.
+
+</details>

@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  물건 목록 화면입니다. th:each는 여러 자료를 하나씩 꺼내 표의 행을 만드는 반복 표시입니다.
+  검색은 GET 요청으로 조건을 보내며, 페이지 이동 버튼은 긴 목록을 나눠 보여 줍니다.
+-->
 <!-- 학습 모듈 35-2: fragment 교체 → 검색 폼 → th:each 목록 → pagination 순으로 읽는다. -->
 <head th:replace="~{fragments/layout :: head('품목 목록 - SCM')}"></head>
 <body>

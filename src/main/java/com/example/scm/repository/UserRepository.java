@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
+ * 사용자 자료를 데이터베이스에서 찾거나 저장하는 창구입니다.
+ * 데이터베이스는 자료를 모아 두는 전자 장부입니다. Spring이 함수 이름이나 조회식을 보고 실제 작업을 준비합니다.
+ *
  * 사용자 엔티티의 DB 접근 창구.
  *
  * <p>학습 모듈 23에서는 findByEmail의 로그인 사용만 확인하고, 모듈 31에서
@@ -18,6 +21,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /** 결과가 없을 수 있으므로 null 대신 Optional로 반환한다. */
     Optional<User> findByEmail(String email);
-
-    boolean existsByEmail(String email);
 }

@@ -4,6 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
+ * 프로그램에서 쓰는 오류의 이름, 상태 번호, 설명을 모아 둔 목록입니다.
+ * 404는 자료가 없음, 403은 권한이 없음처럼 같은 문제를 같은 방식으로 안내합니다.
+ *
  * 애플리케이션에서 사용하는 오류를 한곳에 모은 목록.
  *
  * <p>학습 모듈 15: ErrorCode → BusinessException → ErrorResponse 순서로 읽는다. 예외를
@@ -32,8 +35,10 @@ public enum ErrorCode {
     SALES_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "수주서를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE_NOT_FOUND", "공지사항을 찾을 수 없습니다."),
 
+    // 415 - 요청 본문 형식
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE", "지원하지 않는 요청 본문 형식입니다."),
+
     // 400 - 중복
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "DUPLICATE_EMAIL", "이미 사용 중인 이메일입니다."),
     DUPLICATE_BUSINESS_NUMBER(HttpStatus.BAD_REQUEST, "DUPLICATE_BUSINESS_NUMBER", "이미 등록된 사업자번호입니다."),
     DUPLICATE_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "DUPLICATE_CATEGORY_NAME", "이미 사용 중인 카테고리명입니다."),
     DUPLICATE_ITEM_CODE(HttpStatus.BAD_REQUEST, "DUPLICATE_ITEM_CODE", "이미 등록된 품목코드입니다."),
@@ -44,6 +49,7 @@ public enum ErrorCode {
     EMPTY_ORDER_LINES(HttpStatus.BAD_REQUEST, "EMPTY_ORDER_LINES", "주문 라인이 비어 있습니다."),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "INVALID_DATE_RANGE", "잘못된 날짜 범위입니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST, "INVALID_STATUS", "현재 상태에서는 처리할 수 없습니다."),
+    INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "INSUFFICIENT_STOCK", "출고할 재고가 부족합니다."),
     ITEM_DISCONTINUED(HttpStatus.BAD_REQUEST, "ITEM_DISCONTINUED", "단종된 품목은 사용할 수 없습니다."),
 
     // 500

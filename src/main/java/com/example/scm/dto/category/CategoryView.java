@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 분류 이름과 소속 물건 수 등을 목록에 보여 주는 양식입니다.
+ * from 함수는 저장용 자료에서 보여 줄 값만 골라 이 양식에 옮깁니다.
+ *
  * 카테고리 목록/상세 공용 View DTO (REST 응답 + Web 목록).
  * REST 응답 식별자 키는 categoryId.
  */

@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 로그인 화면에 입력한 이메일과 비밀번호를 받는 양식입니다.
+ * 빈칸이나 잘못된 이메일을 먼저 검사하고, 비밀번호가 맞는지는 AuthService에서 확인합니다.
+ *
  * 로그인 HTML 폼 값을 받는 DTO.
  * {@code th:field}가 기본 생성자와 setter를 사용해 값을 채우고, {@code @Valid}가
  * 아래 Bean Validation 애너테이션을 실행한다. 비밀번호 확인 자체는 AuthService 몫이다.

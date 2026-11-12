@@ -1,0 +1,1029 @@
+{
+  "description": "REA runtime Evidence에서 필요한 상태 코드·단계 결과·거래처 필터/주문 표만 추린 요약. 전체 Evidence 또는 원본 DOM이 아님. 로그인 입력값·쿠키·CSRF 값은 포함하지 않음.",
+  "records": [
+    {
+      "scenario": "sortBefore",
+      "evidence_id": "ev_00c3918174b5fc8c9f7b7888df87bf90b34849773430fab3705047ec78237501",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_0",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_1",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_2",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_3",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_4",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/items?sort=missing",
+          "status": 500
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/api/items?sort=missing",
+          "status": 500
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners?sort=missing",
+          "status": 500
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/stocks?sort=missing",
+          "status": 500
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/my?sort=missing",
+          "status": 500
+        }
+      ],
+      "filter_html": null,
+      "table_body_html": null,
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    },
+    {
+      "scenario": "sortAfter",
+      "evidence_id": "ev_efa60035edf6991d6cba96fff38da630240ce021fd44b44a83c3b90a7ce8b20c",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_0",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_1",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_2",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_3",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "invalid_sort_4",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/items?sort=missing",
+          "status": 400
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/api/items?sort=missing",
+          "status": 400
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners?sort=missing",
+          "status": 400
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/stocks?sort=missing",
+          "status": 400
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/my?sort=missing",
+          "status": 400
+        }
+      ],
+      "filter_html": null,
+      "table_body_html": null,
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    },
+    {
+      "scenario": "purchaseBefore",
+      "evidence_id": "ev_6c2f6bea4d657b540af146dcaea05d05844aab0ab3e36b7b778445108924c2b8",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "new_purchase",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "supplier",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "item",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "quantity",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_date",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_purchase",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_saved",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "edit_supplier",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "change_type",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_partner",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_filter",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/purchase-orders/new",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/purchase-orders",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/purchase-orders/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/1/edit",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/partners/1",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/admin/purchase-orders?partnerId=1",
+          "status": 200
+        }
+      ],
+      "filter_html": "<select id=\"partnerId\" name=\"partnerId\">\n                    <option value=\"\">전체</option>\n                    <option value=\"2\">대한자재</option>\n                    <option value=\"4\">종합상사글로벌</option>\n                </select>",
+      "table_body_html": "<tbody>\n        \n        <tr>\n            <td><a href=\"/purchase-orders/1\">PO-20261021-0001</a></td>\n            <td>(주)베스트공급사</td>\n            <td>2026-10-21</td>\n            <td class=\"num\">750.00</td>\n            <td><span class=\"badge badge-DRAFT\">DRAFT</span></td>\n        </tr>\n        </tbody>",
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    },
+    {
+      "scenario": "purchaseAfter",
+      "evidence_id": "ev_c43e0b2af5992a3e6b3d8f892dd0832a58e2ba561ebd49e804a821d44f6c1cfd",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "new_purchase",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "supplier",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "item",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "quantity",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_date",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_purchase",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_saved",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "edit_supplier",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "change_type",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_partner",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "purchase_filter",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/purchase-orders/new",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/purchase-orders",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/purchase-orders/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/1/edit",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/partners/1",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/admin/purchase-orders?partnerId=1",
+          "status": 200
+        }
+      ],
+      "filter_html": "<select id=\"partnerId\" name=\"partnerId\">\n                    <option value=\"\">전체</option>\n                    <option value=\"1\" selected=\"selected\">(주)베스트공급사</option>\n                    <option value=\"2\">대한자재</option>\n                    <option value=\"4\">종합상사글로벌</option>\n                </select>",
+      "table_body_html": "<tbody>\n        \n        <tr>\n            <td><a href=\"/purchase-orders/1\">PO-20261021-0001</a></td>\n            <td>(주)베스트공급사</td>\n            <td>2026-10-21</td>\n            <td class=\"num\">750.00</td>\n            <td><span class=\"badge badge-DRAFT\">DRAFT</span></td>\n        </tr>\n        </tbody>",
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    },
+    {
+      "scenario": "salesBefore",
+      "evidence_id": "ev_a83921c99fa64572bd400bf8828b6d6bb7bbe69296e0d057f497930a463323a2",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "new_sales",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "customer",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "item",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "quantity",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_sales",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "sales_saved",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "edit_customer",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "change_type",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_partner",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "sales_filter",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/new",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/sales-orders",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/3/edit",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/partners/3",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/3",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/admin/sales-orders?partnerId=3",
+          "status": 200
+        }
+      ],
+      "filter_html": "<select id=\"partnerId\" name=\"partnerId\"><option value=\"\">전체 고객사</option>\n                    <option value=\"1\">(주)베스트공급사</option>\n                    <option value=\"4\">종합상사글로벌</option>\n                </select>",
+      "table_body_html": "<tbody><tr>\n            <td><a href=\"/sales-orders/1\">SO-20261021-0001</a></td>\n            <td>한빛유통</td><td>관리자</td>\n            <td>2026-10-21</td>\n            <td class=\"num\">300.00</td>\n            <td><span class=\"badge badge-DRAFT\">DRAFT</span></td>\n        </tr></tbody>",
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    },
+    {
+      "scenario": "salesAfter",
+      "evidence_id": "ev_e3fd2c36c5662b5fed934d216fd12c7801d30a3f1d30d6e355447e8827baeb68",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "browser": {
+        "mode": "launch",
+        "process_ownership": "provider-owned",
+        "cleanup": "terminated-owned-process",
+        "product": "Chromium",
+        "version": "155.0.8059.85"
+      },
+      "completeness": {
+        "status": "complete",
+        "equality_eligible": true,
+        "missing_sections": [],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "step_id": "scenario_start",
+          "action": "goto_start",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "email",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "password",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "login",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "dashboard_ready",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "new_sales",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "customer",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "item",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "quantity",
+          "action": "fill",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_sales",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "sales_saved",
+          "action": "wait_for",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "edit_customer",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "change_type",
+          "action": "select_option",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "save_partner",
+          "action": "click",
+          "status": "completed",
+          "error": null
+        },
+        {
+          "step_id": "sales_filter",
+          "action": "goto",
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "document_responses": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/login",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/new",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/sales-orders",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/sales-orders/1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/3/edit",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:18080/partners/3",
+          "status": 302
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/partners/3",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:18080/admin/sales-orders?partnerId=3",
+          "status": 200
+        }
+      ],
+      "filter_html": "<select id=\"partnerId\" name=\"partnerId\"><option value=\"\">전체 고객사</option>\n                    <option value=\"1\">(주)베스트공급사</option>\n                    <option value=\"4\">종합상사글로벌</option>\n                    <option value=\"3\" selected=\"selected\">한빛유통</option>\n                </select>",
+      "table_body_html": "<tbody><tr>\n            <td><a href=\"/sales-orders/1\">SO-20261021-0001</a></td>\n            <td>한빛유통</td><td>관리자</td>\n            <td>2026-10-21</td>\n            <td class=\"num\">300.00</td>\n            <td><span class=\"badge badge-DRAFT\">DRAFT</span></td>\n        </tr></tbody>",
+      "page_errors": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Browser host platform and architecture were not observed."
+      ]
+    }
+  ]
+}

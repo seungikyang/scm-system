@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
+ * 웹 요청이 지켜야 할 보안 규칙을 설정합니다.
+ * CSRF 검사는 다른 사이트가 사용자 몰래 우리 화면의 변경 요청을 보내는 일을 막는 장치입니다.
+ *
  * 인증/인가는 기존 세션 인터셉터와 Service 권한 검사를 유지하고,
  * Spring Security는 웹 폼 CSRF, 기본 보안 헤더 및 H2 콘솔 접근 제어를 담당한다.
  *
@@ -33,6 +36,7 @@ public class SecurityConfig {
                             Object user = session == null ? null : session.getAttribute(SessionConst.LOGIN_USER);
                             return new AuthorizationDecision(user instanceof LoginUser loginUser && loginUser.isAdmin());
                         })
+                        // 이 필터를 통과해도 LoginInterceptor와 Service에서 로그인·역할을 다시 검사합니다.
                         .anyRequest().permitAll())
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
@@ -40,6 +44,7 @@ public class SecurityConfig {
                 // JSON API는 기존 클라이언트 호환성을 유지한다. 브라우저에서는 CORS 기본 차단과
                 // JSON RequestBody 요구가 교차 출처의 단순 폼 요청을 막는다.
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", consolePath, consolePath + "/**"))
+                // 같은 사이트의 화면 안에만 이 화면을 끼워 넣도록 허용합니다. H2 콘솔도 이 방식을 씁니다.
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         return http.build();
     }

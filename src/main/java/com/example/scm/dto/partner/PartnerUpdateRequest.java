@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 거래처의 회사명, 유형, 연락처 등을 고칠 때 받습니다.
+ * 사업자번호는 회사 식별 기준으로 유지하므로 수정 입력에서 제외합니다.
+ *
  * 거래처 수정 REST API의 JSON 본문을 받는 DTO.
  * 등록 후 고유 식별값으로 쓰는 사업자번호는 변경할 수 없어 필드에 포함하지 않는다.
  */
