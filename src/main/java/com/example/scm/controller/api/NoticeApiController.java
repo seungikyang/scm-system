@@ -33,6 +33,7 @@ public class NoticeApiController {
     public NoticeResponse update(@PathVariable Long noticeId, @Valid @RequestBody NoticeRequest request, @CurrentUser LoginUser user) {
         return notices.update(noticeId, request, user);
     }
+    // 삭제에 성공하면 돌려줄 내용이 없으므로 204(No Content)로 "성공했지만 본문 없음"을 알립니다.
     @DeleteMapping("/{noticeId}")
     public ResponseEntity<Void> delete(@PathVariable Long noticeId, @CurrentUser LoginUser user) {
         notices.delete(noticeId, user); return ResponseEntity.noContent().build();

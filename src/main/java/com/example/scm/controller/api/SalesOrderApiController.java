@@ -38,6 +38,8 @@ public class SalesOrderApiController {
     }
     @GetMapping("/{soId}")
     public SalesOrderResponse detail(@PathVariable Long soId, @CurrentUser LoginUser user) { return orders.detail(soId, user); }
+    // 상태 변경은 PATCH로 받습니다. 주문 전체를 새로 보내는 것(PUT)이 아니라 상태 하나만 바꾸는 작업이기 때문입니다.
+    // 확정·출고·완료·취소를 주소로 나눠 두면 어떤 업무를 요청했는지 기록과 권한 검사가 분명해집니다.
     @PatchMapping("/{soId}/confirm")
     public SalesOrderResponse confirm(@PathVariable Long soId, @CurrentUser LoginUser user) { return orders.confirm(soId, user); }
     @PatchMapping("/{soId}/ship")

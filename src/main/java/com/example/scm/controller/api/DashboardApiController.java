@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DashboardApiController {
     private final OrderStatisticsService statistics;
 
+    // 기간을 생략할 수 있게 required = false로 둡니다. 비어 있으면 OrderStatisticsService가 "이번 달 1일 ~ 오늘"로 채웁니다.
+    // 날짜 형식은 ISO(예: 2026-11-14)로 고정해, 나라마다 다른 날짜 표기 때문에 잘못 읽는 일을 막습니다.
     @GetMapping("/order-statistics")
     public OrderStatisticsResponse statistics(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,

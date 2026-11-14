@@ -43,6 +43,8 @@ public class SalesOrderPersistenceService {
     // 그래서 저장하는 묶음 안에서 거래처와 품목을 잠그고 상태를 한 번 더 확인합니다.
     // 품목은 입고·출고와 같은 ID 순서로 잠가 서로 반대 순서로 기다리는 일을 줄입니다.
     private void lockAndRecheck(Long partnerId, List<Long> lineItemIds) {
+        // "ForShare"는 읽기용 공유 잠금입니다. 수정용 잠금과 달리 여러 주문이 같은 거래처를 동시에 잠가도 서로 막지 않아
+        // 주문 저장이 줄 서서 느려지지 않습니다. 대신 이 묶음이 끝날 때까지 누군가 거래처를 비활성화하는 수정은 기다리게 합니다.
         Partner partner = partnerRepository.findByIdForShare(partnerId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PARTNER_NOT_FOUND));
         if (!partner.canBuy()) {
@@ -51,8 +53,10 @@ public class SalesOrderPersistenceService {
         if (!partner.isActive()) {
             throw new BusinessException(ErrorCode.INVALID_STATUS, "비활성 상태의 거래처로는 수주할 수 없습니다.");
         }
+        // 같은 품목이 두 줄에 나와도 한 번만 잠그도록 distinct로 중복을 빼고, sorted로 번호 순서를 맞춥니다.
         List<Long> itemIds = lineItemIds.stream().distinct().sorted().toList();
         List<Item> items = itemRepository.findAllByIdForShare(itemIds);
+        // 요청한 품목 수보다 찾은 품목 수가 적으면, 그 사이 삭제된 품목이 섞여 있다는 뜻입니다.
         if (items.size() != itemIds.size()) {
             throw new BusinessException(ErrorCode.ITEM_NOT_FOUND);
         }

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 public class SalesOrderNumberGenerator {
 
     private static final String PREFIX = "SO-";
+    // 순번 칸이 네 자리(0001~9999)이므로 하루 9999건이 한도입니다. 다섯 자리가 되면 번호 길이가 달라져
+    // 문자열로 "가장 큰 번호"를 고르는 findMaxOrderNumber가 순서를 잘못 판단할 수 있어 그 전에 멈춥니다.
     private static final int MAX_DAILY_SEQUENCE = 9999;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
@@ -42,6 +44,9 @@ public class SalesOrderNumberGenerator {
         return String.format("%s%04d", dayPrefix, sequence);
     }
 
+    // 저장된 번호에서 끝의 네 자리 순번만 떼어 숫자로 바꿉니다.
+    // 누군가 DB에 형식이 다른 번호를 직접 넣었다면 계산을 이어 가지 않고 바로 알립니다.
+    // 이상한 값으로 다음 번호를 추측하면 중복 번호나 건너뛴 번호가 생기기 때문입니다.
     private long parseSequence(String orderNumber, String dayPrefix) {
         if (!orderNumber.startsWith(dayPrefix)) {
             throw invalidStoredOrderNumber(orderNumber);

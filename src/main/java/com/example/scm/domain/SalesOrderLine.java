@@ -43,6 +43,7 @@ public class SalesOrderLine {
             foreignKey = @ForeignKey(name = "fk_sol_so"))
     private SalesOrder salesOrder;
 
+    // 품목도 번호만 저장합니다. 품목 이름이 나중에 바뀌어도 주문 줄 자체는 그대로 두고, 화면에 보여 줄 때 이름을 찾습니다.
     @Column(name = "item_id", nullable = false)
     private Long itemId;
 
@@ -53,7 +54,9 @@ public class SalesOrderLine {
     private BigDecimal unitPrice;
 
     @Column(name = "line_amount", nullable = false, precision = 15, scale = 2)
-    private BigDecimal lineAmount;                    // quantity × unitPrice 서버 계산값
+    // quantity × unitPrice 서버 계산값입니다. 브라우저가 보낸 금액을 믿으면 화면을 조작해 금액을 바꿀 수 있으므로,
+    // 금액은 받지 않고 항상 서버가 직접 계산해 저장합니다.
+    private BigDecimal lineAmount;
 
     @Builder
     public SalesOrderLine(Long itemId, Integer quantity, BigDecimal unitPrice) {
@@ -63,7 +66,11 @@ public class SalesOrderLine {
         this.lineAmount = calcLineAmount(quantity, unitPrice);
     }
 
-    /** 헤더와 라인을 양쪽에서 일치시키기 위해 SalesOrder.addLine에서만 호출한다. */
+    /**
+     * 헤더와 라인을 양쪽에서 일치시키기 위해 SalesOrder.addLine에서만 호출한다.
+     * public이 아닌 이유: 다른 곳에서 이 함수만 부르면 줄은 주문에 연결됐는데 주문 총액에는 더해지지 않는
+     * 어긋난 상태가 생깁니다. 그래서 같은 패키지의 SalesOrder.addLine만 부를 수 있게 막아 두었습니다.
+     */
     void setSalesOrder(SalesOrder salesOrder) {
         this.salesOrder = salesOrder;
     }

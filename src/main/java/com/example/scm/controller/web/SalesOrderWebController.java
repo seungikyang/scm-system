@@ -56,6 +56,8 @@ public class SalesOrderWebController {
     }
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, @CurrentUser LoginUser user, Model model) {
+        // 버튼 표시 여부는 화면 편의를 위한 것일 뿐입니다. 진짜 허용 여부는 각 Service 함수가 다시 검사하므로
+        // 누군가 버튼 없이 주소로 직접 요청해도 규칙을 우회할 수 없습니다.
         var order = orders.detail(id, user); var status = order.status();
         boolean manager = user.isAdmin() || user.isManager();
         // &&는 두 조건 모두, ||는 둘 중 하나가 맞으면 참입니다. 내 역할과 주문 단계로 버튼을 정합니다.
@@ -93,6 +95,9 @@ public class SalesOrderWebController {
         catch (BusinessException e) { flash.addFlashAttribute("errorMessage", e.getMessage()); }
         return "redirect:/sales-orders/" + id;
     }
+    // 고객사·품목 선택 목록을 화면에 넣습니다. 처음 열 때뿐 아니라 입력 오류로 양식을 다시 보여 줄 때도
+    // 꼭 다시 넣어야 합니다. 빠뜨리면 선택 상자가 비어 사용자가 다시 고를 수 없기 때문입니다.
+    // 품목 목록은 발주 화면과 같은 기준(사용 가능한 품목)이므로 PurchaseOrderService.getItemOptions를 재사용합니다.
     private void options(Model model) {
         model.addAttribute("partners", orders.customerOptions()); model.addAttribute("items", purchaseOrders.getItemOptions());
     }

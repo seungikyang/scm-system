@@ -21,9 +21,12 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long>, J
     @Query("select s.status as status, count(s) as orderCount, sum(s.totalAmount) as totalAmount "
             + "from SalesOrder s where s.orderDate between :from and :to group by s.status")
     List<OrderStatisticsRow> summarize(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    // 번호는 "SO-날짜-0001"처럼 길이가 같아서, 문자열 max만으로도 오늘 가장 큰 순번을 찾을 수 있습니다.
+    // 전체 주문을 읽어 세지 않고 DB가 한 줄만 돌려주므로 주문이 많아도 빠릅니다.
     @Query("select max(s.orderNumber) from SalesOrder s where s.orderNumber like concat(:prefix, '%')")
     String findMaxOrderNumber(@Param("prefix") String prefix);
     boolean existsByOrderNumber(String orderNumber);
+    // ":status is null or ..."는 상태를 고르지 않으면 조건을 건너뛰라는 뜻입니다. 함수 하나로 "전체"와 "상태별" 검색을 모두 처리합니다.
     @Query("select s from SalesOrder s where s.writerId = :writerId and (:status is null or s.status = :status)")
     Page<SalesOrder> findMyOrders(@Param("writerId") Long writerId, @Param("status") SalesOrderStatus status, Pageable pageable);
     Page<SalesOrder> findByStatus(SalesOrderStatus status, Pageable pageable);

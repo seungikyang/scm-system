@@ -31,8 +31,12 @@ public class AdminSalesOrderWebController {
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                        @PageableDefault(size = 20, sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable,
                        @CurrentUser LoginUser user, Model model) {
+        // 기본 정렬에 createdAt과 id를 함께 둡니다. 같은 순간에 만든 주문이 있어도 순서가 매번 같아야
+        // 페이지를 넘길 때 같은 주문이 두 번 보이거나 빠지지 않습니다.
         model.addAttribute("orders", orders.adminOrders(user, status, partnerId, from, to, pageable));
+        // 검색용 거래처 목록은 비활성·유형 변경된 거래처도 포함합니다(customerSearchOptions). 과거 수주도 찾을 수 있어야 하기 때문입니다.
         model.addAttribute("partners", orders.customerSearchOptions(user));
+        // 선택했던 검색 조건을 화면에 다시 넣어, 결과를 본 뒤에도 검색 칸이 초기화되지 않게 합니다.
         model.addAttribute("statusOptions", SalesOrderStatus.values());
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedPartnerId", partnerId);

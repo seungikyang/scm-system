@@ -29,10 +29,13 @@ public class SalesOrder extends BaseTimeEntity {
     private Long id;
     @Column(name = "order_number", nullable = false, length = 30)
     private String orderNumber;
+    // 거래처·작성자는 객체 연결(@ManyToOne) 대신 번호만 저장합니다. 주문 목록을 읽을 때 거래처·사용자 자료까지
+    // 줄줄이 따라 읽히지 않게 하고, 필요한 이름은 Service가 한 번에 모아 찾도록 하기 위해서입니다.
     @Column(name = "partner_id", nullable = false)
     private Long partnerId;
     @Column(name = "writer_id", nullable = false)
     private Long writerId;
+    // 출고·완료를 처리한 관리자 번호입니다. 작성 단계에는 아직 처리자가 없으므로 비어 있을 수 있습니다.
     @Column(name = "manager_id")
     private Long managerId;
     @Column(name = "order_date", nullable = false)
@@ -61,6 +64,7 @@ public class SalesOrder extends BaseTimeEntity {
         this.orderDate = orderDate; this.shipDate = shipDate;
     }
     public void addLine(SalesOrderLine line) {
+        // 확정된 뒤에 물건을 더하면 고객과 약속한 내용과 총액이 몰래 바뀌므로, 작성(DRAFT) 단계에서만 줄을 추가합니다.
         requireStatus(SalesOrderStatus.DRAFT);
         line.setSalesOrder(this); lines.add(line);
         // 새 물건 줄의 금액을 전체 주문 금액에 더합니다.
@@ -84,6 +88,9 @@ public class SalesOrder extends BaseTimeEntity {
     }
     public void cancel(String reason) {
         // 이미 끝난 주문은 다시 취소하지 않습니다. 언제나 이유가 필요하고 앞뒤 공백은 제외합니다.
+        // COMPLETED는 고객이 물건을 받아 거래가 끝난 상태라 취소 대신 반품 같은 별도 절차가 필요하고,
+        // CANCELED를 또 취소하면 재고를 두 번 되돌리는 사고가 날 수 있어 둘 다 막습니다.
+        // 취소 사유는 DTO에서도 검사하지만, 이 함수를 직접 부르는 코드가 있어도 규칙이 지켜지도록 여기서 한 번 더 확인합니다.
         if (status == SalesOrderStatus.COMPLETED || status == SalesOrderStatus.CANCELED)
             throw new BusinessException(ErrorCode.INVALID_STATUS);
         if (reason == null || reason.isBlank() || reason.trim().length() > 500)

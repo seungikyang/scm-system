@@ -23,9 +23,12 @@ public class Notice extends BaseTimeEntity {
     private Long writerId;
     @Column(nullable = false)
     private boolean important;
+    // 조회수는 setter를 두지 않습니다. 자바에서 값을 읽어 1을 더해 다시 쓰면 동시에 읽은 사람의 증가분이 사라지므로,
+    // NoticeRepository.incrementViews가 DB에서 직접 1을 더하는 방법으로만 바뀝니다.
     @Column(name = "view_count", nullable = false)
     private long viewCount;
     public Notice(String title, String content, Long writerId, boolean important) {
+        // 생성자도 update를 그대로 호출해, 새 글과 수정 글이 같은 규칙으로 값을 채우도록 한 곳에 모읍니다.
         this.writerId = writerId; update(title, content, important);
     }
     public void update(String title, String content, boolean important) {
