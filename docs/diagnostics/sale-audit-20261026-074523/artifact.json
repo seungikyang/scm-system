@@ -1,0 +1,655 @@
+{
+  "path": "build/libs/scm-system-0.0.1-SNAPSHOT.jar",
+  "sha256": "b916037424f4dbb7e1543e16f54aa8adcda44b36d216c29283ab367fe9454d47",
+  "mtime": "2026-10-24T01:21:53.181763+00:00",
+  "main_class": "com.example.scm.ScmApplication",
+  "spring_boot_version": "4.1.1",
+  "classes_compared": 160,
+  "class_differences": [],
+  "resource_differences": [],
+  "deployed_artifact_identity": "UNKNOWN",
+  "libraries": [
+    {
+      "path": "BOOT-INF/lib/spring-boot-h2console-4.1.1.jar",
+      "sha256": "bc64619237a9d396db97a5db82daaf20d086e5b0b169c04152bbce688ec33f35",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/h2-2.4.240.jar",
+      "sha256": "29b70e427cc1c40cdc376283adbb0cc62853073797bb5fe5761f81fe73d57ce0",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/mysql-connector-j-9.7.0.jar",
+      "sha256": "0353648eaa1c91e0f4020c959abf756bc866ffd583df22ae6b6f6e0cbd43eb44",
+      "license_notice_paths": [
+        "LICENSE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/flyway-mysql-12.4.0.jar",
+      "sha256": "de0eac641b3d0104e4ebe3d6340fb25f49cbd154a636b4d2d13b98115f60b055",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-webmvc-4.1.1.jar",
+      "sha256": "9f08c1fb938c45a8693fec5f3065be3aca203948a7ab4d56b06444986f75a6b2",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-http-converter-4.1.1.jar",
+      "sha256": "52a167430a918c223b2ccd2eb62aff91a8e43e6daebe5a07caa37b9a04c61cb9",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-data-jpa-4.1.1.jar",
+      "sha256": "19860139ccffcdeb27ea5a6c96bc2977bbc586f0aa2e5bb64eca49602e9de95c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-flyway-4.1.1.jar",
+      "sha256": "61db32d08f2b1b04cf006e916575da22ecee0a2e0bb0604aca26c04f7bd4aa0e",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-hibernate-4.1.1.jar",
+      "sha256": "8ad72a7fea79102390661779157a5064ac9e61c395dccc01c0696debf3c69859",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-jpa-4.1.1.jar",
+      "sha256": "ccefec84e31f99938543031511215ea16d9a06984be010702ca5c5960c3a2c1f",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-jdbc-4.1.1.jar",
+      "sha256": "30de56a06ccedb40245fd3a69a5107c7b3c0500447bb982a54a3b5da2859ae2c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-thymeleaf-4.1.1.jar",
+      "sha256": "a74614ffe39bd63f54609b9bbcc01c16497de60e9530df3a6155284b5237bc86",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-validation-4.1.1.jar",
+      "sha256": "c2546a81b6b7a39f51d889c99047f24567e4b28d1717fb53a65e9327cfc436f1",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-security-4.1.1.jar",
+      "sha256": "c940697be9bc67820d5011b86d58105836b7cae7c8fb5d4e61d635b51b392cbe",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-webmvc-7.0.9.jar",
+      "sha256": "8f114c1461692c5e534e82b27de23b7fb23370db8dee7ce0c92d5106906c9555",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-data-jpa-4.1.1.jar",
+      "sha256": "e90191b8d9f1c5a9398db0587460f1f4002e0fe4ff267321ed3a107f7fec46e1",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-security-config-7.1.1.jar",
+      "sha256": "1f947c853f14cab76563464ee22e72f6672f3913db52647d2f5d1df5f2b1e5a5",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-security-web-7.1.1.jar",
+      "sha256": "dece134a2332c976a2c94ecf13f816c64e8ea7f2139795485afe655fba0408f3",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-autoconfigure-4.1.1.jar",
+      "sha256": "59228756ddd76cea050f95d86deff334789bc53b6688beaa673b1af2b9794592",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-jackson-4.1.1.jar",
+      "sha256": "69a9b4d8850a0532a5e44ff7306a03621485b26596e7f9481de7d28e68a2dd42",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-servlet-4.1.1.jar",
+      "sha256": "4dcb156e311a4c1ad5f1ed7eabd94a78ea74510b05c429a4fcfdcf8beb9d5882",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-data-commons-4.1.1.jar",
+      "sha256": "e9911b99825ea5650827ec1e2d2fc1890c7e63b6f048c1f4dba2c8e85ff6d354",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-sql-4.1.1.jar",
+      "sha256": "fa4f6ddded1bb3bbc496897686336d8433e34f1f22daa886872be2aa184def23",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-transaction-4.1.1.jar",
+      "sha256": "e7f2fad4fe65bf6aaf1b1a538a68a1cf69988adb558f4a0fc0992a8be4fddf64",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-tomcat-4.1.1.jar",
+      "sha256": "17f65629e4eb3c979c0572b69b57d630bb12e64869e9d7520adddaa6734256b6",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-web-server-4.1.1.jar",
+      "sha256": "6912fb1fdf7f657a61ac050760fa835fb1e7496399291697e2901f82887a4fee",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-persistence-4.1.1.jar",
+      "sha256": "0f78d2556ac3ed75f9eaf3134a1fba94ad1ec3414b52aa279c1f690217e71e3c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-4.1.1.jar",
+      "sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-security-core-7.1.1.jar",
+      "sha256": "98a5011baa78df36fb184e6ce0e8e086ca9a64fcdd8f161c0a96475a3a0907bd",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-context-7.0.9.jar",
+      "sha256": "7552a2fcfa30cea53eb14d7a65a7a8e1b1dd82e832a7164fb7e6fb105f438858",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-aop-7.0.9.jar",
+      "sha256": "b8c5d6bfcb1f4993f2cc124f7ab7fac40edf5256b9e43c2f7250a733cb5510e9",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/flyway-core-12.4.0.jar",
+      "sha256": "c3f93df1f3e0c9d14652adb5ade97401f2ede503859ac693c2af5c06e2797799",
+      "license_notice_paths": [
+        "org/flywaydb/core/internal/license/",
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.annotation-api-3.0.0.jar",
+      "sha256": "b01f55552284cfb149411e64eabca75e942d26d2e1786b32914250e4330afaa2",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/snakeyaml-2.6.jar",
+      "sha256": "c8f7a98e7394adda02f6317249710e4d1b4c7a25aa8c7eace0c2eea52eb8bf85",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/spring-web-7.0.9.jar",
+      "sha256": "941ced476427bde2533872f293da535fd0258de3f3a650a7f1bfe01ed2927302",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/hibernate-core-7.4.5.Final.jar",
+      "sha256": "e894c0ae560f0031883a2f5c819e1ef1ee3e16b2cbca31e6301a004876a67dc7",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/HikariCP-7.0.2.jar",
+      "sha256": "f1e612fa27345be3107a85431e8a8aeb205c15364ab2f2d411e40a9d7bb08095",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/spring-aspects-7.0.9.jar",
+      "sha256": "68247ea5d8cc7c2d06fb36b80b9e9692bddab72fffeac5e68f974d547fb28875",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-orm-7.0.9.jar",
+      "sha256": "d44082acd9377b67858ae207316057e2ef236a16c96e1b4fd8af8d43a6784b31",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-jdbc-7.0.9.jar",
+      "sha256": "ca0d9af1c5721eef8cac1f94c8b9d27a753248bc33c86e3472bd3d1dbd78f450",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/thymeleaf-spring6-3.1.5.RELEASE.jar",
+      "sha256": "fd5d306052d7aa6769a8ec77778d328e6f7c83af5ac074df38035bbb1e9cd72b",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/tomcat-embed-el-11.0.24.jar",
+      "sha256": "ad0546f12dace008aacce18ba13222137760b310ca719e173d3e13021b9af6c6",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/hibernate-validator-9.1.3.Final.jar",
+      "sha256": "0497ebbe23fafe4180b74bd0b96a67eee8556552decc4d3c120c1dc737a2b5fb",
+      "license_notice_paths": [
+        "META-INF/license.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-data-commons-4.1.1.jar",
+      "sha256": "cf2a3f9bfabefca1a8c2c0f0a65c393d9ff83b0cb1cf7b705accac18a6ed0ee4",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-tx-7.0.9.jar",
+      "sha256": "bfb15da6e096e2c0752e9db9987d2415bf0da1d744efc988535c10c6b6c2eedd",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-beans-7.0.9.jar",
+      "sha256": "ff218b827a25c9e8929b0cd56dfb56916cea9d5b669ed97dc7cb262508ff548b",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-expression-7.0.9.jar",
+      "sha256": "046434c40f43819729b9b1db0e6c659dfa68184c1c2c2efa5f7b3a5b27c4e2e2",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-core-7.0.9.jar",
+      "sha256": "5195f4722699b39878d99a832549fe65df2890b159d063b88fff31b1ca65ae36",
+      "license_notice_paths": [
+        "META-INF/license.txt",
+        "META-INF/notice.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jackson-core-3.1.5.jar",
+      "sha256": "9431b7fa2673bbb618c11d865fe15e13222fd182a214ff998cb7e56afd8f35d2",
+      "license_notice_paths": [
+        "META-INF/FastDoubleParser-LICENSE",
+        "META-INF/FastDoubleParser-ThirdParty-LICENSE",
+        "META-INF/LICENSE",
+        "META-INF/Schubfach-LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jackson-databind-3.1.5.jar",
+      "sha256": "3a2338d996fd3056791df8d335fa9ba8a62a706ed4245ecf81b3e583df37d08a",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/logback-classic-1.5.38.jar",
+      "sha256": "afb439c61fa287c9e1925523b13baab03617e724406a389d48b61c2c3e46b700",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/log4j-to-slf4j-2.25.5.jar",
+      "sha256": "b68e8b47342dbc9b35644a14fe2efc0b7bf18da703910cd05ad5501ffe07bba1",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jul-to-slf4j-2.0.18.jar",
+      "sha256": "cbb7d1aaaa9e871eb1a06594abd911bf97027152976edf1edc315be75239204e",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/tomcat-embed-websocket-11.0.24.jar",
+      "sha256": "825160101f0da4a10e19b5730c2ae2f99f8c2c7a7211ac05562726c5e97ab91e",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/tomcat-embed-core-11.0.24.jar",
+      "sha256": "e7b966dcaac8c5ffa4f10e44031ebf5b71f2123560c08ac8b7120028615aea08",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/micrometer-observation-1.17.1.jar",
+      "sha256": "eb34f0cd84a879393ae5c21160fc06385ccdc74f36a4d1e31b199f59acfdaf71",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/thymeleaf-3.1.5.RELEASE.jar",
+      "sha256": "4011795f8494dd69e764b7709443dd13d3068ba8ac37624f61d7084f4429cbe2",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/slf4j-api-2.0.18.jar",
+      "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/antlr4-runtime-4.13.2.jar",
+      "sha256": "dd3e8a13a2d669bf84fb8d834de35ce4875f27157698d206241ec8488aadcaf7",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/aspectjweaver-1.9.25.1.jar",
+      "sha256": "4fe86fdc18faea571f29129c70eaad5d121363504a06d7907be88f6c60ba3116",
+      "license_notice_paths": [
+        "LICENSE-AspectJ.adoc",
+        "licenses/",
+        "licenses/LICENSE-BSD-3-CLAUSE.txt",
+        "licenses/LICENSE-EPL-2.0.txt",
+        "licenses/LICENSE-Apache-1.1.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.validation-api-3.1.1.jar",
+      "sha256": "63ce00156388c365f3ac1be71fcfaf114682fc0c452020b5df6e7ec236e142ab",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/hibernate-models-1.1.1.jar",
+      "sha256": "7cb645f2ebe5fcb63e21d26259cef62d93a1ca77c400bda6992c92cb19826a89",
+      "license_notice_paths": [
+        "META-INF/LICENSE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jboss-logging-3.6.3.Final.jar",
+      "sha256": "7c12ee575508f81e22b1db9334b969d0ec54ef0fd1dcba24eeab1a44235fc366",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/classmate-1.7.3.jar",
+      "sha256": "75fbda45456f123fb6e2028a6189442d8d0730b357adce4c0a6d7e789f70669b",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/commons-logging-1.3.6.jar",
+      "sha256": "f8ead8943401081dea0aa824b5b1ba40a0e4ed297a572a0f02258150a0b62357",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/micrometer-commons-1.17.1.jar",
+      "sha256": "f2cee6ef046e72eec8128474c7f58c6217173b45ae373c30de0289f2a56ab0fd",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jspecify-1.0.1.jar",
+      "sha256": "070d75f261fe4c5b8202508366715f7f2d4660f88c8ef7e6d3575e48c9683b66",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/logback-core-1.5.38.jar",
+      "sha256": "a855a0fc97b1d06f4efb1c3bba5ebd0eb508d8b58e68e89e4bbc23a85135c883",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/log4j-api-2.25.5.jar",
+      "sha256": "64777f73ea0b3104c04eb82befbdccc30a425a19e83ad06cb2f93aa303511863",
+      "license_notice_paths": [
+        "META-INF/LICENSE",
+        "META-INF/NOTICE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.persistence-api-3.2.0.jar",
+      "sha256": "be8a26b0e75c84c1b7600f759256fbc68d60333d89ec0ce3f784fc3ffa09aa8c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/byte-buddy-1.18.11.jar",
+      "sha256": "e32f454c2c1f4aca982f9ec764ed892d9a6eee7e8a77f435cbdd180f6ffdb821",
+      "license_notice_paths": [
+        "META-INF/licenses/",
+        "META-INF/licenses/ASM",
+        "META-INF/NOTICE",
+        "META-INF/LICENSE"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jaxb-runtime-4.0.9.jar",
+      "sha256": "93e09b7316b6af68d6e2083e4c297daf28e8957f45d725077af812c0b12c39ab",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jaxb-core-4.0.9.jar",
+      "sha256": "6b014df25d22c8446cc2df0a378c5b2137747f197a731d99eb24c756b26f7e8d",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.xml.bind-api-4.0.5.jar",
+      "sha256": "5e489b6c874c4119e003ff1403db523ee3a8959ec499f3de29e77245efccf216",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.inject-api-2.0.1.jar",
+      "sha256": "f7dc98062fccf14126abb751b64fab12c312566e8cbdc8483598bffcea93af7c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.transaction-api-2.0.1.jar",
+      "sha256": "50c0a7c760c13ae6c042acf182b28f0047413db95b4636fb8879bcffab5ba875",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/attoparser-2.0.7.RELEASE.jar",
+      "sha256": "75dd1c045492bff8e1963aabb28bfe903c2064e11e27fe2f0f0aff1ad3d84476",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/unbescape-1.1.6.RELEASE.jar",
+      "sha256": "597cf87d5b1a4f385b9d1cec974b7b483abb3ee85fc5b3f8b62af8e4bec95c2c",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/spring-security-crypto-7.1.1.jar",
+      "sha256": "6e8bb2337faccabd30626f917ed1d2bfa9dde982229b6b373b644d1a01635403",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/angus-activation-2.0.3.jar",
+      "sha256": "a6bd35c538cf90fff941ad6258c40c08fca0b5c9c3f536c657114f27ce0527a7",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/jakarta.activation-api-2.1.4.jar",
+      "sha256": "c9db52100ce6c8aac95cc39075f95720d2e561b11f8051b81c121ad4effd7004",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/txw2-4.0.9.jar",
+      "sha256": "d6343e5945d87266ca4e8974a0a2a876e1bd147a00fb65ed3f2e1a3a00f3a82a",
+      "license_notice_paths": [
+        "META-INF/LICENSE.md",
+        "META-INF/NOTICE.md"
+      ]
+    },
+    {
+      "path": "BOOT-INF/lib/istack-commons-runtime-4.1.2.jar",
+      "sha256": "7fd6792361f4dd00f8c56af4a20cecc0066deea4a8f3dec38348af23fc2296ee",
+      "license_notice_paths": []
+    },
+    {
+      "path": "BOOT-INF/lib/spring-boot-jarmode-tools-4.1.1.jar",
+      "sha256": "062a9edf01809f4a2b48bfc2fe392fedd27448a3a57113bef510576673d4397f",
+      "license_notice_paths": [
+        "META-INF/LICENSE.txt",
+        "META-INF/NOTICE.txt"
+      ]
+    }
+  ]
+}

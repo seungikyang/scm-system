@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="HTTP 요청 입력 검증 통합 테스트" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.155Z" hostname="yangseouui-MacBookPro.local" time="0.027">
+  <properties/>
+  <testcase name="[1] path = &quot;/api/items/abc&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.001"/>
+  <testcase name="[2] path = &quot;/api/purchase-orders/my?status=UNKNOWN&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.001"/>
+  <testcase name="[3] path = &quot;/api/items?categoryId=abc&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.002"/>
+  <testcase name="[1] path = &quot;/items/abc&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.002"/>
+  <testcase name="[2] path = &quot;/purchase-orders/my?status=UNKNOWN&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.002"/>
+  <testcase name="[3] path = &quot;/items?categoryId=abc&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.002"/>
+  <testcase name="발주 행 내부의 필수 품목도 중첩 검증으로 거부한다" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.01"/>
+  <testcase name="null 발주 행은 저장 전에 검증 오류로 거부한다" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.002"/>
+  <testcase name="[1] body = &quot;{&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.001"/>
+  <testcase name="[2] body = &quot;&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.0"/>
+  <testcase name="[3] body = &quot;{\&quot;email\&quot;:\&quot;user@scm.com\&quot;,\&quot;password\&quot;:{}}&quot;" classname="com.example.scm.controller.RequestValidationIntegrationTest" time="0.0"/>
+  <system-out><![CDATA[2026-10-26T07:45:47.155+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.RequestValidationIntegrationTest]: RequestValidationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.156+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.RequestValidationIntegrationTest
+2026-10-26T07:45:47.156+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.RequestValidationIntegrationTest]: RequestValidationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.156+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.RequestValidationIntegrationTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

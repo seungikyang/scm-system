@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="상세 접근 권한" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:49.754Z" hostname="yangseouui-MacBookPro.local" time="0.095">
+  <properties/>
+  <testcase name="AC-030 타인+비ADMIN/MANAGER 상세 → ACCESS_DENIED" classname="com.example.scm.service.PurchaseOrderServiceTest$DetailAccess" time="0.093"/>
+  <testcase name="OQ-6 MANAGER 는 타인 발주 상세 접근 가능" classname="com.example.scm.service.PurchaseOrderServiceTest$DetailAccess" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

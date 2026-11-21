@@ -1,0 +1,72 @@
+[
+  {
+    "name": "jar-sbom",
+    "command": [
+      "trivy",
+      "rootfs",
+      "--cache-dir",
+      "/Users/seoowoo/Documents/scm-system/docs/diagnostics/sale-audit-20261026-074523/trivy-cache",
+      "--offline-scan",
+      "--skip-version-check",
+      "--quiet",
+      "--timeout",
+      "8m",
+      "--format",
+      "cyclonedx",
+      "--scanners",
+      "vuln",
+      "build/libs"
+    ],
+    "started_at": "2026-10-25T22:47:44.390452+00:00",
+    "ended_at": "2026-10-25T22:49:21.288096+00:00",
+    "exit_code": 0,
+    "stdout_bytes": 131475
+  },
+  {
+    "name": "jar-licenses",
+    "command": [
+      "trivy",
+      "rootfs",
+      "--cache-dir",
+      "/Users/seoowoo/Documents/scm-system/docs/diagnostics/sale-audit-20261026-074523/trivy-cache",
+      "--offline-scan",
+      "--skip-version-check",
+      "--quiet",
+      "--timeout",
+      "8m",
+      "--format",
+      "json",
+      "--scanners",
+      "license",
+      "--license-full",
+      "build/libs"
+    ],
+    "started_at": "2026-10-25T22:49:21.289175+00:00",
+    "ended_at": "2026-10-25T22:49:21.363254+00:00",
+    "exit_code": 0,
+    "stdout_bytes": 339
+  },
+  {
+    "name": "jar-vuln",
+    "command": [
+      "trivy",
+      "rootfs",
+      "--cache-dir",
+      "/Users/seoowoo/Documents/scm-system/docs/diagnostics/sale-audit-20261026-074523/trivy-cache",
+      "--offline-scan",
+      "--skip-version-check",
+      "--quiet",
+      "--timeout",
+      "8m",
+      "--format",
+      "json",
+      "--scanners",
+      "vuln",
+      "build/libs"
+    ],
+    "started_at": "2026-10-25T22:49:21.363652+00:00",
+    "ended_at": "2026-10-25T22:49:21.950470+00:00",
+    "exit_code": 0,
+    "stdout_bytes": 82687
+  }
+]

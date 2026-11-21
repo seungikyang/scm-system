@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="재고 조회 수직 슬라이스 통합 테스트" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.793Z" hostname="yangseouui-MacBookPro.local" time="0.011">
+  <properties/>
+  <testcase name="요약 API는 운영 품목 전체를 기준으로 현재고와 부족 품목을 집계한다" classname="com.example.scm.controller.StockFeatureIntegrationTest" time="0.002"/>
+  <testcase name="API는 입고 이력이 없는 품목도 현재고 0과 부족수량으로 반환한다" classname="com.example.scm.controller.StockFeatureIntegrationTest" time="0.002"/>
+  <testcase name="일반 사용자도 재고 화면에서 운영 품목과 부족 상태를 확인한다" classname="com.example.scm.controller.StockFeatureIntegrationTest" time="0.004"/>
+  <system-out><![CDATA[2026-10-26T07:45:47.794+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.StockFeatureIntegrationTest]: StockFeatureIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.794+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.StockFeatureIntegrationTest
+2026-10-26T07:45:47.794+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.StockFeatureIntegrationTest]: StockFeatureIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.795+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.StockFeatureIntegrationTest
+2026-10-26T07:45:47.804+09:00  INFO 48339 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-26T07:45:47.805+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-10-26T07:45:47.833+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

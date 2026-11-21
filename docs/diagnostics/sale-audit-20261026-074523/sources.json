@@ -1,0 +1,222 @@
+[
+  {
+    "id": "S01",
+    "title": "개인정보 보호법 제30조",
+    "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1006185717",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "시행 2026-09-11; 법률 제21445호; 처리방침 수립·공개",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S02",
+    "title": "개인정보 보호법 제21조",
+    "url": "https://law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1029334977",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "시행 2026-09-11; 불필요한 개인정보 파기와 법정 보존 예외",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S03",
+    "title": "개인정보 보호법 제28조의8 제2항",
+    "url": "https://law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033215841",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "시행 2026-09-11; 동의를 근거로 국외 이전할 때 고지할 항목. 국외 이전의 모든 적법 근거를 이 조항만으로 판단하지 않음",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S04",
+    "title": "전자상거래법 제17조",
+    "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?lsiSeq=282793&joNo=0017&joBrNo=00&docCls=jo&urlMode=lsScJoRltInfoR",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "시행 2026-07-21; 법률 제21312호; 청약철회와 디지털콘텐츠 예외·고지 조건",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S05",
+    "title": "이카운트 가격",
+    "url": "https://www.ecount.com/kr/ecount/join/pricing",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "월 40000원, 연 선납 440000원, 가입비 200000원, VAT 별도, 사용자 무제한",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S06",
+    "title": "이카운트 약관",
+    "url": "https://www.ecount.com/kr/ecount/join/sign-up",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "제9·10조 결제·환불·해지; 페이지 시행일 UNKNOWN",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S07",
+    "title": "Zoho Inventory 미국 가격",
+    "url": "https://www.zoho.com/us/inventory/pricing/",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "Standard USD29/조직/월(연 결제), 500 orders/월, 3 users, 2 locations, 세금 별도",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S08",
+    "title": "Zoho 글로벌 약관",
+    "url": "https://www.zoho.com/terms.html?zredirect=f",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "페이지 갱신일 2022-03-02; 자동갱신과 사전 갱신거절 통지, 제3자 사용·재판매 제한",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S09",
+    "title": "Zoho 환불",
+    "url": "https://www.zoho.com/refundpolicy.html",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "월·연 구독과 자동갱신에 대한 별도 환불 정책; 적용 상품·계약 확인 필요",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S10",
+    "title": "인프런 Spring Boot/JPA 활용1",
+    "url": "https://www.inflearn.com/course/스프링부트-JPA-활용-1",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "정가 88000원, 신규가입 할인 표시 66000원, 36강/7시간44분/수강기한 무제한. 세금 표시는 미확인",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S11",
+    "title": "인프런 이용약관",
+    "url": "https://www.inflearn.com/policy/terms-of-service",
+    "status": "UNKNOWN",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "공식 상품 페이지 약관 링크는 확인했지만 본문 접근 시간 초과",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S12",
+    "title": "Odoo 가격",
+    "url": "https://www.odoo.com/pricing",
+    "status": "UNKNOWN",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "공식 본문 접근 시간 초과; 검색 요약 가격은 비교에 사용하지 않음",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S13",
+    "title": "Odoo Enterprise 약관",
+    "url": "https://www.odoo.com/documentation/19.0/legal/terms/enterprise.html",
+    "status": "UNKNOWN",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "공식 본문 접근 시간 초과",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S14",
+    "title": "Apache Tomcat 11 보안 공지",
+    "url": "https://tomcat.apache.org/security-11.html",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "11.0.24에 해당하는 조건부 보안 이슈와 11.0.25 이후 수정 공지; 공급사 심각도가 Trivy 등급과 다름",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S15",
+    "title": "FasterXML 숫자 정규식 보안 공지",
+    "url": "https://github.com/FasterXML/jackson-core/security/advisories/GHSA-p6pp-m3f8-5c89",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "CVE-2026-89407; 3.1.7/3.2.2 수정; 특정 숫자 판별 호출 경로 필요",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S16",
+    "title": "FasterXML DataInput 보안 공지",
+    "url": "https://github.com/FasterXML/jackson-core/security/advisories/GHSA-7hhh-6rmp-j9qf",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "CVE-2026-89425; DataInput 파서 경로에 한정. InputStream 경로와 구분",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S17",
+    "title": "MySQL 상용 배포 라이선스 안내",
+    "url": "https://www.mysql.com/about/legal/licensing/oem/",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "GPL·FOSS Exception·상용 계약의 구분. 실제 9.7.0 원문은 JAR LICENSE에도 존재",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S18",
+    "title": "H2 라이선스",
+    "url": "https://www.h2database.com/html/license.html",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "MPL 2.0 또는 EPL 1.0; 선택 조건과 고지 검토",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S19",
+    "title": "Apache-2.0 원문",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "배포·고지 조건과 상표 권한 구분",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S20",
+    "title": "GNU GPL FAQ",
+    "url": "https://www.gnu.org/licenses/gpl-faq.en.html",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "유료 배포와 GPL 이행 의무를 구분",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S21",
+    "title": "Trivy 언어별 검사 범위",
+    "url": "https://trivy.dev/docs/latest/coverage/language/",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "filesystem 모드는 JAR 분석 비활성; rootfs 모드는 활성",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  },
+  {
+    "id": "S22",
+    "title": "Trivy Java 검사",
+    "url": "https://trivy.dev/docs/latest/coverage/language/java/",
+    "status": "확인",
+    "checked_at": "2026-10-25T22:53:02.066002+00:00",
+    "note": "중첩 JAR, pom.properties/manifest/Java DB 식별의 한계",
+    "tool": "web.run",
+    "scope": "공개 원문; 제품 소스나 고객 개인정보를 검색어로 전송하지 않음"
+  }
+]

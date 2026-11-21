@@ -1,0 +1,41 @@
+[
+  {
+    "command": [
+      "./gradlew",
+      "--offline",
+      "test",
+      "--no-daemon",
+      "--rerun-tasks"
+    ],
+    "cwd": "/Users/seoowoo/Documents/scm-system",
+    "started_at": "2026-10-25T22:45:36.547960+00:00",
+    "ended_at": "2026-10-25T22:45:50.318710+00:00",
+    "exit_code": 0,
+    "log": "gradle-test.log",
+    "environment": "SPRING_ DB_ SCM_ H2_CONSOLE_ 변수를 테스트 프로세스에서 제거; 설정 파일 수정 없음"
+  },
+  {
+    "command": [
+      "node",
+      "--test",
+      "src/test/js/study-state.test.cjs"
+    ],
+    "cwd": "/Users/seoowoo/Documents/scm-system",
+    "started_at": "2026-10-25T22:45:50.318972+00:00",
+    "ended_at": "2026-10-25T22:45:50.488925+00:00",
+    "exit_code": 0,
+    "log": "node-test.log",
+    "environment": "SPRING_ DB_ SCM_ H2_CONSOLE_ 변수를 테스트 프로세스에서 제거; 설정 파일 수정 없음"
+  },
+  {
+    "command": [
+      "./scripts/verify-repository-boundary.sh"
+    ],
+    "cwd": "/Users/seoowoo/Documents/scm-system",
+    "started_at": "2026-10-25T22:45:50.489124+00:00",
+    "ended_at": "2026-10-25T22:45:50.520935+00:00",
+    "exit_code": 0,
+    "log": "repository-boundary.log",
+    "environment": "SPRING_ DB_ SCM_ H2_CONSOLE_ 변수를 테스트 프로세스에서 제거; 설정 파일 수정 없음"
+  }
+]

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="취소(cancel) — OQ-3: DRAFT/REQUESTED/APPROVED 가능, RECEIVED 불가" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:49.860Z" hostname="yangseouui-MacBookPro.local" time="0.004">
+  <properties/>
+  <testcase name="RECEIVED 취소 → INVALID_STATUS (OQ-3 취소 불가 경계)" classname="com.example.scm.service.PurchaseOrderServiceTest$Cancel" time="0.001"/>
+  <testcase name="AC-025 정상(DRAFT)→CANCELED" classname="com.example.scm.service.PurchaseOrderServiceTest$Cancel" time="0.001"/>
+  <testcase name="AC-026 정상(REQUESTED)→CANCELED" classname="com.example.scm.service.PurchaseOrderServiceTest$Cancel" time="0.0"/>
+  <testcase name="AC-027 변경(OQ-3): APPROVED 취소 = 정상(CANCELED)" classname="com.example.scm.service.PurchaseOrderServiceTest$Cancel" time="0.001"/>
+  <testcase name="AC-028 타인 발주 취소 → ACCESS_DENIED" classname="com.example.scm.service.PurchaseOrderServiceTest$Cancel" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

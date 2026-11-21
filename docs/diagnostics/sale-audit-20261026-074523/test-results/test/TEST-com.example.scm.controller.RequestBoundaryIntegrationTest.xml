@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.controller.RequestBoundaryIntegrationTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.126Z" hostname="yangseouui-MacBookPro.local" time="0.028">
+  <properties/>
+  <testcase name="[1] path = &quot;/api/auth/login&quot;, contentType = &quot;application/x-www-form-urlencoded&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[2] path = &quot;/api/auth/login&quot;, contentType = &quot;text/plain&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[3] path = &quot;/api/auth/login&quot;, contentType = &quot;application/xml&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[4] path = &quot;/api/items&quot;, contentType = &quot;application/x-www-form-urlencoded&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[5] path = &quot;/api/items&quot;, contentType = &quot;text/plain&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[6] path = &quot;/api/items&quot;, contentType = &quot;application/xml&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.001"/>
+  <testcase name="[1] path = &quot;/purchase-orders&quot;, index = &quot;-1&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.005"/>
+  <testcase name="[2] path = &quot;/purchase-orders&quot;, index = &quot;abc&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.003"/>
+  <testcase name="[3] path = &quot;/purchase-orders&quot;, index = &quot;256&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.003"/>
+  <testcase name="[4] path = &quot;/sales-orders&quot;, index = &quot;-1&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.002"/>
+  <testcase name="[5] path = &quot;/sales-orders&quot;, index = &quot;abc&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.002"/>
+  <testcase name="[6] path = &quot;/sales-orders&quot;, index = &quot;256&quot;" classname="com.example.scm.controller.RequestBoundaryIntegrationTest" time="0.002"/>
+  <system-out><![CDATA[2026-10-26T07:45:47.127+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.RequestBoundaryIntegrationTest]: RequestBoundaryIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.127+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.RequestBoundaryIntegrationTest
+2026-10-26T07:45:47.128+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.RequestBoundaryIntegrationTest]: RequestBoundaryIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.128+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.RequestBoundaryIntegrationTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

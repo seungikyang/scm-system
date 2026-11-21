@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.controller.SalesAndNoticeIntegrationTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.183Z" hostname="yangseouui-MacBookPro.local" time="0.265">
+  <properties/>
+  <testcase name="salesRejectsInvalidPartnerDatesItemsAndAmounts()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.008"/>
+  <testcase name="salesApiSupportsCreateConfirmShipCompleteAndLists()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.025"/>
+  <testcase name="noticeApiCrudEscapesUserContentAndChecksPermissions()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.018"/>
+  <testcase name="apiRejectsUnauthenticatedForbiddenAndInvalidRequests()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.006"/>
+  <testcase name="[1] contextPath = &quot;&quot;" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.011"/>
+  <testcase name="[2] contextPath = &quot;/scm&quot;" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.01"/>
+  <testcase name="concurrentOrdersCannotShipMoreThanAvailableStock()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.012"/>
+  <testcase name="cancelAfterShippingRestoresStockExactlyOnce()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.011"/>
+  <testcase name="concurrentDuplicateShipmentAndCancellationChangeStockOnce()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.009"/>
+  <testcase name="concurrentCreateProducesUniqueSalesNumbers()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.011"/>
+  <testcase name="insufficientStockRollsBackEveryLineAndStatus()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.014"/>
+  <testcase name="[1] contextPath = &quot;&quot;" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.021"/>
+  <testcase name="[2] contextPath = &quot;/scm&quot;" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.019"/>
+  <testcase name="noticesSortImportantFirstAndSupportCrudSearchAndViews()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.007"/>
+  <testcase name="repeatedItemLinesCannotOverdrawStock()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.006"/>
+  <testcase name="webScreensRenderFormsDetailsListsAndPreserveValidationErrors()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.039"/>
+  <testcase name="salesFlowCalculatesMoneyAndShipsOnce()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.008"/>
+  <testcase name="noticeEditCannotOverwriteConcurrentViewIncrement()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.004"/>
+  <testcase name="salesApiCancellationRequiresReasonAndPreservesTerminalState()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.007"/>
+  <testcase name="salesEnforcesWriterAndManagerPermissions()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.006"/>
+  <testcase name="concurrentNoticeReadsDoNotLoseViews()" classname="com.example.scm.controller.SalesAndNoticeIntegrationTest" time="0.003"/>
+  <system-out><![CDATA[2026-10-26T07:45:47.183+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.SalesAndNoticeIntegrationTest]: SalesAndNoticeIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.184+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.SalesAndNoticeIntegrationTest
+2026-10-26T07:45:47.184+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.SalesAndNoticeIntegrationTest]: SalesAndNoticeIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.184+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.SalesAndNoticeIntegrationTest
+2026-10-26T07:45:47.306+09:00  WARN 48339 --- [pool-5-thread-2] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-10-26T07:45:47.306+09:00  WARN 48339 --- [pool-5-thread-2] org.hibernate.orm.jdbc.error             : Unique index or primary key violation: "PUBLIC.UK_SO_ORDER_NUMBER INDEX PUBLIC.UK_SO_ORDER_NUMBER_INDEX_A ON PUBLIC.SALES_ORDERS(ORDER_NUMBER NULLS FIRST) VALUES ( /* 8 */ 'SO-20261026-0001' )"; SQL statement:
+insert into sales_orders (cancel_reason,completed_at,confirmed_at,created_at,manager_id,order_date,order_number,partner_id,ship_date,shipped_at,status,total_amount,updated_at,version,writer_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default) [23505-240]
+2026-10-26T07:45:47.449+09:00  INFO 48339 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-26T07:45:47.449+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-10-26T07:45:47.449+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
