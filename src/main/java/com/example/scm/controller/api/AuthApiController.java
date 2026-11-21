@@ -1,7 +1,10 @@
 package com.example.scm.controller.api;
 
+import com.example.scm.common.auth.LoginSessionRegistry;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.common.auth.SessionConst;
+import com.example.scm.common.exception.BusinessException;
+import com.example.scm.common.exception.ErrorCode;
 import com.example.scm.dto.auth.LoginRequest;
 import com.example.scm.dto.user.UserResponse;
 import com.example.scm.service.AuthService;
@@ -37,11 +40,14 @@ public class AuthApiController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final LoginSessionRegistry loginSessionRegistry;
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request,
                                               HttpServletRequest httpRequest) {
         // @RequestBody는 JSON을 입력 양식으로 읽고, @Valid는 이메일 형식·필수 입력 규칙을 검사합니다.
+        // 비밀번호 확인 전에 철회 순번을 받아 둡니다. 확인 도중 비밀번호가 바뀌면 아래 register가 거절합니다.
+        long loginEpoch = loginSessionRegistry.beginLogin();
         LoginUser loginUser = authService.login(request.getEmail(), request.getPassword());
         // true: 세션이 없으면 새로 만든다. 로그인 성공 전에는 세션에 사용자를 넣지 않는다.
         HttpSession session = httpRequest.getSession(true);
@@ -49,6 +55,10 @@ public class AuthApiController {
         // 방문 번호를 새 번호로 바꾼 뒤 서버의 세션 보관함에 로그인 출입증을 넣습니다.
         httpRequest.changeSessionId();
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
+        // 비밀번호 변경 시 다른 기기의 로그인을 끝낼 수 있도록 이 세션을 사용자별 목록에 기록합니다.
+        if (!loginSessionRegistry.register(loginUser.id(), session, loginEpoch)) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "로그인 중 비밀번호가 변경되었습니다. 다시 로그인하세요.");
+        }
         return ResponseEntity.ok(userService.getMe(loginUser.id()));
     }
 

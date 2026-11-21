@@ -32,10 +32,24 @@ WORKDIR /app
 ENV TZ=Asia/Seoul \
     JAVA_OPTS=""
 
+# 관리자(root) 권한 없이 실행할 전용 사용자를 만든다. 앱에 취약점이 있어도 컨테이너 안에서
+# 시스템 파일을 바꾸거나 다른 프로그램을 설치하는 피해 범위를 줄이기 위해서다.
+RUN groupadd --system scm && useradd --system --gid scm --no-create-home --shell /usr/sbin/nologin scm
+
 # build 스테이지에서 만든 bootJar 하나만 복사 (plain jar 는 build.gradle 에서 비활성)
+# 파일 주인을 root로 두어 실행 사용자 scm은 JAR를 읽기만 하고 바꿀 수 없게 한다.
 COPY --from=build /workspace/build/libs/*.jar app.jar
 
+USER scm
+
 EXPOSE 8080
+
+# 로그인 화면은 로그인 없이 열리는 가벼운 주소라 상태 확인에 사용한다. 실패가 이어지면
+# 컨테이너가 unhealthy로 표시되어 compose·오케스트레이터가 장애를 알아챌 수 있다.
+# start-period는 처음 기동(Flyway 적용 포함) 동안의 실패를 장애로 세지 않는 여유 시간이다.
+# curl은 공식 eclipse-temurin 이미지가 기본 설치한다(adoptium/containers#255). 기반 이미지를 바꾸면 curl 유무를 먼저 확인한다.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD curl -fsS -o /dev/null http://localhost:8080/login || exit 1
 
 # SPRING_PROFILES_ACTIVE 등 환경변수로 프로필/DB 주입 (기본: H2 in-memory)
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]

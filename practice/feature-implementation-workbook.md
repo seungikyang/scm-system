@@ -46,13 +46,13 @@
 
 ### 현재 기준 버전과 호환성 경계
 
-이 워크북의 기준일은 **2026-08-25**이며, 현재 기준은 **Spring Boot 4.1.1, Spring Framework 7.0.x, Gradle Wrapper 9.7.1**입니다. 버전은 설명에 흩어 쓰지 않고 루트 `build.gradle`과 `gradle/wrapper/gradle-wrapper.properties`를 최종 기준으로 삼습니다.
+이 워크북의 기준일은 **2026-08-25**이며, 현재 기준은 **Spring Boot 4.1.3, Spring Framework 7.0.x, Gradle Wrapper 9.7.1**입니다. 버전은 설명에 흩어 쓰지 않고 루트 `build.gradle`과 `gradle/wrapper/gradle-wrapper.properties`를 최종 기준으로 삼습니다.
 
 | 항목 | 현재 기준 | 구현에서의 의미 |
 |---|---|---|
 | Java 컴파일 대상 | 17 | 기존 배포 호환성을 유지하며 Boot 4 최소 요구사항을 만족 |
 | macOS 운영 JVM | 21 | Java 17 대상 JAR를 LTS JVM으로 직접 실행 |
-| Spring Boot | 4.1.1 | 자동 설정, 의존성 BOM, 실행 가능한 JAR, 운영 설정 제공 |
+| Spring Boot | 4.1.3 | 자동 설정, 의존성 BOM, 실행 가능한 JAR, 운영 설정 제공 |
 | Spring Framework | 7.0.x | Boot가 관리하는 IoC/MVC/AOP/트랜잭션 기반 |
 | Gradle Wrapper | 9.7.1 | 저장소의 재현 가능한 정식 빌드 도구 |
 | dependency-management plugin | 1.1.7 | Boot BOM의 관리 버전을 Gradle 의존성에 적용 |
@@ -67,7 +67,7 @@ Java 버전에는 세 가지 의미가 있습니다. `sourceCompatibility`는 �
 3. **builder 기반 mapper 구성**: Jackson 2의 `new ObjectMapper().findAndRegisterModules()` 대신 Jackson 3에서는 `JsonMapper.builder().findAndAddModules().build()`처럼 구성 후 불변 mapper를 만드는 방식을 사용합니다.
 4. **starter 모듈화**: 기존 `spring-boot-starter-web` 대신 `spring-boot-starter-webmvc`를 사용하고, MVC 테스트는 `spring-boot-starter-webmvc-test`를 별도로 선언합니다. `@AutoConfigureMockMvc`의 패키지도 `org.springframework.boot.webmvc.test.autoconfigure`로 이동했습니다.
 5. **자동 설정 패키지 재구성**: Boot 모듈별로 자동 설정 package가 나뉘었습니다. 예를 들어 기본 보안 사용자 자동 설정 제외 대상은 `org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration`입니다.
-6. **BOM 우선**: Jackson, Hibernate, Spring Data 같은 하위 라이브러리 버전을 임의로 각각 올리지 않습니다. Boot 4.1.1이 검증한 BOM 조합을 사용하고, 꼭 override해야 한다면 회귀 테스트와 이유를 문서화합니다.
+6. **BOM 우선**: Jackson, Hibernate, Spring Data 같은 하위 라이브러리 버전을 임의로 각각 올리지 않습니다. Boot 4.1.3이 검증한 BOM 조합을 사용하고, 꼭 override해야 한다면 회귀 테스트와 이유를 문서화합니다. 예: `build.gradle`의 `ext['mysql.version'] = '9.7.0'`은 Boot 4.1.3의 새 MySQL 드라이버(26.x)를 실제 MySQL로 검증하기 전까지 기존 드라이버를 유지하기 위한 override입니다.
 
 업그레이드 완료 조건은 컴파일 성공만이 아닙니다. `./gradlew clean portfolioCheck`, JAR 직접 실행, `/login` HTTP 200, DB 프로필의 Flyway/JPA 검증, 로그와 종료 동작까지 확인해야 자동 설정·직렬화·Servlet·DB 드라이버의 런타임 호환성을 증명할 수 있습니다.
 

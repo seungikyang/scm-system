@@ -94,13 +94,13 @@ class WorkbookStructureTest {
                 Path.of("practice", "feature-implementation-workbook.md"));
 
         assertThat(build)
-                .contains("id 'org.springframework.boot' version '4.1.1'")
+                .contains("id 'org.springframework.boot' version '4.1.3'")
                 .contains("id 'io.spring.dependency-management' version '1.1.7'")
                 .contains("spring-boot-starter-webmvc")
                 .contains("spring-boot-starter-webmvc-test");
         assertThat(wrapper).contains("gradle-9.7.1-bin.zip");
         assertThat(workbook)
-                .contains("Spring Boot 4.1.1")
+                .contains("Spring Boot 4.1.3")
                 .contains("Gradle Wrapper 9.7.1")
                 .contains("Jackson 3");
     }
@@ -114,7 +114,7 @@ class WorkbookStructureTest {
         assertThat(workbook)
                 .contains("Spring Framework 상세 이해")
                 .contains("현재 기준 버전과 호환성 경계")
-                .contains("Spring Boot 4.1.1")
+                .contains("Spring Boot 4.1.3")
                 .contains("Spring Framework 7.0.x")
                 .contains("Gradle Wrapper 9.7.1")
                 .contains("Spring Boot 4에서 반드시 이해할 변경")

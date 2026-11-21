@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class SalesOrderCreateRequest {
     @NotEmpty(message = "수주 라인은 최소 1건 이상이어야 합니다.")
     // @NotEmpty는 목록 크기만 검사하므로 [null]처럼 내용이 없는 행도 별도로 차단한다.
     // @Valid도 원소에 붙여 각 행 내부의 품목·수량·단가 제약까지 검사한다.
+    // 한 주문의 줄 수에 상한을 둡니다. 줄마다 품목 조회와 잠금이 생기므로, 수만 줄을 보내 서버를 오래 붙잡는 요청을 막기 위해서입니다.
+    @Size(max = 100, message = "수주 라인은 최대 100건까지 입력할 수 있습니다.")
     private List<@NotNull(message = "수주 라인은 비어 있을 수 없습니다.") @Valid LineRequest> lines = new ArrayList<>();
 
     @Getter

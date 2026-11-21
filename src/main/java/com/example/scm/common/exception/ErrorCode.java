@@ -52,6 +52,10 @@ public enum ErrorCode {
     INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "INSUFFICIENT_STOCK", "출고할 재고가 부족합니다."),
     ITEM_DISCONTINUED(HttpStatus.BAD_REQUEST, "ITEM_DISCONTINUED", "단종된 품목은 사용할 수 없습니다."),
 
+    // 429 - 로그인을 연속으로 틀려 잠시 막은 상태
+    TOO_MANY_LOGIN_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_LOGIN_ATTEMPTS",
+            "로그인 실패가 반복되어 잠시 로그인할 수 없습니다. 5분 후 다시 시도하세요."),
+
     // 500
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "서버 내부 오류가 발생했습니다.");
 

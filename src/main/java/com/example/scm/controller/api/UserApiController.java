@@ -1,10 +1,12 @@
 package com.example.scm.controller.api;
 
 import com.example.scm.common.auth.CurrentUser;
+import com.example.scm.common.auth.LoginSessionRegistry;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.dto.user.PasswordChangeRequest;
 import com.example.scm.dto.user.UserResponse;
 import com.example.scm.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserApiController {
 
     private final UserService userService;
+    private final LoginSessionRegistry loginSessionRegistry;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getMe(@CurrentUser LoginUser loginUser) {
@@ -36,8 +39,13 @@ public class UserApiController {
 
     @PatchMapping("/me/password")
     public ResponseEntity<Void> changePassword(@CurrentUser LoginUser loginUser,
-                                               @Valid @RequestBody PasswordChangeRequest request) {
+                                               @Valid @RequestBody PasswordChangeRequest request,
+                                               HttpServletRequest httpRequest) {
         userService.changePassword(loginUser.id(), request);
+        // 비밀번호가 바뀌면 예전 비밀번호로 로그인해 둔 다른 브라우저·기기의 세션을 끝냅니다.
+        // 비밀번호를 바꾼 지금 세션은 그대로 두어 사용자가 다시 로그인하지 않아도 되게 합니다.
+        // 변경이 실패하면 위에서 예외가 나므로 이 줄까지 오지 않고 다른 세션도 유지됩니다.
+        loginSessionRegistry.invalidateOthers(loginUser.id(), httpRequest.getSession(false));
         return ResponseEntity.noContent().build();
     }
 }

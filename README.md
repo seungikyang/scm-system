@@ -292,7 +292,7 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 | 구분 | 기술 |
 |---|---|
 | Language | Java 17 |
-| Framework | Spring Boot 4.1.1 / Spring Framework 7.0.x |
+| Framework | Spring Boot 4.1.3 / Spring Framework 7.0.x |
 | JSON | Jackson 3 (`tools.jackson`) |
 | ORM | Spring Data JPA (Hibernate) |
 | View | Thymeleaf (순수 프래그먼트, layout-dialect 미사용) |
@@ -329,7 +329,7 @@ git config core.hooksPath .githooks       # clone마다 1회: pre-commit 경계 
 
 > **처음 설치부터 차근차근** 하고 싶다면 [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)를 먼저 여세요.
 
-- **JDK 17 이상** (Spring Boot 4.1.1의 최소 요구사항, macOS 배포 워크북은 Java 21 사용)
+- **JDK 17 이상** (Spring Boot 4.1.3의 최소 요구사항, macOS 배포 워크북은 Java 21 사용)
 - 저장소에 포함된 Gradle Wrapper 9.7.1 (`./gradlew`)
 - Docker로 실행할 경우 위 요구사항 없이 Docker Desktop만 있으면 됩니다.
 

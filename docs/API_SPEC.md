@@ -127,7 +127,7 @@ Response `200` (`UserResponse`) + 세션 생성:
 { "userId": 1, "email": "admin@scm.com", "name": "관리자", "role": "ADMIN" }
 ```
 
-주요 에러: `INVALID_INPUT`(형식 오류 또는 이메일/비밀번호 불일치).
+주요 에러: `INVALID_INPUT`(형식 오류 또는 이메일/비밀번호 불일치), `TOO_MANY_LOGIN_ATTEMPTS`(429, 같은 이메일로 5회 연속 실패 후 5분간 잠금. 잠금 중에는 맞는 비밀번호도 거절). 실패 횟수는 대소문자·앞뒤 공백을 무시한 이메일 기준이며 서버 메모리에 보관되므로 재시작하면 초기화됩니다.
 
 ### 2.2 로그아웃 — `POST /api/auth/logout`
 
@@ -153,7 +153,7 @@ Request (`PasswordChangeRequest`):
 | `currentPassword` | string | `@NotBlank` |
 | `newPassword` | string | `@NotBlank`, 8~64자, UTF-8 기준 72바이트 이하 |
 
-Response `204 No Content`. 주요 에러: `INVALID_INPUT`(현재 비밀번호 불일치/형식/새 비밀번호의 UTF-8 길이 초과).
+Response `204 No Content`. 변경에 성공하면 같은 사용자가 다른 브라우저·기기에서 로그인해 둔 세션은 모두 종료되고(이후 `401`), 요청한 현재 세션만 유지됩니다. 주요 에러: `INVALID_INPUT`(현재 비밀번호 불일치/형식/새 비밀번호의 UTF-8 길이 초과).
 
 ---
 
@@ -602,7 +602,8 @@ Response `200` (`StockSummaryView`):
 
 | 코드 | HTTP | 기본 메시지 | 주요 발생 지점 |
 |---|---|---|---|
-| `INVALID_INPUT` | 400 | 입력값 검증에 실패했습니다. | 필수값 누락/형식 오류, 수량 ≤ 0, 단가 < 0, 반려 사유 공란 |
+| `INVALID_INPUT` | 400 | 입력값 검증에 실패했습니다. | 필수값 누락/형식 오류, 수량 ≤ 0, 단가 < 0, 반려 사유 공란, 발주·수주 라인 100건 초과 |
+| `TOO_MANY_LOGIN_ATTEMPTS` | 429 | 로그인 실패가 반복되어 잠시 로그인할 수 없습니다. 5분 후 다시 시도하세요. | 같은 이메일로 로그인 5회 연속 실패 |
 | `DUPLICATE_BUSINESS_NUMBER` | 400 | 이미 등록된 사업자번호입니다. | 거래처 등록 |
 | `DUPLICATE_CATEGORY_NAME` | 400 | 이미 사용 중인 카테고리명입니다. | 카테고리 등록/수정 |
 | `DUPLICATE_ITEM_CODE` | 400 | 이미 등록된 품목코드입니다. | 품목 등록 |

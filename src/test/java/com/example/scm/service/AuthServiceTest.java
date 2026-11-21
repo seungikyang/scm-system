@@ -29,6 +29,9 @@ class AuthServiceTest {
     private UserRepository userRepository;
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+    // 실패 횟수 규칙까지 함께 확인하도록 실제 제한기를 사용합니다.
+    @org.mockito.Spy
+    private LoginAttemptLimiter loginAttemptLimiter = new LoginAttemptLimiter();
 
     @InjectMocks
     private AuthService service;
@@ -74,6 +77,33 @@ class AuthServiceTest {
         given(passwordEncoder.matches("wrong-password", "encoded-password")).willReturn(false);
 
         assertLoginFailure(() -> service.login("user@scm.com", "wrong-password"));
+    }
+
+    @Test
+    @DisplayName("연속으로 5번 틀리면 맞는 비밀번호도 잠시 거절해 무차별 대입을 늦춘다")
+    void login_locksAfterRepeatedFailures() {
+        given(userRepository.findByEmail("user@scm.com")).willReturn(Optional.of(user));
+        given(passwordEncoder.matches("wrong-password", "encoded-password")).willReturn(false);
+        for (int i = 0; i < LoginAttemptLimiter.MAX_FAILURES; i++) {
+            assertLoginFailure(() -> service.login("user@scm.com", "wrong-password"));
+        }
+
+        // 대소문자만 바꾼 이메일로도 잠금을 피할 수 없어야 한다.
+        assertThatThrownBy(() -> service.login("USER@scm.com", "password1!"))
+                .isInstanceOf(BusinessException.class)
+                .extracting(e -> ((BusinessException) e).getErrorCode())
+                .isEqualTo(ErrorCode.TOO_MANY_LOGIN_ATTEMPTS);
+    }
+
+    @Test
+    @DisplayName("없는 이메일도 BCrypt 비교를 실행해 응답 시간으로 계정 존재를 알 수 없게 한다")
+    void login_unknownEmail_stillRunsPasswordCheck() {
+        given(userRepository.findByEmail("missing@scm.com")).willReturn(Optional.empty());
+
+        assertLoginFailure(() -> service.login("missing@scm.com", "password1!"));
+
+        org.mockito.Mockito.verify(passwordEncoder)
+                .matches(org.mockito.ArgumentMatchers.eq("password1!"), org.mockito.ArgumentMatchers.startsWith("$2a$10$"));
     }
 
     private void assertLoginFailure(org.junit.jupiter.api.function.Executable executable) {

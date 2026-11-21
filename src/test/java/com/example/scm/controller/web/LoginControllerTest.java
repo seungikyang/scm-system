@@ -25,6 +25,8 @@ class LoginControllerTest {
 
     @Mock
     private AuthService authService;
+    @Mock
+    private com.example.scm.common.auth.LoginSessionRegistry loginSessionRegistry;
 
     @InjectMocks
     private LoginController controller;
@@ -38,6 +40,9 @@ class LoginControllerTest {
         LoginUser loginUser =
                 new LoginUser(1L, "사용자", "user@scm.com", UserRole.USER);
         given(authService.login(form.getEmail(), form.getPassword())).willReturn(loginUser);
+        // 로그인 도중 비밀번호 변경이 없었던 정상 경우: 세션 등록이 허용된다.
+        given(loginSessionRegistry.register(org.mockito.ArgumentMatchers.eq(1L),
+                org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyLong())).willReturn(true);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpSession session = new MockHttpSession();
