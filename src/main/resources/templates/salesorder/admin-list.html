@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  관리자·매니저가 모든 수주를 찾는 화면입니다. 상태, 고객사, 수주일 조건을 함께 보냅니다.
+  완료 처리 대기는 이미 출고한 SHIPPED 주문입니다. 상세 화면에서 완료 처리할 수 있습니다.
+-->
+<head th:replace="~{fragments/layout :: head('수주 관리 - SCM')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+    <div class="page-header">
+        <h1>수주 관리</h1>
+        <a class="btn btn-ghost" th:href="@{/admin/sales-orders(status='SHIPPED')}">완료 처리 대기</a>
+        <a class="btn btn-ghost" th:href="@{/sales-orders/pending}">출고 대기</a>
+    </div>
+    <div class="card">
+        <form th:action="@{/admin/sales-orders}" method="get" class="search-bar">
+            <div class="form-row"><label for="status">상태</label>
+                <select id="status" name="status"><option value="">전체 상태</option>
+                    <option th:each="s : ${statusOptions}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == selectedStatus}"></option>
+                </select></div>
+            <div class="form-row"><label for="partnerId">고객사</label>
+                <select id="partnerId" name="partnerId"><option value="">전체 고객사</option>
+                    <option th:each="p : ${partners}" th:value="${p.id}" th:text="${p.name}"
+                            th:selected="${p.id == selectedPartnerId}"></option>
+                </select></div>
+            <div class="form-row"><label for="from">수주일 시작</label>
+                <input type="date" id="from" name="from" th:value="${from}"></div>
+            <div class="form-row"><label for="to">수주일 종료</label>
+                <input type="date" id="to" name="to" th:value="${to}"></div>
+            <button class="btn btn-primary" type="submit">검색</button>
+            <a class="btn btn-ghost" th:href="@{/admin/sales-orders}">초기화</a>
+        </form>
+    </div>
+    <p class="muted" th:text="|총 ${orders.totalElements}건|"></p>
+    <div class="table-scroll"><table class="data">
+        <thead><tr><th>수주번호</th><th>고객사</th><th>작성자</th><th>수주일</th><th class="num">금액</th><th>상태</th></tr></thead>
+        <tbody><tr th:each="o : ${orders.content}">
+            <td><a th:href="@{/sales-orders/{id}(id=${o.salesOrderId})}" th:text="${o.orderNumber}"></a></td>
+            <td th:text="${o.partnerName}"></td><td th:text="${o.writerName}"></td>
+            <td th:text="${o.orderDate}"></td>
+            <td class="num" th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+            <td><span class="badge" th:classappend="'badge-' + ${o.status}" th:text="${o.status}"></span></td>
+        </tr><tr th:if="${orders.empty}"><td colspan="6">조회된 수주서가 없습니다.</td></tr></tbody>
+    </table></div>
+    <nav th:replace="~{fragments/layout :: pagination(${orders},
+            @{/admin/sales-orders(status=${selectedStatus},partnerId=${selectedPartnerId},from=${from},to=${to},size=${orders.size})} + '&page=')}"></nav>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

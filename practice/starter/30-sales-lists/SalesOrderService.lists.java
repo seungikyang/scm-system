@@ -1,62 +1,75 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/SalesOrderService.java (my/pending/detail)
-// 목표: 수주 my / pending / detail 권한 검사를 채우세요. PRD 2.5.7, FR-SO-003/004/005 참고.
+// 수주 — my / pending / detail 권한 검사 (PRD 2.5.7) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=30
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ============ 내 수주서 목록 ============
-@Transactional(readOnly = true)
-public Page<SalesOrderResponse> myList(Long currentUserId, Pageable pageable) {
-    return salesOrderRepository.findByWriterId(currentUserId, pageable)
-        .map(SalesOrderResponse::from);
-}
+// 선택형 [W130] 수주 상세에 권한 없는 USER가 접근하면?
+//    1. 작성자 ID를 방문자 ID로 바꾼다
+//    2. ACCESS_DENIED로 거절한다
+//    3. 수주를 자동 출고한다
+//    4. 모든 비밀번호를 반환한다
+//    정답·해설: practice/workbook-questions.md#w130
+//    정답: 2번 · 현재 구현은 작성자 또는 ADMIN/MANAGER에 조회를 허용합니다. 과거 담당자 제한 과제와 구분합니다.
 
-// ============ 처리 대기 수주서 (매니저/관리자) ============
-@Transactional(readOnly = true)
-public Page<SalesOrderResponse> pendingList(Pageable pageable) {
-    // TODO 01: "처리 대기" 는 어떤 상태인가?
-    return salesOrderRepository.findByStatus(SalesOrderStatus.____, pageable)
-        .map(SalesOrderResponse::from);
-}
+// 선택형 [W131] 담당자별 pending 조회를 설계할 때 위임의 영향은?
+//    1. 담당자 기준이면 위임된 ID로 조회 조건·권한 정책을 일치시켜야 한다
+//    2. 위임하면 모든 수주가 자동 완료된다
+//    3. 담당자 ID가 페이징 크기가 된다
+//    4. 어떤 조회도 위임의 영향을 받지 않는다
+//    정답·해설: practice/workbook-questions.md#w131
+//    정답: 1번 · 현재 참조 구현의 역할 기반 처리 대기 목록과 담당자별 대안 정책을 구분합니다.
 
-// ============ 수주서 상세 (권한 분기) ============
-@Transactional(readOnly = true)
-public SalesOrderResponse getDetail(Long currentUserId, Long salesOrderId) {
-    User user = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+// 선택형 [W132] ADMIN 전체 수주 조회를 Service에 노출할 때 필요한 계약은?
+//    1. 요청 본문의 isAdmin=true만 신뢰한다
+//    2. 관리자 계정 비밀번호를 검색 조건으로 공개한다
+//    3. 항상 전체 엔티티 그래프를 응답한다
+//    4. 인증 사용자 정보와 검색·페이지 조건을 받아 관리자 권한을 확인한다
+//    정답·해설: practice/workbook-questions.md#w132
+//    정답: 4번 · 검색 계약과 실행 권한을 서버에서 함께 검증합니다.
 
-    SalesOrder so = salesOrderRepository.findById(salesOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SALES_ORDER_NOT_FOUND));
+// 선택형 [W187] 현재 수주 상세 조회가 허용되는 사용자는?
+//    1. 모든 비로그인 사용자
+//    2. 작성자 또는 ADMIN/MANAGER
+//    3. 작성자가 아닌 USER만
+//    4. 공지 작성자만
+//    정답·해설: practice/workbook-questions.md#w187
+//    정답: 2번 · 현재 requireAccess는 작성자와 두 관리 역할을 허용합니다. 과거 과제의 담당자 제한과 구분합니다.
 
-    // TODO 02: 권한 분기 — 작성자, 처리자, ADMIN 만.
-    boolean isWriter  = so.getWriterId().equals(user.getId());
-    boolean isManager = so.getManagerId() != null && so.getManagerId().equals(user.getId());
-    boolean isAdmin   = (user.getRole() == UserRole.____);
-    if (!isWriter && !isManager && !isAdmin) {
-        throw new BusinessException(ErrorCode.____);
-    }
+// 선택형 [W188] 현재 처리 대기 수주 목록의 상태 조건은?
+//    1. DRAFT만
+//    2. COMPLETED만
+//    3. CONFIRMED
+//    4. CANCELED만
+//    정답·해설: practice/workbook-questions.md#w188
+//    정답: 3번 · 현재 SalesOrderService.pending은 출고 전 CONFIRMED 목록을 조회합니다. 완료 대기는 별도 SHIPPED 목록입니다.
 
-    return SalesOrderResponse.from(so);
-}
+// 선택형 [W257] 내 수주 목록에 포함되는 주문의 기준은?
+//    1. 모든 고객사의 전체 발주
+//    2. 다른 사용자만 작성한 수주
+//    3. 현재 사용자가 작성한 수주
+//    4. 공지 조회수 0인 수주
+//    정답·해설: practice/workbook-questions.md#w257
+//    정답: 3번 · 인증 사용자 ID의 작성자 조건을 사용해 본인 목록을 조회합니다.
 
-// ============ (선택) 관리자 전체 목록 ============
-@Transactional(readOnly = true)
-public Page<SalesOrderResponse> adminList(SalesOrderStatus status, Long partnerId, Pageable pageable) {
-    // TODO 03: status / partnerId 조합 분기.
-    Page<SalesOrder> page;
-    if (status != null && partnerId != null) {
-        page = salesOrderRepository.findByStatusAndPartner_Id(status, partnerId, pageable);
-    } else if (status != null) {
-        page = salesOrderRepository.findByStatus(status, pageable);
-    } else if (partnerId != null) {
-        page = salesOrderRepository.findByPartner_Id(partnerId, pageable);
-    } else {
-        page = salesOrderRepository.findAll(pageable);
-    }
-    return page.map(SalesOrderResponse::from);
-}
+// 선택형 [W258] 수주 목록의 status 검색 조건은 무엇을 제한하는가?
+//    1. 사용자의 비밀번호 길이
+//    2. 조회 시점의 수주 상태
+//    3. 거래처 사업자번호 형식
+//    4. 웹 브라우저 버전
+//    정답·해설: practice/workbook-questions.md#w258
+//    정답: 2번 · 상태 조건은 작성자·거래처·기간·페이지 조건과 요구에 맞게 조합합니다.
 
-// 학습 질문:
-// Q1. managerId 가 아직 비어 있는 (CONFIRMED) 수주는 누구의 pending 으로 보일까?
-//     A:
-// Q2. 매니저 권한 위임(managerId 변경) 시 기존 위임자의 pending 목록은 어떻게 되는가?
-//     A:
-// Q3. 권한 검사 코드를 매번 작성하면 중복이 많아진다. 어디로 추출할까?
-//     A:
+// 선택형 [W352] 반복되는 역할·작성자 접근 검사를 헬퍼로 모을 때의 입력은?
+//    1. 서버가 인증한 사용자 정보와 대상의 소유권 정보
+//    2. 요청 본문의 isAdmin만
+//    3. 브라우저 색상만
+//    4. DB 비밀번호만
+//    정답·해설: practice/workbook-questions.md#w352
+//    정답: 1번 · 대상별 정책을 공통화하되 현재 역할과 실제 대상 관계를 서버 값으로 판단합니다.
+
+// 선택형 [W353] 현재 담당자 미지정 CONFIRMED 수주는 누가 처리 대기 목록에서 조회하는가?
+//    1. ADMIN 또는 MANAGER의 역할 기반 목록에 포함될 수 있다
+//    2. 반드시 아무에게도 보이지 않는다
+//    3. 모든 비로그인 사용자에게만 보인다
+//    4. 작성자가 바뀌어야만 보인다
+//    정답·해설: practice/workbook-questions.md#w353
+//    정답: 1번 · 현재 pending은 상태로 조회하고 역할을 검사합니다. 담당자별 제한 목록은 별도 대안 정책입니다.

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="입고(receive) + 재고 증가" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:49.849Z" hostname="yangseouui-MacBookPro.local" time="0.004">
+  <properties/>
+  <testcase name="AC-023 비APPROVED(REQUESTED) 입고 → INVALID_STATUS, 재고 미변경" classname="com.example.scm.service.PurchaseOrderServiceTest$Receive" time="0.001"/>
+  <testcase name="AC-022 정상: APPROVED→RECEIVED + 라인별 재고 증가(없으면 생성)" classname="com.example.scm.service.PurchaseOrderServiceTest$Receive" time="0.002"/>
+  <testcase name="재입고 차단: RECEIVED 상태에서 receive → INVALID_STATUS" classname="com.example.scm.service.PurchaseOrderServiceTest$Receive" time="0.001"/>
+  <testcase name="AC-024 USER 입고 → ACCESS_DENIED" classname="com.example.scm.service.PurchaseOrderServiceTest$Receive" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

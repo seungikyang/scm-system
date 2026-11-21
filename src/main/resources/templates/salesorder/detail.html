@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  수주 한 건의 자세한 정보 화면입니다. 서버에서 조회한 정보를 th:text로 글자 그대로 보여 줍니다.
+  처리 버튼을 누르면 서버가 권한과 현재 상태를 확인한 뒤 작업합니다.
+-->
+<head th:replace="~{fragments/layout :: head('SCM')}"></head>
+<body><nav th:replace="~{fragments/layout :: nav}"></nav><main>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="page-header"><h1>수주 상세</h1><a class="btn btn-ghost" th:href="@{/sales-orders/my}">내 수주</a>
+<a class="btn btn-ghost" th:if="${currentUser.isAdmin() or currentUser.isManager()}" th:href="@{/admin/sales-orders}">수주 관리</a></div>
+<div class="card"><h2 th:text="${order.orderNumber}"></h2>
+<dl class="detail"><dt>고객사</dt><dd th:text="${order.partnerName}"></dd><dt>작성자</dt><dd th:text="${order.writerName}"></dd>
+<dt>수주일 / 출고 예정일</dt><dd th:text="|${order.orderDate} / ${order.shipDate ?: '-'}|"></dd>
+<dt>상태</dt><dd th:text="${order.status}"></dd><dt>총금액</dt><dd th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></dd>
+<dt th:if="${order.cancelReason}">취소 사유</dt><dd th:if="${order.cancelReason}" th:text="${order.cancelReason}"></dd></dl>
+<div class="table-scroll"><table class="data"><thead><tr><th>품목코드</th><th>품목</th><th>수량</th><th>단가</th><th>금액</th></tr></thead><tbody>
+<tr th:each="l : ${order.lines}"><td th:text="${l.itemCode}"></td><td th:text="${l.itemName}"></td><td th:text="${l.quantity}"></td>
+<td th:text="${#numbers.formatDecimal(l.unitPrice, 1, 'COMMA', 2, 'POINT')}"></td>
+<td th:text="${#numbers.formatDecimal(l.lineAmount, 1, 'COMMA', 2, 'POINT')}"></td></tr></tbody></table></div>
+<p th:if="${order.confirmedAt}" th:text="|확정: ${order.confirmedAt}|"></p>
+<p th:if="${order.shippedAt}" th:text="|출고: ${order.shippedAt}|"></p>
+<p th:if="${order.completedAt}" th:text="|완료: ${order.completedAt}|"></p>
+<div class="form-actions">
+<!-- canConfirm 등의 참/거짓은 Controller가 준비합니다. 버튼이 보내는 요청은 Service에서 다시 검사합니다. -->
+<form th:if="${canConfirm}" th:action="@{/sales-orders/{id}/confirm(id=${order.salesOrderId})}" method="post"><button class="btn btn-primary">확정</button></form>
+<form th:if="${canShip}" th:action="@{/sales-orders/{id}/ship(id=${order.salesOrderId})}" method="post"><button class="btn btn-primary">출고</button></form>
+<form th:if="${canComplete}" th:action="@{/sales-orders/{id}/complete(id=${order.salesOrderId})}" method="post"><button class="btn btn-primary">완료</button></form></div>
+<form th:if="${canCancel}" th:action="@{/sales-orders/{id}/cancel(id=${order.salesOrderId})}" method="post" class="mt-2">
+<label for="cancelReason">취소 사유</label><input type="text" id="cancelReason" name="cancelReason" required maxlength="500">
+<button class="btn btn-danger" type="submit">수주 취소</button></form>
+</div>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

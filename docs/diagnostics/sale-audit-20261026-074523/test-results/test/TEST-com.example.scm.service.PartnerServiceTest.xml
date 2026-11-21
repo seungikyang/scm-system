@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="PartnerService 단위 테스트" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:48.817Z" hostname="yangseouui-MacBookPro.local" time="0.033">
+  <properties/>
+  <testcase name="일반 사용자는 거래처를 등록할 수 없다" classname="com.example.scm.service.PartnerServiceTest" time="0.031"/>
+  <testcase name="존재하지 않는 거래처 비활성화는 PARTNER_NOT_FOUND다" classname="com.example.scm.service.PartnerServiceTest" time="0.001"/>
+  <testcase name="거래처 삭제 요청은 이력을 보존하는 비활성화로 처리한다" classname="com.example.scm.service.PartnerServiceTest" time="0.0"/>
+  <testcase name="ADMIN은 중복되지 않은 사업자번호로 활성 거래처를 등록한다" classname="com.example.scm.service.PartnerServiceTest" time="0.001"/>
+  <testcase name="중복 사업자번호는 저장 전에 차단한다" classname="com.example.scm.service.PartnerServiceTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

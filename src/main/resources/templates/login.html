@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  로그인 화면입니다. 입력한 이메일과 비밀번호를 POST /login으로 보내 LoginController가 확인하게 합니다.
+  th:field는 입력칸과 Java 양식의 같은 이름 칸을 연결하고, th:errors는 입력 오류를 보여 줍니다.
+-->
 <head th:replace="~{fragments/layout :: head('로그인 - SCM')}"></head>
 <body>
 <div class="login-wrap">

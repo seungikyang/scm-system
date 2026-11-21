@@ -1,0 +1,87 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.76.1"
+  },
+  "ReportID": "01a1753d-e917-73bd-9330-1e92c7ba0af9",
+  "CreatedAt": "2026-10-26T07:45:54.071246+09:00",
+  "ArtifactID": "sha256:503b7041a8183e3d3387ae4661b3cf326d98d8474011c3b4b4967454d9ce1bb1",
+  "ArtifactName": ".",
+  "ArtifactType": "repository",
+  "Metadata": {
+    "RepoURL": "https://github.com/seungikyang/scm-system.git",
+    "Branch": "agent/scm-workbook-loop-root-guard",
+    "Commit": "de6caec941bd9fd8efcc0bb2a56cb4be7cb80967",
+    "CommitMsg": "docs: explain SCM technologies and code flow for beginners",
+    "Author": "seungik.yang <si.yang79@gmail.com>",
+    "Committer": "seungik.yang <si.yang79@gmail.com>"
+  },
+  "Results": [
+    {
+      "Target": "Loose File License(s)",
+      "Class": "license-file",
+      "Licenses": [
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/jquery-ui.overrides.css",
+          "Name": "GPL-2.0-with-classpath-exception",
+          "Text": "",
+          "Confidence": 1,
+          "Link": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html"
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/script.js",
+          "Name": "GPL-2.0-with-classpath-exception",
+          "Text": "",
+          "Confidence": 1,
+          "Link": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html"
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/search.js",
+          "Name": "GPL-2.0-with-classpath-exception",
+          "Text": "",
+          "Confidence": 1,
+          "Link": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html"
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/legal/LICENSE",
+          "Name": "GPL-2.0-with-classpath-exception",
+          "Text": "",
+          "Confidence": 0.9783731439638477,
+          "Link": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html"
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/legal/jquery.md",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": "https://spdx.org/licenses/MIT.html"
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "",
+          "FilePath": "build/docs/javadoc/legal/jqueryUI.md",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": "https://spdx.org/licenses/MIT.html"
+        }
+      ]
+    }
+  ]
+}

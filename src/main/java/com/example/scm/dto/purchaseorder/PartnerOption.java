@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 공급사 셀렉트 옵션 (작성 폼 / 관리자 목록 거래처 필터). (02_contracts §3.1 partners, §3.4 partners)
+ * 주문 화면에서 회사를 고를 때 필요한 번호와 이름입니다.
+ * 사람에게는 회사 이름을 보여 주고 서버에는 그 회사의 번호를 보냅니다.
+ *
+ * 발주 작성 폼과 관리자 필터의 공급사 선택 상자에 필요한 최소 필드 DTO.
  */
 @Getter
 @Builder

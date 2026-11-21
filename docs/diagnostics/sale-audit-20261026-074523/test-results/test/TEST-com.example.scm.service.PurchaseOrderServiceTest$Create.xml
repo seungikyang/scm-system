@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="발주서 작성" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:49.864Z" hostname="yangseouui-MacBookPro.local" time="0.014">
+  <properties/>
+  <testcase name="OQ-13 단가 누락 → 품목 표준단가 적용 + 서버 라인금액 계산" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.002"/>
+  <testcase name="AC-003 CUSTOMER 거래처 → PARTNER_TYPE_MISMATCH" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="null 라인은 서비스 직접 호출에서도 저장 전에 거부한다" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="AC-008 발주일&gt;납기일 → INVALID_DATE_RANGE" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-004 BOTH 거래처 → 정상 허용" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-002 빈 라인 → EMPTY_ORDER_LINES" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-011 비로그인 작성 → AUTHENTICATION_REQUIRED" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="AC-004 미존재 거래처 → PARTNER_NOT_FOUND" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-005 INACTIVE 거래처 → INVALID_STATUS (OQ-12)" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-006 단종 품목 → ITEM_DISCONTINUED" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="DB DECIMAL 범위를 넘는 라인 금액은 저장 전에 차단" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="AC-007 미존재 품목 → ITEM_NOT_FOUND" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="AC-001 정상: status=DRAFT, orderNumber 발급, totalAmount=Σ라인금액(서버계산)" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="발주번호 외 무결성 위반은 채번 오류로 숨기지 않음" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <testcase name="수량 0 이하 → INVALID_INPUT (BR-10)" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.0"/>
+  <testcase name="발주번호 UNIQUE 충돌은 독립 트랜잭션으로 재채번해 저장" classname="com.example.scm.service.PurchaseOrderServiceTest$Create" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

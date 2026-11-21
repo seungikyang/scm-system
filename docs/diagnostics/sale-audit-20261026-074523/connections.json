@@ -1,0 +1,98 @@
+{
+  "checked_at": "2026-10-25T22:53:02.066002+00:00",
+  "configured_connections": [
+    {
+      "name": "codex_app",
+      "enabled": false,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "computer-use",
+      "enabled": false,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "cua_repl",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "dart",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "jetbrains",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "node_repl",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "openaiDeveloperDocs",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "ponytail",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "rea",
+      "enabled": true,
+      "auth_status": "unsupported"
+    },
+    {
+      "name": "sonarqube",
+      "enabled": true,
+      "auth_status": "unsupported"
+    }
+  ],
+  "actual_tool_availability": {
+    "sonarqube": true,
+    "github": true,
+    "web": true,
+    "jetbrains": false
+  },
+  "sonarqube": {
+    "call": "search_my_sonarqube_projects",
+    "arguments": {
+      "pageSize": 100
+    },
+    "result": {
+      "projects": [],
+      "total": 0
+    },
+    "project_key": "UNKNOWN",
+    "current_analysis_id": "UNKNOWN",
+    "commit_match": "UNKNOWN",
+    "quality_gate": "UNKNOWN",
+    "coverage": "UNKNOWN",
+    "issues": "UNKNOWN",
+    "security_hotspots": "UNKNOWN",
+    "reason": "저장소 설정에 projectKey 없음, 조회 목록도 비어 있음. 키 추측과 Scanner 업로드 안 함"
+  },
+  "jetbrains": {
+    "status": "UNKNOWN",
+    "reason": "codex mcp list에는 enabled이지만 현재 세션에 호출 가능한 JetBrains 도구가 없음. 기존 Gradle Wrapper로 전환"
+  },
+  "github": {
+    "repository": "seungikyang/scm-system",
+    "visibility": "public",
+    "current_commit_query": "de6caec941bd9fd8efcc0bb2a56cb4be7cb80967",
+    "workflow_runs": [
+      {
+        "id": 34370979507,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/seungikyang/scm-system/actions/runs/34370979507"
+      }
+    ],
+    "limitation": "commit workflow 도구는 PR 이벤트·첫 페이지 한정. 미커밋 작업 트리와 동등한 검사 증거가 아니며 원격 배포물도 확인하지 않음"
+  },
+  "server_versions": "UNKNOWN: MCP 응답에 버전 정보 없음"
+}

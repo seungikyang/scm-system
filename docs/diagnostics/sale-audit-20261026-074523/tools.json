@@ -1,0 +1,51 @@
+{
+  "java": {
+    "command": [
+      "java",
+      "-version"
+    ],
+    "output": "openjdk version \"17.0.21.0.2\" 2026-10-22\nOpenJDK Runtime Environment Homebrew (build 17.0.21.0.2+0)\nOpenJDK 64-Bit Server VM Homebrew (build 17.0.21.0.2+0, mixed mode, sharing)",
+    "exit_code": 0
+  },
+  "gradle": {
+    "command": [
+      "./gradlew",
+      "--offline",
+      "--version"
+    ],
+    "output": "------------------------------------------------------------\nGradle 9.7.1\n------------------------------------------------------------\n\nBuild time:    2026-08-19 14:16:09 UTC\nRevision:      92f0512e7f06d84621afba191f75e265363890cf\n\nKotlin:        2.4.0\nGroovy:        4.0.32\nAnt:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026\nLauncher JVM:  17.0.21.0.2 (Homebrew 17.0.21.0.2+0)\nDaemon JVM:    /opt/homebrew/Cellar/openjdk@17/17.0.21.0.2/libexec/openjdk.jdk/Contents/Home (no Daemon JVM specified, using current Java home)\nOS:            Mac OS X 27.0.1 aarch64",
+    "exit_code": 0
+  },
+  "node": {
+    "command": [
+      "node",
+      "--version"
+    ],
+    "output": "v24.19.0",
+    "exit_code": 0
+  },
+  "trivy": {
+    "command": [
+      "trivy",
+      "version"
+    ],
+    "output": "Version: 0.76.1",
+    "exit_code": 0
+  },
+  "git": {
+    "command": [
+      "git",
+      "--version"
+    ],
+    "output": "git version 2.56.0",
+    "exit_code": 0
+  },
+  "python": {
+    "command": [
+      "python3",
+      "--version"
+    ],
+    "output": "Python 3.15.1",
+    "exit_code": 0
+  }
+}

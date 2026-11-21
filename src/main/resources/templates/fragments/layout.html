@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <!--
+  여러 화면에서 공통으로 사용하는 메뉴, 알림, 아래쪽 안내, 페이지 이동 버튼입니다.
+  fragment는 재사용할 화면 조각이고, 다른 파일의 th:replace가 이 조각을 가져와 넣습니다.
+  메뉴를 숨기는 것은 화면 표시일 뿐입니다. 실제 작업 권한은 서버에서 다시 확인합니다.
+-->
+<!--
+  학습 모듈 35-1: Thymeleaf 화면을 읽을 때 가장 먼저 보는 파일.
+  이 공통 조각이 이해되면 item/list.html → item/form.html → item/detail.html 순으로 이동한다.
+
   공통 레이아웃 프래그먼트 (순수 Thymeleaf, layout-dialect 미사용).
   - head(title)            : 공통 head + app.css
   - nav                    : 상단 네비 (currentUser 표시, 권한별 메뉴, 로그아웃 POST)
@@ -11,7 +19,7 @@
   currentUser 는 GlobalModelAdvice 가 모든 web 뷰에 주입 (record LoginUser → 접근자 메서드형).
 -->
 
-<!-- ===================== head(title) ===================== -->
+<!-- 공통 머리말: 화면 제목과 글자 설정, 공통 스타일을 준비합니다. -->
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,8 +29,10 @@
 
 <body>
 
-<!-- ===================== nav ===================== -->
-<nav th:fragment="nav" class="navbar">
+<!-- 상단 메뉴: 로그인 사용자와 역할에 맞는 이동 경로를 보여 줍니다. -->
+<!-- 오류 화면에는 GlobalModelAdvice의 currentUser가 전달되지 않습니다. 그때도 메뉴와 로그아웃이
+     사라지지 않도록, currentUser가 없으면 세션에 보관된 로그인 출입증(LOGIN_USER)을 대신 사용합니다. -->
+<nav th:fragment="nav" class="navbar" th:with="currentUser=${currentUser ?: session.LOGIN_USER}">
     <a class="brand" th:href="@{/}">SCM</a>
 
     <div class="menu" th:with="role=${currentUser != null ? currentUser.role().name() : ''}">
@@ -36,6 +46,12 @@
         <!-- 발주: 로그인 사용자 전원 -->
         <a th:if="${currentUser != null}" th:href="@{/purchase-orders/new}">발주작성</a>
         <a th:if="${currentUser != null}" th:href="@{/purchase-orders/my}">내 발주</a>
+        <a th:if="${currentUser != null}" th:href="@{/stocks}">재고</a>
+
+        <a th:if="${currentUser != null}" th:href="@{/sales-orders/new}">수주작성</a>
+        <a th:if="${currentUser != null}" th:href="@{/sales-orders/my}">내 수주</a>
+        <a th:if="${currentUser != null}" th:href="@{/notices}">공지사항</a>
+        <a th:if="${role == 'ADMIN' or role == 'MANAGER'}" th:href="@{/admin/sales-orders}">수주관리</a>
 
         <!-- 관리자 발주(승인관리): ADMIN, MANAGER -->
         <a th:if="${role == 'ADMIN' or role == 'MANAGER'}" th:href="@{/admin/purchase-orders}">관리자발주</a>
@@ -53,19 +69,20 @@
     </div>
 </nav>
 
-<!-- ===================== alerts (flash) ===================== -->
+<!-- 작업 알림: 등록·수정 후 이동한 화면에서 성공 또는 오류 안내를 보여 줍니다. -->
+<!-- th:if는 조건이 참일 때만 표시합니다. flash 안내는 다른 주소로 이동한 직후 한 번 보여 줄 자료입니다. -->
 <div th:fragment="alerts">
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">성공</div>
     <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">오류</div>
 </div>
 
-<!-- ===================== footer ===================== -->
+<!-- 공통 하단 안내: 모든 업무 화면 아래에 같은 문구를 보여 줍니다. -->
 <footer th:fragment="footer" class="footer">
     <span>SCM System &copy; 2026 — 공급망 관리 시스템</span>
 </footer>
 
-<!-- ===================== pagination(page, baseUrl) =====================
-     page    : org.springframework.data.domain.Page
+<!-- 페이지 이동 버튼: 현재 페이지 주변의 번호와 이전·다음 링크를 만듭니다.
+     page    : 현재 페이지 번호, 전체 페이지 수, 조회 결과를 담은 자료입니다.
      baseUrl : 기존 쿼리스트링(검색조건 등)이 포함된 base URL. 끝에 page 파라미터를 붙인다.
                호출 측에서 '?'/'&' 구분자를 포함해 전달 (예: @{/items(name=...)} + '&page=')
 -->
@@ -74,9 +91,10 @@
     <a th:if="${!page.first}" th:href="${baseUrl + (page.number - 1)}">&laquo;</a>
     <span th:unless="${!page.first}" class="disabled">&laquo;</span>
 
-    <!-- 페이지 번호 (현재 ±2 범위) -->
-    <th:block th:with="start=${page.number - 2 < 0 ? 0 : page.number - 2},
-                       end=${page.number + 2 >= page.totalPages ? page.totalPages - 1 : page.number + 2}">
+    <!-- 페이지 번호 (현재 ±2 범위). 내부 번호 0은 첫 페이지이고, 화면에는 i + 1로 1부터 표시합니다. -->
+    <th:block th:with="current=${page.number < page.totalPages ? page.number : page.totalPages - 1},
+                       start=${current - 2 < 0 ? 0 : current - 2},
+                       end=${current < page.totalPages - 2 ? current + 2 : page.totalPages - 1}">
         <th:block th:each="i : ${#numbers.sequence(start, end)}">
             <span th:if="${i == page.number}" class="current" th:text="${i + 1}">1</span>
             <a th:unless="${i == page.number}" th:href="${baseUrl + i}" th:text="${i + 1}">1</a>

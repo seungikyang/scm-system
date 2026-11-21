@@ -42,6 +42,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -68,6 +69,8 @@ class PurchaseOrderServiceTest {
     private UserRepository userRepository;
     @Mock
     private OrderNumberGenerator orderNumberGenerator;
+    @Mock
+    private PurchaseOrderPersistenceService purchaseOrderPersistenceService;
 
     @InjectMocks
     private PurchaseOrderService service;
@@ -103,7 +106,7 @@ class PurchaseOrderServiceTest {
             given(itemRepository.findById(10L)).willReturn(Optional.of(item10));
             given(itemRepository.findById(11L)).willReturn(Optional.of(item11));
             given(orderNumberGenerator.generate(any(LocalDate.class))).willReturn("PO-20260601-0001");
-            given(purchaseOrderRepository.saveAndFlush(any(PurchaseOrder.class)))
+            given(purchaseOrderPersistenceService.saveAndFlush(any(PurchaseOrder.class)))
                     .willAnswer(inv -> {
                         PurchaseOrder po = inv.getArgument(0);
                         ReflectionTestUtils.setField(po, "id", 100L);
@@ -128,7 +131,17 @@ class PurchaseOrderServiceTest {
         void create_emptyLines() {
             PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null);
             assertCode(() -> service.create(req, writer), ErrorCode.EMPTY_ORDER_LINES);
-            verify(purchaseOrderRepository, never()).saveAndFlush(any());
+            verify(purchaseOrderPersistenceService, never()).saveAndFlush(any());
+        }
+
+        @Test
+        @DisplayName("null 라인은 서비스 직접 호출에서도 저장 전에 거부한다")
+        void create_nullLine() {
+            PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null);
+            req.setLines(java.util.Collections.singletonList(null));
+
+            assertCode(() -> service.create(req, writer), ErrorCode.INVALID_INPUT);
+            verify(purchaseOrderPersistenceService, never()).saveAndFlush(any());
         }
 
         @Test
@@ -149,7 +162,7 @@ class PurchaseOrderServiceTest {
             given(itemRepository.findById(10L))
                     .willReturn(Optional.of(item(10L, ItemStatus.ACTIVE, new BigDecimal("100"))));
             given(orderNumberGenerator.generate(any(LocalDate.class))).willReturn("PO-20260601-0001");
-            given(purchaseOrderRepository.saveAndFlush(any(PurchaseOrder.class)))
+            given(purchaseOrderPersistenceService.saveAndFlush(any(PurchaseOrder.class)))
                     .willAnswer(inv -> inv.getArgument(0));
 
             PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null,
@@ -219,7 +232,7 @@ class PurchaseOrderServiceTest {
             given(itemRepository.findById(10L))
                     .willReturn(Optional.of(item(10L, ItemStatus.ACTIVE, new BigDecimal("7000"))));
             given(orderNumberGenerator.generate(any(LocalDate.class))).willReturn("PO-20260601-0001");
-            given(purchaseOrderRepository.saveAndFlush(any(PurchaseOrder.class)))
+            given(purchaseOrderPersistenceService.saveAndFlush(any(PurchaseOrder.class)))
                     .willAnswer(inv -> inv.getArgument(0));
 
             PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null,
@@ -236,6 +249,66 @@ class PurchaseOrderServiceTest {
             PurchaseOrderCreateRequest req = createRequest(1L, LocalDate.now(), null,
                     line(10L, 0, new BigDecimal("100")));
             assertCode(() -> service.create(req, writer), ErrorCode.INVALID_INPUT);
+        }
+
+        @Test
+        @DisplayName("발주번호 UNIQUE 충돌은 독립 트랜잭션으로 재채번해 저장")
+        void create_retriesOnlyOrderNumberConflict() {
+            given(partnerRepository.findById(1L))
+                    .willReturn(Optional.of(partner(1L, PartnerType.SUPPLIER, PartnerStatus.ACTIVE)));
+            given(itemRepository.findById(10L))
+                    .willReturn(Optional.of(item(10L, ItemStatus.ACTIVE, new BigDecimal("100"))));
+            given(orderNumberGenerator.generate(any(LocalDate.class)))
+                    .willReturn("PO-20260601-0001", "PO-20260601-0002");
+            given(purchaseOrderPersistenceService.saveAndFlush(any(PurchaseOrder.class)))
+                    .willThrow(new DataIntegrityViolationException("duplicate order number"))
+                    .willAnswer(inv -> {
+                        PurchaseOrder po = inv.getArgument(0);
+                        ReflectionTestUtils.setField(po, "id", 101L);
+                        return po;
+                    });
+            given(purchaseOrderRepository.existsByOrderNumber("PO-20260601-0001")).willReturn(true);
+
+            PurchaseOrderCreateResponse response = service.create(
+                    createRequest(1L, LocalDate.now(), null,
+                            line(10L, 1, new BigDecimal("100"))), writer);
+
+            assertThat(response.getOrderNumber()).isEqualTo("PO-20260601-0002");
+        }
+
+        @Test
+        @DisplayName("발주번호 외 무결성 위반은 채번 오류로 숨기지 않음")
+        void create_doesNotRetryUnrelatedConstraintViolation() {
+            given(partnerRepository.findById(1L))
+                    .willReturn(Optional.of(partner(1L, PartnerType.SUPPLIER, PartnerStatus.ACTIVE)));
+            given(itemRepository.findById(10L))
+                    .willReturn(Optional.of(item(10L, ItemStatus.ACTIVE, new BigDecimal("100"))));
+            given(orderNumberGenerator.generate(any(LocalDate.class))).willReturn("PO-20260601-0001");
+            DataIntegrityViolationException failure =
+                    new DataIntegrityViolationException("unrelated constraint");
+            given(purchaseOrderPersistenceService.saveAndFlush(any(PurchaseOrder.class)))
+                    .willThrow(failure);
+            given(purchaseOrderRepository.existsByOrderNumber("PO-20260601-0001")).willReturn(false);
+
+            assertThatThrownBy(() -> service.create(
+                    createRequest(1L, LocalDate.now(), null,
+                            line(10L, 1, new BigDecimal("100"))), writer))
+                    .isSameAs(failure);
+        }
+
+        @Test
+        @DisplayName("DB DECIMAL 범위를 넘는 라인 금액은 저장 전에 차단")
+        void create_rejectsLineAmountOverflow() {
+            given(partnerRepository.findById(1L))
+                    .willReturn(Optional.of(partner(1L, PartnerType.SUPPLIER, PartnerStatus.ACTIVE)));
+            given(itemRepository.findById(10L))
+                    .willReturn(Optional.of(item(10L, ItemStatus.ACTIVE, new BigDecimal("9999999999999.99"))));
+
+            PurchaseOrderCreateRequest request = createRequest(1L, LocalDate.now(), null,
+                    line(10L, 2, new BigDecimal("9999999999999.99")));
+
+            assertCode(() -> service.create(request, writer), ErrorCode.INVALID_INPUT);
+            verify(purchaseOrderPersistenceService, never()).saveAndFlush(any());
         }
 
         @Test
@@ -334,6 +407,17 @@ class PurchaseOrderServiceTest {
         }
 
         @Test
+        @DisplayName("작성자 본인은 MANAGER라도 자기 발주를 승인·반려할 수 없다 → ACCESS_DENIED")
+        void approveAndReject_ownOrder_denied() {
+            PurchaseOrder po = po(100L, manager.id(), PurchaseOrderStatus.REQUESTED);
+            given(purchaseOrderRepository.findById(100L)).willReturn(Optional.of(po));
+            assertCode(() -> service.approve(100L, manager), ErrorCode.ACCESS_DENIED);
+            assertCode(() -> service.reject(100L, "본인 반려", manager), ErrorCode.ACCESS_DENIED);
+            assertThat(po.getStatus()).isEqualTo(PurchaseOrderStatus.REQUESTED);
+            assertThat(po.getApproverId()).isNull();
+        }
+
+        @Test
         @DisplayName("AC-019 정상 반려: REQUESTED→REJECTED, rejectReason/approverId 기록 (OQ-11)")
         void reject_success() {
             PurchaseOrder po = po(100L, writer.id(), PurchaseOrderStatus.REQUESTED);
@@ -349,6 +433,13 @@ class PurchaseOrderServiceTest {
         void reject_blankReason() {
             assertCode(() -> service.reject(100L, "  ", admin), ErrorCode.INVALID_INPUT);
             // 사유 검증이 PO 조회보다 먼저 → 조회 안 함
+            verify(purchaseOrderRepository, never()).findById(anyLong());
+        }
+
+        @Test
+        @DisplayName("반려 사유 500자 초과 → INVALID_INPUT")
+        void reject_tooLongReason() {
+            assertCode(() -> service.reject(100L, "가".repeat(501), admin), ErrorCode.INVALID_INPUT);
             verify(purchaseOrderRepository, never()).findById(anyLong());
         }
 
@@ -376,10 +467,11 @@ class PurchaseOrderServiceTest {
             po.addLine(PurchaseOrderLine.builder().itemId(10L).quantity(30).unitPrice(new BigDecimal("100")).build());
             po.addLine(PurchaseOrderLine.builder().itemId(11L).quantity(20).unitPrice(new BigDecimal("200")).build());
             given(purchaseOrderRepository.findByIdWithLines(100L)).willReturn(Optional.of(po));
+            given(itemRepository.findAllByIdForUpdate(List.of(10L, 11L))).willReturn(List.of());
             // 10번 품목 재고 없음 → 생성, 11번 품목 재고 있음(5) → 증가
-            given(stockRepository.findByItemId(10L)).willReturn(Optional.empty());
+            given(stockRepository.findByItemIdForUpdate(10L)).willReturn(Optional.empty());
             Stock existing = new Stock(11L, 5);
-            given(stockRepository.findByItemId(11L)).willReturn(Optional.of(existing));
+            given(stockRepository.findByItemIdForUpdate(11L)).willReturn(Optional.of(existing));
             given(stockRepository.save(any(Stock.class))).willAnswer(inv -> inv.getArgument(0));
 
             PurchaseOrderStatusResponse res = service.receive(100L, admin);
@@ -390,6 +482,7 @@ class PurchaseOrderServiceTest {
             verify(stockRepository).save(any(Stock.class));
             // 기존 11번 품목 → 5 + 20 = 25 (동일 트랜잭션, dirty checking)
             assertThat(existing.getQuantity()).isEqualTo(25);
+            verify(itemRepository).findAllByIdForUpdate(List.of(10L, 11L));
         }
 
         @Test
@@ -398,7 +491,7 @@ class PurchaseOrderServiceTest {
             PurchaseOrder po = po(100L, writer.id(), PurchaseOrderStatus.REQUESTED);
             given(purchaseOrderRepository.findByIdWithLines(100L)).willReturn(Optional.of(po));
             assertCode(() -> service.receive(100L, admin), ErrorCode.INVALID_STATUS);
-            verify(stockRepository, never()).findByItemId(anyLong());
+            verify(stockRepository, never()).findByItemIdForUpdate(anyLong());
             verify(stockRepository, never()).save(any());
         }
 

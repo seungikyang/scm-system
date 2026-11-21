@@ -28,9 +28,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 발주(구매) 헤더. (02_architect_datamodel §2.1)
- * 외부 마스터(Partner/User/Item)는 ID(Long)로만 참조. 모듈 내부 라인은 @OneToMany 연관.
- * 상태 전이는 도메인 메서드(submit/approve/reject/receive/cancel)로 캡슐화한다. (datamodel §5.4)
+ * 우리가 공급사에서 사 올 물건을 적은 발주서 한 장입니다.
+ * 회사와 주문일은 공통 정보에, 물건별 수량과 가격은 lines라는 품목 목록에 보관합니다.
+ *
+ * 한 건의 발주에서 공통으로 쓰는 정보를 담는 발주 헤더 엔티티.
+ *
+ * <p>학습 모듈 04: PurchaseOrderStatus → PurchaseOrderLine → 이 클래스 순서로 읽는다.
+ * 여기서는 헤더·라인 구조와 상태 메서드만 보고, 실제 실행 순서는 모듈 10~11의
+ * PurchaseOrderService에서 확인한다.</p>
+ *
+ * <p>헤더에는 발주번호·공급사·작성자·날짜·총액·상태가 있고, 개별 품목은
+ * {@link PurchaseOrderLine} 목록에 둔다. 헤더와 라인은 한 덩어리로 저장되지만 Partner,
+ * User, Item 같은 외부 기준 정보는 연관 객체 대신 ID만 보관해 모듈 경계를 단순하게 한다.</p>
+ *
+ * <p>상태 필드를 아무 곳에서나 바꾸지 않고 submit/approve/reject/receive/cancel 메서드를
+ * 통해서만 바꾼다. 따라서 잘못된 순서의 상태 변경은 엔티티 스스로 거부할 수 있다.</p>
  */
 @Entity
 @Getter
@@ -59,27 +71,27 @@ public class PurchaseOrder extends BaseTimeEntity {
     private Long writerId;
 
     @Column(name = "approver_id")
-    private Long approverId;                         // nullable — 승인/반려 시 기록 (OQ-11)
+    private Long approverId;                         // 아직 결재 전이면 null, 승인/반려 시 기록
 
     @Column(name = "order_date", nullable = false)
     private LocalDate orderDate;
 
     @Column(name = "due_date")
-    private LocalDate dueDate;                        // nullable (AC-009)
+    private LocalDate dueDate;                        // 납기 미정이면 null 가능
 
     @Column(name = "total_amount", nullable = false, precision = 15, scale = 2)
-    private BigDecimal totalAmount;                   // 서버 재계산 (OQ-1)
+    private BigDecimal totalAmount;                   // 요청값을 믿지 않고 라인 금액 합계로 계산
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private PurchaseOrderStatus status = PurchaseOrderStatus.DRAFT;
 
     @Column(name = "reject_reason", length = 500)
-    private String rejectReason;                      // nullable
+    private String rejectReason;                      // 반려하기 전에는 사유가 없어도 됩니다.
 
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;                             // 낙관적 락 (OQ-5)
+    private Long version;                             // 동시에 같은 발주를 수정하면 충돌을 감지하는 번호
 
     @Column(name = "approved_at")
     private LocalDateTime approvedAt;
@@ -87,6 +99,8 @@ public class PurchaseOrder extends BaseTimeEntity {
     @Column(name = "received_at")
     private LocalDateTime receivedAt;
 
+    // 발주서 한 장에 물건 줄이 여러 개 들어갑니다. cascade는 줄도 함께 저장하라는 설정입니다.
+    // orphanRemoval은 이 목록에서 연결을 끊은 줄을 데이터베이스에서도 지우게 합니다.
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrderLine> lines = new ArrayList<>();
 
@@ -102,21 +116,22 @@ public class PurchaseOrder extends BaseTimeEntity {
         this.status = PurchaseOrderStatus.DRAFT;
     }
 
-    /** 연관 편의 메서드(양방향 동기화) — 헤더-라인 cascade 동시 저장 보장. */
+    /** 양쪽 객체를 함께 연결해 헤더 저장 시 라인도 cascade로 저장되게 한다. */
     public void addLine(PurchaseOrderLine line) {
+        // 발주서는 이 줄을 기억하고, 줄은 자신이 속한 발주서를 기억하도록 양쪽을 연결합니다.
         this.lines.add(line);
         line.setPurchaseOrder(this);
     }
 
-    // ===== 상태 전이 도메인 메서드 (datamodel §5.4) — 잘못된 전이는 INVALID_STATUS =====
+    // ===== 상태 전이 도메인 메서드: 잘못된 순서면 INVALID_STATUS 예외 =====
 
-    /** T2: DRAFT → REQUESTED. (작성자 본인 확인은 Service에서) */
+    /** 임시 저장(DRAFT) 발주를 결재 요청(REQUESTED)으로 바꾼다. 작성자 확인은 Service 책임이다. */
     public void submit() {
         requireStatus(PurchaseOrderStatus.DRAFT);
         this.status = PurchaseOrderStatus.REQUESTED;
     }
 
-    /** T3: REQUESTED → APPROVED. approverId/approvedAt 기록. */
+    /** 결재 요청을 승인하고 승인자와 승인 시각을 기록한다. */
     public void approve(Long approverId) {
         requireStatus(PurchaseOrderStatus.REQUESTED);
         this.status = PurchaseOrderStatus.APPROVED;
@@ -124,7 +139,7 @@ public class PurchaseOrder extends BaseTimeEntity {
         this.approvedAt = LocalDateTime.now();
     }
 
-    /** T4: REQUESTED → REJECTED. rejectReason/approverId 기록 (OQ-11). */
+    /** 결재 요청을 반려하고 결재자와 반려 사유를 기록한다. */
     public void reject(Long approverId, String reason) {
         requireStatus(PurchaseOrderStatus.REQUESTED);
         this.status = PurchaseOrderStatus.REJECTED;
@@ -132,14 +147,14 @@ public class PurchaseOrder extends BaseTimeEntity {
         this.rejectReason = reason;
     }
 
-    /** T5: APPROVED → RECEIVED. receivedAt 기록. (라인별 재고 증가는 Service에서 동일 트랜잭션) */
+    /** 승인된 발주를 입고 완료로 바꾼다. 라인별 재고 증가는 Service가 같은 트랜잭션에서 처리한다. */
     public void receive() {
         requireStatus(PurchaseOrderStatus.APPROVED);
         this.status = PurchaseOrderStatus.RECEIVED;
         this.receivedAt = LocalDateTime.now();
     }
 
-    /** T6~T8: {DRAFT, REQUESTED, APPROVED} → CANCELED (OQ-3). RECEIVED/종료상태는 불가. */
+    /** 진행 중인 발주를 취소한다. 이미 입고됐거나 종료된 상태는 취소할 수 없다. */
     public void cancel() {
         requireCancelable();
         this.status = PurchaseOrderStatus.CANCELED;

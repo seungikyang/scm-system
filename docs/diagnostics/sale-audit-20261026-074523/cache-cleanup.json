@@ -1,0 +1,6 @@
+{
+  "path": "/Users/seoowoo/Documents/scm-system/docs/diagnostics/sale-audit-20261026-074523/trivy-cache",
+  "removed_bytes": 3201417053,
+  "reason": "이번 점검에서 만든 재생성 가능한 DB·규칙 캐시만 제거. 메타데이터와 검사 결과 보존",
+  "completed_at": "2026-10-25T23:06:58.624378+00:00"
+}

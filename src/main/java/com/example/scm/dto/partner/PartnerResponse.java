@@ -7,7 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 거래처 등록/수정 REST 응답 (PRD 3.7.2 shape).
+ * 거래처 등록·수정 후 API에 보내는 결과 양식입니다.
+ * 새로 저장한 회사 번호와 이름, 유형, 상태를 알려 줍니다.
+ *
+ * 거래처 등록·수정 후 API에 반환할 필드만 모은 응답 DTO.
+ * 학습 모듈 32에서 두 from 메서드가 서로 다른 원본을 같은 응답 모양으로 바꾸는 방식을 본다.
  */
 @Getter
 @Builder

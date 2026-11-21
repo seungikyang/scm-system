@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.controller.PaginationIntegrationTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:46.242Z" hostname="yangseouui-MacBookPro.local" time="0.08">
+  <properties/>
+  <testcase name="[1] path = &quot;/api/items&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.004"/>
+  <testcase name="[2] path = &quot;/api/stocks&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.007"/>
+  <testcase name="[3] path = &quot;/api/notices&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.004"/>
+  <testcase name="[1] path = &quot;/items&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.012"/>
+  <testcase name="[2] path = &quot;/partners&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.006"/>
+  <testcase name="[3] path = &quot;/stocks&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.007"/>
+  <testcase name="[1] path = &quot;/items&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.003"/>
+  <testcase name="[2] path = &quot;/api/items&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[3] path = &quot;/partners&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[4] path = &quot;/api/partners&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[5] path = &quot;/stocks&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[6] path = &quot;/api/stocks&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[7] path = &quot;/purchase-orders/my&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.003"/>
+  <testcase name="[8] path = &quot;/api/purchase-orders/my&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[9] path = &quot;/admin/purchase-orders&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[10] path = &quot;/api/admin/purchase-orders&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[11] path = &quot;/sales-orders/my&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[12] path = &quot;/api/sales-orders/my&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[13] path = &quot;/sales-orders/pending&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.003"/>
+  <testcase name="[14] path = &quot;/api/sales-orders/pending&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <testcase name="[15] path = &quot;/admin/sales-orders&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[16] path = &quot;/api/admin/sales-orders&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[17] path = &quot;/notices&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.002"/>
+  <testcase name="[18] path = &quot;/api/notices&quot;" classname="com.example.scm.controller.PaginationIntegrationTest" time="0.001"/>
+  <system-out><![CDATA[2026-10-26T07:45:46.242+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.PaginationIntegrationTest]: PaginationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:46.243+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.PaginationIntegrationTest
+2026-10-26T07:45:46.243+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.PaginationIntegrationTest]: PaginationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:46.243+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.PaginationIntegrationTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -3,25 +3,33 @@
 #   docker compose down              # 중지 (데이터 볼륨 유지)
 #   docker compose down -v           # 중지 + DB 볼륨 삭제(초기화)
 #
+# 아래 비밀번호와 시드 계정은 이 PC에서 연습할 때만 쓰는 공개된 기본값이다.
+# 다른 사람이 접속하는 환경에서는 실행 전에 DB_PASSWORD, MYSQL_ROOT_PASSWORD를 새 값으로 정하고
+# SCM_SEED_ENABLED=false로 문서에 공개된 데모 계정 생성을 끈다. 예:
+#   DB_PASSWORD='...' MYSQL_ROOT_PASSWORD='...' SCM_SEED_ENABLED=false docker compose up --build
+#
 # H2 in-memory 로 가볍게 띄우려면 compose 없이:
 #   docker build -t scm-system .
 #   docker run --rm -p 8080:8080 scm-system
 services:
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: scm-mysql
     environment:
       MYSQL_DATABASE: scm
       MYSQL_USER: scm
-      MYSQL_PASSWORD: scm
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: ${DB_PASSWORD:-scm}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       TZ: Asia/Seoul
+    # 127.0.0.1에만 열어 같은 네트워크의 다른 컴퓨터가 DB에 직접 접속하지 못하게 한다.
+    # 앱은 compose 내부 네트워크(db:3306)로 접속하므로 이 설정과 관계없이 동작한다.
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - scm-mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      # 비밀번호를 명령에 직접 적지 않고 컨테이너 환경변수를 읽는다. $$는 compose가 아닌 컨테이너 셸이 값을 풀게 한다.
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -39,10 +47,14 @@ services:
       DB_PORT: 3306
       DB_NAME: scm
       DB_USER: scm
-      DB_PASSWORD: scm
+      DB_PASSWORD: ${DB_PASSWORD:-scm}
+      SCM_SEED_ENABLED: ${SCM_SEED_ENABLED:-true} # 데모용 기본값. 공유 환경에서는 false로 실행
       TZ: Asia/Seoul
+    # 기본은 이 PC의 브라우저에서만 접속한다. 다른 기기에 공개할 때는 APP_BIND=0.0.0.0을 명시한다.
+    # 주의: APP_BIND=0.0.0.0만 바꾸면 문서에 공개된 admin@scm.com / password1! 계정으로 누구나 관리자 로그인할 수 있다.
+    # 공개할 때는 반드시 SCM_SEED_ENABLED=false와 새 DB 비밀번호를 함께 지정한다.
     ports:
-      - "8080:8080"
+      - "${APP_BIND:-127.0.0.1}:8080:8080"
 
 volumes:
   scm-mysql-data:

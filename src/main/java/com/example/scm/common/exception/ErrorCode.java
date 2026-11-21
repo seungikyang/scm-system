@@ -3,6 +3,19 @@ package com.example.scm.common.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 프로그램에서 쓰는 오류의 이름, 상태 번호, 설명을 모아 둔 목록입니다.
+ * 404는 자료가 없음, 403은 권한이 없음처럼 같은 문제를 같은 방식으로 안내합니다.
+ *
+ * 애플리케이션에서 사용하는 오류를 한곳에 모은 목록.
+ *
+ * <p>학습 모듈 15: ErrorCode → BusinessException → ErrorResponse 순서로 읽는다. 예외를
+ * 실제 JSON/화면으로 바꾸는 처리는 다음 모듈 16에서 확인한다.</p>
+ *
+ * <p>각 상수는 HTTP 상태, 기계가 읽는 코드, 사용자가 읽는 기본 메시지를 한 묶음으로
+ * 가진다. Service는 이 enum을 담은 {@link BusinessException}을 던지고, 전역 예외
+ * 처리기가 API(JSON) 또는 웹 오류 화면으로 변환한다.</p>
+ */
 @Getter
 public enum ErrorCode {
 
@@ -22,8 +35,10 @@ public enum ErrorCode {
     SALES_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "수주서를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE_NOT_FOUND", "공지사항을 찾을 수 없습니다."),
 
+    // 415 - 요청 본문 형식
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE", "지원하지 않는 요청 본문 형식입니다."),
+
     // 400 - 중복
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "DUPLICATE_EMAIL", "이미 사용 중인 이메일입니다."),
     DUPLICATE_BUSINESS_NUMBER(HttpStatus.BAD_REQUEST, "DUPLICATE_BUSINESS_NUMBER", "이미 등록된 사업자번호입니다."),
     DUPLICATE_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "DUPLICATE_CATEGORY_NAME", "이미 사용 중인 카테고리명입니다."),
     DUPLICATE_ITEM_CODE(HttpStatus.BAD_REQUEST, "DUPLICATE_ITEM_CODE", "이미 등록된 품목코드입니다."),
@@ -34,7 +49,12 @@ public enum ErrorCode {
     EMPTY_ORDER_LINES(HttpStatus.BAD_REQUEST, "EMPTY_ORDER_LINES", "주문 라인이 비어 있습니다."),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "INVALID_DATE_RANGE", "잘못된 날짜 범위입니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST, "INVALID_STATUS", "현재 상태에서는 처리할 수 없습니다."),
+    INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "INSUFFICIENT_STOCK", "출고할 재고가 부족합니다."),
     ITEM_DISCONTINUED(HttpStatus.BAD_REQUEST, "ITEM_DISCONTINUED", "단종된 품목은 사용할 수 없습니다."),
+
+    // 429 - 로그인을 연속으로 틀려 잠시 막은 상태
+    TOO_MANY_LOGIN_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "TOO_MANY_LOGIN_ATTEMPTS",
+            "로그인 실패가 반복되어 잠시 로그인할 수 없습니다. 5분 후 다시 시도하세요."),
 
     // 500
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "서버 내부 오류가 발생했습니다.");

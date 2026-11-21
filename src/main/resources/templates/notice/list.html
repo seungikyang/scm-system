@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  공지 목록입니다. th:each는 공지들을 하나씩 꺼내 목록을 만드는 반복 표시입니다.
+  검색어와 현재 페이지를 서버에 보내 원하는 공지를 찾습니다.
+-->
+<head th:replace="~{fragments/layout :: head('SCM')}"></head>
+<body><nav th:replace="~{fragments/layout :: nav}"></nav><main>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="page-header"><h1>공지사항</h1><a th:if="${currentUser.isAdmin()}" class="btn btn-primary" th:href="@{/notices/new}">공지 등록</a></div>
+<form th:action="@{/notices}" method="get" class="search-bar"><input type="text" name="keyword" th:value="${keyword}" placeholder="제목 검색" aria-label="공지 제목 검색">
+<button class="btn btn-ghost" type="submit">검색</button></form>
+<p class="muted" th:text="|총 ${notices.totalElements}건|"></p>
+<div class="table-scroll"><table class="data"><thead><tr><th>제목</th><th>작성자</th><th>작성일</th><th>조회수</th></tr></thead><tbody>
+<tr th:each="n : ${notices.content}"><td><strong th:if="${n.important}">[중요] </strong><a th:href="@{/notices/{id}(id=${n.id})}" th:text="${n.title}"></a></td>
+<td th:text="${n.writerName}"></td><td th:text="${n.createdAt}"></td><td th:text="${n.viewCount}"></td></tr>
+<tr th:if="${notices.empty}"><td colspan="4">공지사항이 없습니다.</td></tr></tbody></table></div>
+<nav th:replace="~{fragments/layout :: pagination(${notices}, @{/notices(keyword=${keyword})} + '&amp;page=')}"></nav>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  분류 한 건의 자세한 정보 화면입니다. 서버에서 조회한 정보를 th:text로 글자 그대로 보여 줍니다.
+  처리 버튼을 누르면 서버가 권한과 현재 상태를 확인한 뒤 작업합니다.
+-->
 <head th:replace="~{fragments/layout :: head('카테고리 상세 - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -48,7 +52,7 @@
                 <td><a th:href="@{/items/{id}(id=${i.itemId})}" th:text="${i.itemCode}">ITM-001</a></td>
                 <td th:text="${i.name}">품목명</td>
                 <td th:text="${i.unit}">EA</td>
-                <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td class="num" th:text="${#numbers.formatDecimal(i.unitPrice, 1, 'COMMA', 2, 'POINT')}">0.00</td>
                 <td><span class="badge" th:classappend="'badge-' + ${i.status}" th:text="${i.status}">ACTIVE</span></td>
             </tr>
             </tbody>

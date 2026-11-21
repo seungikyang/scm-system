@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ItemService 단위 테스트" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:48.776Z" hostname="yangseouui-MacBookPro.local" time="0.004">
+  <properties/>
+  <testcase name="품목 수정 시 불변 코드와 상태를 보존하고 변경 가능 필드만 바꾼다" classname="com.example.scm.service.ItemServiceTest" time="0.001"/>
+  <testcase name="존재하지 않는 카테고리로 품목을 등록할 수 없다" classname="com.example.scm.service.ItemServiceTest" time="0.001"/>
+  <testcase name="일반 사용자는 품목을 등록할 수 없다" classname="com.example.scm.service.ItemServiceTest" time="0.0"/>
+  <testcase name="품목 삭제 요청은 과거 발주 이력을 보존하는 단종 처리다" classname="com.example.scm.service.ItemServiceTest" time="0.001"/>
+  <testcase name="중복 품목코드는 저장 전에 차단한다" classname="com.example.scm.service.ItemServiceTest" time="0.0"/>
+  <testcase name="ADMIN은 중복되지 않은 코드와 존재하는 카테고리로 활성 품목을 등록한다" classname="com.example.scm.service.ItemServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

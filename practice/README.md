@@ -1,81 +1,173 @@
-# SCM System 학습 워크북
+# SCM 4지 선다 학습 워크북
 
-이 폴더는 [scm_system_PRD_TRD.md](../scm_system_PRD_TRD.md)에 정의된 공급망 관리(SCM) 시스템의 기술/개념을 직접 채워보며 공부하는 TODO/빈칸 워크북입니다.
+> [HTML 학습 목차](../index.html) · [학습 루프](../docs/LOOP_ENGINEERING.md) · [포트폴리오 가이드](../docs/PORTFOLIO_GUIDE.md) · [실행 README](../README.md)
 
-완성 코드를 베끼는 대신 핵심 로직을 손으로 채워보는 것을 목표로 합니다.
+40개 모듈의 학습 문제는 모두 선택지 4개·정답 1개·해설을 제공합니다. 웹 문제집에서 보기를 클릭해 답을 고르고, 정오답과 해설을 확인합니다. **과목별 학습**, **오답 노트**, **진도 자동 저장**으로 다음 학습까지 이어집니다.
 
-## 사용 방법
+- [모듈 4지 선다 403제](sw-quiz/index.html?bank=workbook): 설정·도메인·서비스·보안·테스트·설계·면접 문제
+- [SW 기술 4지선다 3000제](sw-quiz/index.html): Java·Spring·JPA·SQL 등 20개 기술 분야
+- [problems.md](problems.md): 모듈별 선택형 문제
+- [answers.md](answers.md): 정답 번호와 해설
+- [feature-implementation-workbook.md](feature-implementation-workbook.md): 기능별 요구사항과 4지 선다 확인 문제
+- [LEARNING_NOTES.template.md](LEARNING_NOTES.template.md): 선택 번호·채점 결과 중심의 학습 기록
+- `starter/`: 모듈별 선택형 학습 파일
+- `../src/`: 문제 해설을 대조할 실행 가능한 참조 구현
+- `workspace/`: 기존 개인 학습 자료를 보관하는 Git 제외 폴더
 
-1. [feature-implementation-workbook.md](./feature-implementation-workbook.md) 에서 기능 요구사항(FR ID)별 구현 흐름을 먼저 훑습니다.
-2. [problems.md](./problems.md) 를 열어 오늘 풀 문제를 고릅니다.
-3. `practice/starter/` 아래의 해당 파일에서 `TODO`와 `____` 빈칸을 채웁니다.
-4. 막히면 [scm_system_PRD_TRD.md](../scm_system_PRD_TRD.md) 의 관련 절(3.x)을 다시 읽습니다.
-5. 채운 다음 [answers.md](./answers.md) 로 의도를 확인합니다.
-6. 같은 흐름을 한 번 더 백지에서 작성해 봅니다.
+## 시작하기
 
-이 폴더의 파일은 **컴파일 대상이 아니라 학습용 조각 코드**입니다. 패키지 선언과 import 는 일부러 생략했습니다.
+1. [모듈 문제집](sw-quiz/index.html?bank=workbook)을 열고 모듈을 고릅니다.
+2. **과목별 학습**에서 과목별 완료율·정답·오답·미풀이를 확인하고 학습을 시작합니다.
+3. 각 문항에서 1~4번 중 하나를 선택합니다. 보기를 클릭하고 **정답 확인**을 눌러 채점 결과·해설·원본 참조 자료를 확인합니다.
+4. **오답 노트**에서 오답 복습을 시작하면 정답을 가린 채 다시 풉니다. 다시 맞힌 문항은 복습 대상에서 제외됩니다.
+5. **이어서 학습하기**로 과목마다 마지막으로 본 문항에서 계속합니다. 과목 카드나 학습 과목 메뉴로 다른 과목을 다녀와도 위치와 선택 중인 보기를 유지하며, 답안·과목·검색 조건·무작위 순서도 새로고침 후 복원됩니다.
+6. **문항 바로가기**로 이동하고 **북마크**로 다시 볼 문제를 모읍니다.
 
-## 학습 순서
+파일을 직접 열면 Java·DB·서버 실행 없이 풀 수 있습니다. 기록은 현재 브라우저와 문제집별로 구분해 저장하며, 기존 SW 3000제·워크북 풀이 기록도 유지합니다. 브라우저 저장이 제한되면 안내가 표시됩니다.
 
-| 순서 | 영역 | starter 파일 | 핵심 개념 |
-|---|---|---|---|
-| 00 | 빌드/설정 | `00-build-config/*` | Spring Boot 의존성, JPA 설정, 환경 변수 |
-| 01 | 도메인 | `01-user-entity/User.entity.java` | User 엔티티와 UserRole enum |
-| 02 | 도메인 | `02-category-entity/Category.entity.java`<br>`02-category-entity/Partner.entity.java` | Category 엔티티, 카테고리명 unique<br>Partner 엔티티, PartnerType/PartnerStatus, 사업자번호 unique |
-| 03 | 도메인 | `03-item-entity/Item.entity.java` | Item 엔티티, FK, ItemStatus |
-| 04 | 도메인 | `04-purchase-order-entity/PurchaseOrder.entity.java` | PurchaseOrder + Line, PurchaseOrderStatus |
-| 05 | 도메인 | `05-notice-entity/Notice.entity.java` | Notice 엔티티, 중요 공지/조회수 |
-| 06 | 도메인 | `06-sales-order-entity/SalesOrder.entity.java` | 수주서, DRAFT/CONFIRMED/SHIPPED/COMPLETED |
-| 07 | Repository | `07-repository/ItemRepository.java` | 메서드 쿼리, 검색, 페이징 |
-| 08 | Service | `08-item-register/ItemService.register.java` | 품목 등록, 코드/카테고리 검증 |
-| 09 | Service | `09-item-search/ItemService.search.java` | 검색 + 페이징 |
-| 10 | Service | `10-purchase-order-create/PurchaseOrderService.create.java` | 발주 작성, 헤더+라인 트랜잭션 |
-| 11 | Service | `11-purchase-order-approval/PurchaseOrderService.approval.java` | 발주 승인/반려 상태 검증 |
-| 12 | Service | `12-notice-service/NoticeService.java` | 공지 CRUD, important 정렬 |
-| 13 | Service | `13-sales-order-create/SalesOrderService.create.java` | 수주 작성, DRAFT → CONFIRMED |
-| 14 | Service | `14-sales-order-decision/SalesOrderService.decision.java` | 출고/완료/취소 상태 전이 |
-| 15 | 예외 | `15-error-model/ErrorCodeAndResponse.java` | ErrorCode, BusinessException, 응답 포맷 |
-| 16 | 예외 | `16-global-handler/GlobalExceptionHandler.java` | @RestControllerAdvice |
-| 17 | DTO | `17-dto-validation/ItemCreateRequest.java` | Bean Validation 어노테이션 |
-| 18 | Controller | `18-controller-item/ItemController.java` | REST 매핑, 권한 검사 |
-| 19 | Controller | `19-controller-purchase/PurchaseOrderController.java` | 일반/관리자 경로 분리 |
-| 20 | 보안 | `20-security-session/SecurityFlow.md` | 세션 → Spring Security 진화 |
-| 21 | 테스트 | `21-test-flow/PurchaseFlowTest.java` | MockMvc 통합 흐름 |
-| 22 | 문서화 | `22-documentation/PortfolioDocs.md` | README/ERD/API/트러블슈팅 |
-| 23 | 인증 | `23-auth-login/*` | 로그인/로그아웃/내 정보/비밀번호 변경 |
-| 24 | Service | `24-partner-service/PartnerService.java`<br>`24-partner-service/CategoryService.java` | 거래처 CRUD + 유형 검증<br>카테고리 CRUD + 삭제 정책 |
-| 25 | Controller | `25-partner-controller/PartnerController.java`<br>`25-partner-controller/CategoryController.java` | 거래처 REST API + DTO<br>카테고리 REST API + DTO |
-| 26 | Controller | `26-notice-controller/NoticeController.java` | 공지 REST API + DTO |
-| 27 | Controller | `27-sales-controller/SalesOrderController.java` | 수주 REST API + my/pending |
-| 28 | Service | `28-item-detail-update/ItemService.detail.java` | 품목 상세/수정/단종 처리 |
-| 29 | Service | `29-purchase-my-cancel/PurchaseOrderService.my.java` | 발주 내 목록/상세/취소 + 관리자 목록 |
-| 30 | Service | `30-sales-lists/SalesOrderService.lists.java` | 수주 my/pending/detail 권한 검사 |
-| 31 | Repository | `31-repositories-all/AllRepositories.java` | User/Partner/Category/Item/PO/SO/Notice Repository |
-| 32 | DTO | `32-response-dto-mapping/ResponseDtoMapping.java` | Entity↔DTO 변환 패턴 |
-| 33 | Config | `33-config-beans/ConfigBeans.java` | JPA Auditing + PasswordEncoder + WebMvc |
-| 34 | 보안 | `34-current-user-interceptor/CurrentUserAndInterceptor.java` | HandlerInterceptor + @CurrentUser ArgumentResolver |
-| 35 | View | `35-thymeleaf-views/ThymeleafViews.md` | Thymeleaf 템플릿 / 폼 / CSRF |
-| 36 | 구조 | `36-package-architecture/PackageArchitecture.md` | 패키지 구조와 계층 책임 |
-| 37 | 규칙 | `37-business-rules/BusinessRulesChecklist.md` | 비즈니스 규칙 다층 검증 매트릭스 |
-| 38 | 운영 | `38-troubleshooting/Troubleshooting.md` | 5건 트러블슈팅 워크북 |
-| 39 | 면접 | `39-interview-and-commit/InterviewAndCommit.md` | 면접 카드 + 커밋 컨벤션 + PR 템플릿 |
+다른 기기·브라우저로 옮기거나 기록을 보관하려면 하단 **기록 내보내기**를 사용하세요. 같은 문제집에서 **가져오기**를 누르면 확인 후 해당 기록으로 교체합니다. 브라우저 데이터를 지우기 전에 내보내기를 권장합니다.
 
-## 추천 학습 호흡
+파일 주소 대신 같은 주소로 학습하려면 저장소 루트에서 `python3 -m http.server 4173 --bind 127.0.0.1`을 실행하고 [로컬 웹 문제집](http://127.0.0.1:4173/practice/sw-quiz/index.html?bank=workbook)을 엽니다. 직접 연 파일과 HTTP 주소는 저장 공간이 다릅니다. [HTML 학습 목차](../index.html)의 각 **4지 선다** 링크도 해당 모듈을 바로 엽니다.
 
-0일차: `feature-implementation-workbook.md` 로 전체 FR ID 와 구현 계층 매핑 훑기
-1주차: 00 ~ 07 (빌드 + 도메인 모델링 + Repository)
-2주차: 08 ~ 14, 23 ~ 30 (Service 비즈니스 로직 — 등록/검색/발주/공지/수주/인증/거래처/상세·취소·리스트)
-3주차: 15 ~ 19, 25 ~ 27, 31 ~ 34 (예외/DTO/Controller/Repository/Config/Interceptor)
-4주차: 20 ~ 22, 35 ~ 39 (보안/테스트/문서/뷰/구조/규칙/트러블슈팅/면접)
+학습 파일 복사가 필요하면 저장소 루트에서 아래 명령을 사용합니다. 기존 workspace가 있으면 복사는 중단됩니다.
 
-## 진행도 자가 점검
+```bash
+./gradlew practiceInit     # 최초 학습 파일 복사
+./gradlew practiceStatus   # 모듈별 문항 수
+./gradlew practiceCheck    # 선택지·정답·분야 연결 검사
+```
 
-직접 풀고 나면 다음 질문에 짧게 답해 봅니다.
+웹 학습 기록 검증은 `node --test src/test/js/study-state.test.cjs`로 실행합니다(Node.js 18 이상). 기존 기록 복원·과목별 진도·오답 재채점·미제출 선택 보존을 확인합니다.
 
-- 이 코드에서 트랜잭션이 필요한 이유는?
-- 이 검증을 Controller 가 아닌 Service 에서 한 이유는?
-- 이 응답을 Entity 그대로 두지 않고 DTO 로 감싼 이유는?
-- 이 상태값을 String 이 아닌 enum 으로 둔 이유는?
-- 헤더-라인 구조에서 라인 검증을 어디서 했는가?
+풀이 기록·오답·북마크는 브라우저 문제집에 저장됩니다. `practiceStatus`와 `practiceCheck`는 문항 자료를 확인하는 명령입니다.
 
-답을 한 줄로 적을 수 있으면 그 문제는 졸업입니다.
+## 학습 트랙
+
+모듈 번호는 문제와 starter를 연결하는 **고정 식별자**이지, 00부터 39까지 빠짐없이
+올라가는 학습 순서가 아닙니다. 예를 들어 05~06은 수주·공지를 설계하는 확장 과제라
+기반 모듈 04 다음이 아니라 마지막에 학습합니다. 아래 표의 화살표 순서를 기준으로
+핵심 구현을 먼저 끝낸 뒤 확장 설계로 넘어갑니다.
+
+| 단계 | 권장 순서 | 학습 결과 |
+|---|---|---|
+| 1. 기반 | 00 → 01 → 02 → 03 → 04 → 07 | 빌드 설정, 핵심 엔티티, Repository의 책임을 설명한다. |
+| 2. 발주 수직 흐름 | 08 → 09 → 10 → 11 → 15 → 16 → 17 → 18 → 19 → 21 → 29 | 저장·상태 전이·예외·DTO·API·통합 테스트·소유권을 연결한다. |
+| 3. 인증과 마스터 | 20 → 23 → 24 → 25 → 28 → 31 → 32 → 33 → 34 → 35 | 보안 개념부터 로그인, 마스터 CRUD, 설정, 현재 사용자 주입, 화면까지 연결한다. |
+| 4. 설계 회고 | 22 → 36 → 37 → 38 → 39 | 문서, 계층 경계, 규칙 매트릭스, 장애 기록과 설명 능력을 점검한다. |
+| 5. 확장 설계 | 05 → 06 → 12 → 13 → 14 → 26 → 27 → 30 | 공지·수주를 Entity → Service → Controller → 조회 권한 순으로 확장한다. |
+
+확장 트랙의 문항도 질문에 명시한 전제와 현재 참조 구현을 기준으로 답을 선택합니다. 해설을 확인한 뒤 관련 API·상태·실패 테스트를 참조합니다.
+
+## 모듈 완료 기준
+
+- 모듈의 모든 문항에서 답을 선택하고 채점했습니다.
+- 오답을 다시 풀고 정답·해설을 확인했습니다.
+- 권한·상태·트랜잭션 문항의 해설을 참조 코드와 대조했습니다.
+- 다음 복습에서 같은 문항을 다시 풀었습니다.
+
+아래 4지 선다 개념 확인 문제를 풀고 해설의 규칙을 코드와 대조합니다.
+
+
+### W046. 발주 헤더와 라인을 같은 트랜잭션으로 저장하는 이유는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=46)
+
+1. 헤더 저장 후 실패한 라인은 영구 누락시킨다
+2. 조회 속도가 항상 정확히 두 배가 된다
+3. 트랜잭션이 외래키를 없애 준다
+4. 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
+
+주문 구성 요소는 함께 성공하거나 함께 실패해야 합니다.
+
+</details>
+
+
+
+### W051. REQUESTED가 아닌 발주의 승인·반려를 막는 설계는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=51)
+
+1. 도메인 전이 메서드에 상태 가드를 둔다
+2. 화면 버튼만 숨긴다
+3. 승인 후 작성자 이메일을 바꾼다
+4. DTO 필드 이름을 바꾸면 충분하다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 도메인 전이 메서드에 상태 가드를 둔다
+
+Service 인가와 별도로 도메인 메서드가 상태 불변식을 보호합니다.
+
+</details>
+
+
+
+### W124. 본인 발주 목록의 소유권 기준은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=124)
+
+1. 요청 쿼리 writerId를 인증 없이 신뢰한다
+2. 클라이언트 이름만 비교한다
+3. 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+4. 모든 사용자에게 전체 목록을 반환한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 현재 인증 사용자의 ID로 작성자 조건을 적용한다
+
+URL 값 조작에 의한 IDOR를 서버 인증 정보 기반 조회로 방지합니다.
+
+</details>
+
+
+
+### W177. 응답 DTO에서 제외해야 할 정보는?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=177)
+
+1. 비밀번호 해시·내부 토큰 등 민감정보
+2. 공개 품목 이름
+3. 공개 카테고리 이름
+4. 공지 제목
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 비밀번호 해시·내부 토큰 등 민감정보
+
+평문뿐 아니라 비밀번호 해시와 내부 인증 자료도 응답 계약에서 제외합니다.
+
+</details>
+
+
+
+### W056. 같은 발주를 두 관리자가 동시에 승인하면 필요한 대응은?
+
+[브라우저에서 풀기](sw-quiz/index.html?bank=workbook&question=56)
+
+1. 둘 다 승인 이력을 덮어써도 무방하다
+2. 버전 충돌을 감지해 중복 상태 변경을 차단한다
+3. 인터넷 속도가 빠르면 충돌이 없다
+4. 각 요청이 다른 DB를 초기화한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 버전 충돌을 감지해 중복 상태 변경을 차단한다
+
+PurchaseOrder의 Version 낙관적 락이 경쟁 상태 변경을 감지합니다.
+
+</details>
+
+
+
+## 문서가 다를 때의 기준
+
+핵심 트랙에서는 현재 테스트되는 `src/`와 [DESIGN_DECISIONS.md](./DESIGN_DECISIONS.md)를 기준으로 합니다. 원 PRD/TRD와 차이가 있으면 잘못된 자료로 외우지 말고, 차이와 선택 이유를 학습 기록에 남깁니다. 확장 트랙은 PRD/TRD를 출발점으로 삼되 모호한 정책을 먼저 결정하고 테스트로 고정합니다.

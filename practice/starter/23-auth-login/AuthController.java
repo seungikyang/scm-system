@@ -1,91 +1,155 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/controller/AuthController.java
-// 목표: 인증 관련 API 엔드포인트를 채우세요. TRD 3.7.1 참고.
+// 인증 — 로그인 / 로그아웃 / 내 정보 / 비밀번호 변경 (PRD 2.5.1, TRD 3.7.1, 3.11) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=23
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-@RestController
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
-public class AuthController {
+// 선택형 [W094] 로그인 비밀번호 검증에 사용하는 메서드는?
+//    1. passwordEncoder.encode(raw).equals(encoded)만 사용
+//    2. 비밀번호 문자열을 응답에 출력
+//    3. 이메일만 있으면 로그인 성공
+//    4. passwordEncoder.matches(raw, encoded)
+//    정답·해설: practice/workbook-questions.md#w094
+//    정답: 4번 · BCrypt의 salt 때문에 재인코딩 결과 문자열의 단순 비교를 사용하지 않습니다.
 
-    private final AuthService authService;
+// 선택형 [W095] 세션에 저장할 로그인 정보의 올바른 예는?
+//    1. 평문 비밀번호와 DB root 비밀번호
+//    2. 클라이언트가 보낸 임의의 ADMIN 문자열
+//    3. 서버가 검증한 사용자 ID·이름·역할의 LoginUser
+//    4. 모든 엔티티와 연관관계 전체
+//    정답·해설: practice/workbook-questions.md#w095
+//    정답: 3번 · 인증된 사용자 정보만 최소한으로 보관합니다.
 
-    // TODO 01: 로그인. 세션 ID 재발급을 위해 HttpServletRequest 를 주입받습니다.
-    @PostMapping("/login")
-    public LoginResponse login(
-            @Valid @RequestBody LoginRequest request,
-            ____ httpRequest) {
-        return authService.login(request, httpRequest);
-    }
+// 선택형 [W096] 세션 고정 공격을 줄이기 위한 ID 변경 시점은?
+//    1. 로그인 인증이 성공할 때
+//    2. 비밀번호 검증 전에 항상 관리자 권한을 부여할 때
+//    3. 발주 입고 후에만
+//    4. 프로그램 종료 후
+//    정답·해설: practice/workbook-questions.md#w096
+//    정답: 1번 · 인증 전 알려진 세션 ID가 인증 후에도 유지되는 것을 방지합니다.
 
-    // TODO 02: 로그아웃. 응답 body 가 없으면 어떤 상태 코드가 자연스럽나요?
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        authService.logout(session);
-        return ResponseEntity.____().build();
-    }
-}
+// 선택형 [W097] 로그인 실패 메시지를 통일하는 이유는?
+//    1. 모든 실패를 성공으로 바꾸기 위해서다
+//    2. 비밀번호 해시를 숨기지 않기 위해서다
+//    3. 이메일 존재 여부를 이용한 계정 열거를 줄이기 위해서다
+//    4. 로그인 속도를 항상 두 배로 만들기 위해서다
+//    정답·해설: practice/workbook-questions.md#w097
+//    정답: 3번 · 사용자에게 계정 존재 여부를 직접 구분해 알려 주지 않습니다.
 
+// 선택형 [W098] 비밀번호 변경의 올바른 처리 순서는?
+//    1. 새 비밀번호를 평문 저장하고 이전 값을 응답한다
+//    2. 현재 비밀번호 검증 후 새 비밀번호를 해시해 저장한다
+//    3. 현재 비밀번호 확인 없이 누구나 변경한다
+//    4. 세션 ID를 새 비밀번호로 저장한다
+//    정답·해설: practice/workbook-questions.md#w098
+//    정답: 2번 · 형식 검증과 현재 비밀번호 일치 확인·새 비밀번호 보호를 함께 수행합니다.
 
-// ===== /api/users/me 는 보통 별도 UserController 로 분리 =====
-@RestController
-@RequestMapping("/api/users")
-@RequiredArgsConstructor
-class UserController {
+// 선택형 [W108] 전체 수정과 부분 수정의 HTTP 메서드 조합은?
+//    1. GET / TRACE
+//    2. OPTIONS / HEAD
+//    3. PUT / PATCH
+//    4. DELETE / CONNECT
+//    정답·해설: practice/workbook-questions.md#w108
+//    정답: 3번 · PUT은 전체 표현 교체, PATCH는 부분 변경 계약에 사용합니다.
 
-    private final AuthService authService;
+// 선택형 [W172] 인증(Authentication)이 확인하는 것은?
+//    1. 업무 기능 실행 권한만
+//    2. 사용자가 주장한 신원과 인증 증거의 일치
+//    3. 주문의 현재 재고만
+//    4. CSS 적용 여부
+//    정답·해설: practice/workbook-questions.md#w172
+//    정답: 2번 · 인증은 신원을 확인하고 인가는 기능·데이터 접근 권한을 판단합니다.
 
-    // TODO 03: 내 정보 조회. 현재 로그인한 사용자 ID 는 어떻게 꺼낼까요?
-    //          (학습용 세션: @SessionAttribute("USER_ID"), 권장: @CurrentUser, Security: @AuthenticationPrincipal …)
-    @GetMapping("/me")
-    public MyInfoResponse me(@____ Long currentUserId) {
-        return authService.me(currentUserId);
-    }
+// 선택형 [W174] 세션 로그아웃의 핵심 처리는?
+//    1. 서버의 해당 세션 인증 상태를 폐기한다
+//    2. 브라우저에서 화면만 닫는다
+//    3. 사용자의 모든 주문을 삭제한다
+//    4. 평문 비밀번호를 응답한다
+//    정답·해설: practice/workbook-questions.md#w174
+//    정답: 1번 · 현재 서버 세션을 invalidate해 이후 보호 요청의 인증 상태를 제거합니다.
 
-    // TODO 04: 비밀번호 변경. 응답 body 가 없으면 어떤 상태 코드?
-    @PatchMapping("/me/password")
-    public ResponseEntity<Void> changePassword(
-            @CurrentUser Long currentUserId,
-            @Valid @RequestBody PasswordChangeRequest request) {
-        authService.changePassword(currentUserId, request);
-        return ResponseEntity.____Content().build();
-    }
-}
+// 선택형 [W176] 내 정보 조회에서 사용자를 정하는 안전한 기준은?
+//    1. URL에서 받은 임의의 userId만
+//    2. 서버가 인증한 현재 사용자 ID
+//    3. 요청 본문의 isAdmin만
+//    4. 브라우저 북마크 이름
+//    정답·해설: practice/workbook-questions.md#w176
+//    정답: 2번 · 인증 주체의 ID를 사용해 다른 사용자 정보 조회 우회를 막습니다.
 
+// 선택형 [W178] 비밀번호 변경 전에 현재 비밀번호를 다시 검증하는 이유는?
+//    1. 새 비밀번호를 평문 저장하기 위해서다
+//    2. 모든 세션을 ADMIN으로 바꾸기 위해서다
+//    3. 탈취·공유된 로그인 세션의 피해를 줄이기 위해서다
+//    4. 이메일 중복 검사를 없애기 위해서다
+//    정답·해설: practice/workbook-questions.md#w178
+//    정답: 3번 · 중요 작업에 추가 인증 증거를 요구하되 새 비밀번호 해시 저장도 필요합니다.
 
-// ===== DTO =====
-public record LoginRequest(
-        @NotBlank @Email String email,
-        @NotBlank String password
-) { }
+// 선택형 [W260] 로그인 성공 시 현재 세션에 저장되는 인증 값은?
+//    1. LOGIN_USER 키의 LoginUser 객체
+//    2. 평문 password 문자열
+//    3. Item Entity 전체
+//    4. 사용자가 요청한 임의 role 문자열
+//    정답·해설: practice/workbook-questions.md#w260
+//    정답: 1번 · SessionConst.LOGIN_USER를 사용해 인증된 사용자 ID·이름·이메일·역할을 보관합니다.
 
-public record LoginResponse(Long userId, String email, String name, UserRole role) {
-    public static LoginResponse from(User u) {
-        return new LoginResponse(u.getId(), u.getEmail(), u.getName(), u.getRole());
-    }
-}
+// 선택형 [W276] 새 비밀번호를 기존 값과 다르게 변경한 뒤 이전 비밀번호의 matches 결과는?
+//    1. false
+//    2. true
+//    3. null
+//    4. ADMIN
+//    정답·해설: practice/workbook-questions.md#w276
+//    정답: 1번 · 기존과 다른 새 비밀번호를 저장했다는 전제입니다. 새 해시에 이전 비밀번호가 일치하면 안 됩니다.
 
-public record PasswordChangeRequest(
-        @NotBlank String currentPassword,
-        // TODO 05: 새 비밀번호 길이 제약을 채우세요.
-        @NotBlank @Size(min = ____, max = 64) String newPassword
-) { }
+// 선택형 [W341] Spring Security가 인증을 담당하는 설계에서 로그인 진입점을 공개해야 하는 이유는?
+//    1. 로그인 응답에 비밀번호를 공개하기 위해서다
+//    2. 모든 관리자 업무 API도 공개해야 하기 때문이다
+//    3. 세션 ID 고정 공격을 허용하기 위해서다
+//    4. 인증 전 사용자가 자격 증명을 제출할 수 있어야 하기 때문이다
+//    정답·해설: practice/workbook-questions.md#w341
+//    정답: 4번 · permitAll은 로그인 진입점 접근 허용이며 자격 증명 검증과 업무 API 인가를 생략한다는 뜻이 아닙니다.
 
-public record MyInfoResponse(
-        Long userId, String email, String name, UserRole role
-) {
-    public static MyInfoResponse from(User user) {
-        return new MyInfoResponse(
-                user.getId(), user.getEmail(), user.getName(), user.getRole());
-    }
-}
+// 선택형 [W342] 응답의 사용자 ID 노출과 IDOR 방어의 관계는?
+//    1. ID를 반환하면 모든 API가 반드시 취약하다
+//    2. ID를 숨기는 것보다 대상별 서버 소유권·권한 검사가 핵심이다
+//    3. ID만 알면 타인 데이터 변경을 허용해야 한다
+//    4. 숫자 ID를 UUID로 바꾸면 인가가 불필요하다
+//    정답·해설: practice/workbook-questions.md#w342
+//    정답: 2번 · 식별자의 예측 가능성과 별도로 모든 데이터 접근에서 인증 주체의 권한을 검증합니다.
 
-// 학습 질문:
-// Q1. /api/auth/login 은 왜 permitAll() 이어야 하는가? (Spring Security 단계 기준)
-//     A:
-// Q2. /api/users/me 의 비밀번호 변경을 PATCH 로 둔 이유는?
-//     A:
-// Q3. LoginResponse 에 사용자 ID 를 노출해도 괜찮은가? (idor 공격 관점)
-//     A:
-// Q4. @SessionAttribute 와 @CurrentUser 의 차이 — 어떤 경우에 어떤 방식이 적절한가?
-//     A:
-// Q5. 응답 status 204 No Content 와 200 OK + 메시지 중 어느 컨벤션을 택할까?
-//     A:
+// 선택형 [W343] SessionAttribute와 커스텀 CurrentUser의 차이는?
+//    1. 전자는 지정 세션 속성 바인딩, 후자는 사용자 해석 정책을 공통 resolver로 추상화한다
+//    2. 둘 다 무조건 JWT 서명만 검사한다
+//    3. 전자는 Repository 구현을 생성한다
+//    4. 후자는 DB 비밀번호를 자동 암호화한다
+//    정답·해설: practice/workbook-questions.md#w343
+//    정답: 1번 · 현재 CurrentUser는 LoginUser·미인증 처리 등 공통 정책을 컨트롤러 인자 해석에 모읍니다.
+
+// 선택형 [W344] 204와 200+메시지 응답을 고를 때 올바른 원칙은?
+//    1. 204는 반드시 JSON 메시지를 포함한다
+//    2. 200이면 반드시 DB를 수정해야 한다
+//    3. 204는 본문 없이, 200은 정의한 본문 계약으로 일관되게 사용한다
+//    4. 204는 권한 거절만 표현한다
+//    정답·해설: practice/workbook-questions.md#w344
+//    정답: 3번 · 현재 로그아웃·거래처 비활성화는 204이며 다른 계약을 택하면 클라이언트와 문서를 맞춥니다.
+
+// 선택형 [W345] 비밀번호 변경 뒤 기존 세션·토큰에 대한 안전한 판단은?
+//    1. DB 비밀번호 해시 변경이 모든 JWT를 자동 폐기한다
+//    2. 현재 세션 정보만 바뀌면 모든 복사 토큰이 사라진다
+//    3. 기존 세션 ID를 공개해 사용자가 비교하게 한다
+//    4. 탈취 가능성과 요구에 맞춰 기존 인증 폐기·재인증 정책을 명시한다
+//    정답·해설: practice/workbook-questions.md#w345
+//    정답: 4번 · 현재 구현에 없는 일괄 폐기를 이미 제공한다고 가정하지 않고 별도 정책과 구현을 검증합니다.
+
+// 선택형 [W346] 이메일 정규화 정책을 적용할 때 필요한 일관성은?
+//    1. 가입·저장·조회에서 같은 규칙을 사용하고 업무상의 대소문자 정책을 명시한다
+//    2. 화면에서만 소문자로 바꾸면 모든 조회가 일치한다
+//    3. 기존 DB 값과 무관하게 매번 다른 규칙을 쓴다
+//    4. 정규화가 비밀번호 검증을 대신한다
+//    정답·해설: practice/workbook-questions.md#w346
+//    정답: 1번 · 현재 AuthService는 입력 이메일로 조회합니다. 정규화 도입은 모든 경로와 기존 데이터를 함께 맞추는 과제입니다.
+
+// 선택형 [W347] 기존 비밀번호와 같은 새 비밀번호를 거절하는 정책의 의미는?
+//    1. 같은 비밀번호를 거절하면 모든 이전 토큰이 자동 폐기된다
+//    2. 변경이 실제 새 인증 값으로 이어지게 하지만 재사용 정책만으로 탈취가 해결되지는 않는다
+//    3. BCrypt salt가 같아져야만 변경할 수 있다
+//    4. 로그인 없는 사용자도 타인 비밀번호를 바꿀 수 있다
+//    정답·해설: practice/workbook-questions.md#w347
+//    정답: 2번 · 새 비밀번호 길이·강도·유출 여부·인증 폐기 정책과 구분해 검토합니다.

@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 거래처 등록 REST 요청 (PRD 3.7.2).
+ * 거래처를 등록할 때 회사명, 사업자번호, 연락처 등을 받습니다.
+ * 사업자번호는 회사를 구별하는 번호이며 같은 번호가 이미 있는지도 검사합니다.
+ *
+ * 거래처 등록 REST API의 JSON 본문과 Bean Validation 규칙을 담는 DTO.
  */
 @Getter
 @Setter

@@ -1,118 +1,51 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/controller/PurchaseOrderController.java
-// 목표: 발주 일반/관리자 경로 분리, 상태 전이 API 를 채우세요. TRD 3.7.5 참고.
+// PurchaseOrderController (TRD 3.7.5) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=19
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-@RestController
-@RequiredArgsConstructor
-public class PurchaseOrderController {
+// 선택형 [W080] 일반 발주 API와 관리자 API 경로를 나누어도 필요한 것은?
+//    1. 경로 이름만 있으면 누구나 접근해도 된다
+//    2. 관리자 경로에서 실제 역할 인가를 수행한다
+//    3. 관리자 API는 세션을 제거한다
+//    4. 모든 API에 같은 작성자 ID를 저장한다
+//    정답·해설: practice/workbook-questions.md#w080
+//    정답: 2번 · 경로 분리는 계약을 명확히 하지만 실행 권한은 서버 검사로 보장합니다.
 
-    private final PurchaseOrderService purchaseOrderService;
+// 선택형 [W081] approve 동작을 별도 PATCH 경로로 표현할 때의 특징은?
+//    1. PATCH이면 DB 상태가 자동 검증된다
+//    2. PATCH는 응답 본문을 가질 수 없다
+//    3. 업무 명령을 명확히 표현하지만 상태 전이·중복 요청 정책이 필요하다
+//    4. URL만으로 낙관적 락이 생성된다
+//    정답·해설: practice/workbook-questions.md#w081
+//    정답: 3번 · 행위 중심 경로의 편의와 상태·멱등 정책을 함께 설계합니다.
 
-    // ============ 사용자 영역: /api/purchase-orders ============
+// 선택형 [W082] 현재 프로젝트에서 로그인 사용자 정보를 받는 방식은?
+//    1. CurrentUser ArgumentResolver가 LoginUser를 주입한다
+//    2. 요청 본문의 userId를 인증 결과로 신뢰한다
+//    3. Thymeleaf가 DB에서 비밀번호를 공개한다
+//    4. Principal을 사용하면 항상 현재 세션 구현과 동일하다
+//    정답·해설: practice/workbook-questions.md#w082
+//    정답: 1번 · 현재 인증 구조는 세션과 LoginUser·CurrentUser이며 다른 인증 방식의 인자와 구분해야 합니다.
 
-    @PostMapping("/api/purchase-orders")
-    public ResponseEntity<PurchaseOrderResponse> create(
-            // TODO 01: 로그인 사용자의 ID 를 어떻게 받을까요?
-            @____ Long currentUserId,
-            @RequestBody @Valid PurchaseOrderCreateRequest request
-    ) {
-        PurchaseOrderResponse body = purchaseOrderService.create(currentUserId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
-    }
+// 선택형 [W147] CurrentUser ArgumentResolver의 역할은?
+//    1. 클라이언트의 임의 역할을 인증 없이 승인한다
+//    2. 모든 엔티티를 JSON으로 저장한다
+//    3. 비밀번호를 브라우저 주소에 붙인다
+//    4. 세션 로그인 정보를 컨트롤러 파라미터 값으로 해석한다
+//    정답·해설: practice/workbook-questions.md#w147
+//    정답: 4번 · supportsParameter와 resolveArgument로 지원 파라미터를 찾고 LoginUser를 제공합니다.
 
-    // TODO 02: DRAFT → REQUESTED 동사형 경로를 채우세요.
-    @____("/api/purchase-orders/{poId}/submit")
-    public void submit(@CurrentUser Long currentUserId, @PathVariable Long poId) {
-        purchaseOrderService.submit(currentUserId, poId);
-    }
+// 선택형 [W221] 주문 라인 최소 개수 규칙의 입력 1차 방어는?
+//    1. CSS margin 설정
+//    2. DTO의 Size(min=1)와 중첩 입력 검증
+//    3. RequestParam의 기본 포트 변경
+//    4. 조회수 내림차순
+//    정답·해설: practice/workbook-questions.md#w221
+//    정답: 2번 · 입력 경계에서 검증하고 Service·도메인에서도 필요한 불변식을 보장합니다.
 
-    @GetMapping("/api/purchase-orders/my")
-    public Page<PurchaseOrderResponse> myList(
-            @CurrentUser Long currentUserId,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable
-    ) {
-        return purchaseOrderService.myList(currentUserId, pageable);
-    }
-
-    @GetMapping("/api/purchase-orders/{poId}")
-    public PurchaseOrderResponse detail(@CurrentUser Long currentUserId, @PathVariable Long poId) {
-        return purchaseOrderService.getDetail(currentUserId, poId);
-    }
-
-    @PatchMapping("/api/purchase-orders/{poId}/cancel")
-    public void cancel(@CurrentUser Long currentUserId, @PathVariable Long poId) {
-        purchaseOrderService.cancel(currentUserId, poId);
-    }
-
-    // ============ 관리자 영역: /api/admin/purchase-orders ============
-
-    // TODO 03: 관리자만 접근 가능하도록 보호.
-    @GetMapping("/api/admin/purchase-orders")
-    @PreAuthorize("hasRole('____')")
-    public Page<PurchaseOrderResponse> adminList(
-            @RequestParam(required = false) PurchaseOrderStatus status,
-            @RequestParam(required = false) Long partnerId,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable
-    ) {
-        return purchaseOrderService.adminList(status, partnerId, pageable);
-    }
-
-    @PatchMapping("/api/admin/purchase-orders/{poId}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
-    public PurchaseOrderResponse approve(@CurrentUser Long currentUserId, @PathVariable Long poId) {
-        return purchaseOrderService.approve(currentUserId, poId);
-    }
-
-    @PatchMapping("/api/admin/purchase-orders/{poId}/reject")
-    @PreAuthorize("hasRole('ADMIN')")
-    public PurchaseOrderResponse reject(
-            @CurrentUser Long currentUserId,
-            @PathVariable Long poId,
-            // TODO 04: 반려 사유는 어디서 받을까? (Body 권장)
-            @RequestBody @Valid PurchaseOrderRejectRequest request
-    ) {
-        return purchaseOrderService.reject(currentUserId, poId, request.getReason());
-    }
-
-    @PatchMapping("/api/admin/purchase-orders/{poId}/receive")
-    @PreAuthorize("hasRole('ADMIN')")
-    public PurchaseOrderResponse receive(@CurrentUser Long currentUserId, @PathVariable Long poId) {
-        return purchaseOrderService.receive(currentUserId, poId);
-    }
-}
-
-// ===== Request DTO =====
-
-public record PurchaseOrderCreateRequest(
-        // TODO 05: 공급사 ID 는 null 이 아니어야 함.
-        @____ Long partnerId,
-        @NotNull LocalDate orderDate,
-        LocalDate dueDate,
-        // TODO 06: 라인 ≥ 1 검증을 D 계층에서 어떻게 표현할까?
-        @____(min = 1, message = "발주 라인은 최소 1개 이상이어야 합니다.")
-        @Valid
-        List<LineDto> lines
-) {
-    public record LineDto(
-            @NotNull Long itemId,
-            // TODO 07: 수량은 1 이상이어야 함.
-            @NotNull @____ Integer quantity,
-            // TODO 08: 단가는 0 이상이어야 함.
-            @NotNull @____(value = "0.00") BigDecimal unitPrice
-    ) {}
-}
-
-@Getter
-@NoArgsConstructor
-public class PurchaseOrderRejectRequest {
-    @NotBlank
-    @Size(max = 500)
-    private String reason;
-}
-
-// 학습 질문:
-// Q1. /api/purchase-orders 와 /api/admin/purchase-orders 를 분리한 이유는?
-//     A:
-// Q2. PATCH .../approve 같은 동사형 경로의 장단점은?
-//     A:
-// Q3. @CurrentUser 의 동작 원리는? (Interceptor / ArgumentResolver)
-//     A:
+// 선택형 [W388] API 발주 반려 요청의 사유를 JSON DTO로 읽는 컨트롤러 인자 애너테이션은?
+//    1. @RequestBody
+//    2. @PathVariable
+//    3. @RequestHeader
+//    4. @CookieValue
+//    정답·해설: practice/workbook-questions.md#w388
+//    정답: 1번 · 반려 사유 DTO는 JSON 본문에서 읽고 @Valid 등으로 입력을 검증합니다. 발주 ID는 별도의 경로 변수입니다.

@@ -1,0 +1,1184 @@
+{
+  "project": "/Users/seoowoo/Documents/scm-system",
+  "output": "/Users/seoowoo/Documents/scm-system/docs/diagnostics/sale-audit-20261026-074523",
+  "started_at": "2026-10-25T22:45:23.858771+00:00",
+  "commit": "de6caec941bd9fd8efcc0bb2a56cb4be7cb80967",
+  "branch": "agent/scm-workbook-loop-root-guard",
+  "dirty": true,
+  "source_inventory_sha256": "f9d7eab5f34ca402a064113f521f9bd36aba5dbda9cc26f109fff37335921f0b",
+  "inventory": [
+    {
+      "path": ".dockerignore",
+      "sha256": "d7c25cf41826e515f818dfdec955568ec5fd31abb40e5e80d77ae21334a5d2bb"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "72453af0b82897deeddcf036f138028c288a4d0b6771bb4c4ba08a962d413be9"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "d975fb6c9783c1ada6b53531aa37cb934ecf7746c79e2635b8d6732cf3741ebd"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "29390d2665ed227e4ae97c679dfeb49e8094f785ecdcdd447461f2d2f1ec3152"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "cdf41d18a24d10eeb0b68c69cec90c8395434dfe2eb7400ec6296db06cc21bec"
+    },
+    {
+      "path": "README.md",
+      "sha256": "23aab84f9ba361367eb6ab007a9322e5772861431c82de938bfc76bbfa2f5ff4"
+    },
+    {
+      "path": "build.gradle",
+      "sha256": "23967f77c324b2b07586b1878bb617bfbddb62593cf4252125fd5b6156a1d344"
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "f77a0de07cd1276e589ee931284495ff954ee8247ae0b91ff627e2524f9acc88"
+    },
+    {
+      "path": "docs/API_SPEC.md",
+      "sha256": "468b30473ec8dc4ee14bb962d5075ea353ae298d8150723e4f6f6ebd8e9f74ac"
+    },
+    {
+      "path": "docs/ERD.md",
+      "sha256": "d287ee9a8aabe34a13857de4ec2a14f5eef768d3fcdefcc4ab53ce88ede59911"
+    },
+    {
+      "path": "docs/GETTING_STARTED.md",
+      "sha256": "81491cdfd8598a898e5f3e29c46aedfc085417ea04c285c056be59c12d975c73"
+    },
+    {
+      "path": "docs/GLOSSARY.md",
+      "sha256": "6e166f4a3c56a9a19fd745a883da0448a694c4a3e73e00c1b8c7a26ca939fdb8"
+    },
+    {
+      "path": "docs/HEALTH_CHECK.md",
+      "sha256": "66ec153ced2ac478ddb3faf8b5669f6e13ddac2660e3cc6735f1963c636cfc83"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "e7ca76b4bc8285c9c717fd3262195b37adc083a0dbc94001c96ef6824f13d760"
+    },
+    {
+      "path": "docs/INTERVIEW_QUIZ.md",
+      "sha256": "dc663969d03cfc4ffca507a2db6655f42c7fb92e706ebf9758e757dbbe74f370"
+    },
+    {
+      "path": "docs/LOOP_ENGINEERING.md",
+      "sha256": "d7167e3c48ce9dc65c9edf94b702e3a4f7e5e5b1cec6345fe71eea4018c0571e"
+    },
+    {
+      "path": "docs/PORTFOLIO_GUIDE.md",
+      "sha256": "0137809fa1c27b746ac856a760dd69d997ad69834e571a0192534c8be0f85d26"
+    },
+    {
+      "path": "docs/PRD_TRD.md",
+      "sha256": "b280f896ddbd48aac02bb921f60b7d7f77bf5663e3f502a3e76c861edf21c195"
+    },
+    {
+      "path": "docs/REA_REVIEW_2026-10-21.md",
+      "sha256": "773b336f108c6edfbfc6e947cdb759d062f73d1a6d3e6aa42c1c576b3cc29d75"
+    },
+    {
+      "path": "docs/REA_REVIEW_2026-10-23.md",
+      "sha256": "68f63655eb653fdad6fc21bdce6f7e78cb1e4da0c3adfc0c622ff0e841f1064c"
+    },
+    {
+      "path": "docs/STATE_MACHINE.md",
+      "sha256": "b5904b462ea68cb38e4a2f1a491d08de2c97eca7f475d440005349f2b57c84f9"
+    },
+    {
+      "path": "docs/TECHNOLOGY_GUIDE.md",
+      "sha256": "9849c95a3b7afccbf11a92a40dcdddb0698b2bedad66993b8448745b46779971"
+    },
+    {
+      "path": "docs/TROUBLESHOOTING.md",
+      "sha256": "d7fcf84ebb2ea65b6d623a6df778742a1d932cc78a46ec4c9f71c3f4b60e4ae9"
+    },
+    {
+      "path": "docs/scm_system_PRD_TRD.md",
+      "sha256": "d1ead8a97460e13001d6850d940702243f8d1aa9b5c85ea26b46e4d3395dc284"
+    },
+    {
+      "path": "gradle/wrapper/README.txt",
+      "sha256": "0b015f2dd9a1b869b8193aed71d234c88df9a37192d950855c5c5abf8f733231"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d"
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "d01b41913834fb3cb14e71f69a08898e6a47e663b08f5c9b8c7e0772c38889d2"
+    },
+    {
+      "path": "index.html",
+      "sha256": "d3260e3977c76ba434ad1fb677a37af9518bb64619816ae3f65a40e262bfa2bf"
+    },
+    {
+      "path": "practice/DESIGN_DECISIONS.md",
+      "sha256": "b94863bc99c25e3d3ea10e34779b5213065dd6073f1af662feaaee659877fb75"
+    },
+    {
+      "path": "practice/LEARNING_NOTES.template.md",
+      "sha256": "8c8502eb5b05e774970850115ab011479c1bbf63d8d7dc2b564c42a56a7eccb6"
+    },
+    {
+      "path": "practice/README.md",
+      "sha256": "5cc6ab52536dd5a139d8cdd5e7c8b53a1fbcbd2228fca26c2b06e210ec040db8"
+    },
+    {
+      "path": "practice/REFERENCE_MAP.md",
+      "sha256": "4606f54ccbedb1306a0bd5fb993298b653adad3531e303bbd3858ebc45bfa704"
+    },
+    {
+      "path": "practice/answers.md",
+      "sha256": "e05d4ed8b6d0bad713086b793a2bce5cbe4ebf48c1a55f8f0c1819652f61b68e"
+    },
+    {
+      "path": "practice/feature-implementation-workbook.md",
+      "sha256": "5b36c4bc36a81efad90aaa94368516e68f7fbf6c7bc688548213b99763334f7a"
+    },
+    {
+      "path": "practice/problems.md",
+      "sha256": "a460ee01fae26bc67f12f4933ae748f90b0f294669b36a09713288e69d85b073"
+    },
+    {
+      "path": "practice/starter/00-build-config/application.yml.fragment",
+      "sha256": "3901d2a4c7cfa5a03e6941a5ee03c3cc6a072d8641041478f045ac6d42ac2e53"
+    },
+    {
+      "path": "practice/starter/00-build-config/build.gradle.fragment",
+      "sha256": "08dbec0905887f0fc958007a2f4845c30728fc7b508ce5e76ab936615d21d74d"
+    },
+    {
+      "path": "practice/starter/01-user-entity/User.entity.java",
+      "sha256": "de8f250e7d2c7fbdb280b8838e1dbfbc4b3f85e392815f8758e0fbcd358160dd"
+    },
+    {
+      "path": "practice/starter/02-category-entity/Category.entity.java",
+      "sha256": "66bd05a7afd6879d52b29373385b9e61aae30075b42901e30ff95bf8451c3b93"
+    },
+    {
+      "path": "practice/starter/02-category-entity/Partner.entity.java",
+      "sha256": "b209dfed04c3bbffc763f219fab5b84602eead581e6f13f5c5c0f20a5bb2dfc2"
+    },
+    {
+      "path": "practice/starter/03-item-entity/Item.entity.java",
+      "sha256": "9c6409c50fb934ad618b93acda545b02394f33a1736ecb1ff45a914374ced393"
+    },
+    {
+      "path": "practice/starter/04-purchase-order-entity/PurchaseOrder.entity.java",
+      "sha256": "40b059de6586be38c003426411f2d46804d74bb7caea8a4b039b93f660cf8753"
+    },
+    {
+      "path": "practice/starter/05-notice-entity/Notice.entity.java",
+      "sha256": "b0761737303686303cfb25b61dab505458b0982d42efb974bddef1e205587b71"
+    },
+    {
+      "path": "practice/starter/06-sales-order-entity/SalesOrder.entity.java",
+      "sha256": "c788f8e71cefaf4d90fbcdd6e19813a58f0b586fc1d99c96a59948f0821cdd5d"
+    },
+    {
+      "path": "practice/starter/07-repository/ItemRepository.java",
+      "sha256": "ee778c92234ba9ba153aac75a5d70c7f28c5779dd55fc54e007e7d168af5bc2c"
+    },
+    {
+      "path": "practice/starter/08-item-register/ItemService.register.java",
+      "sha256": "0e455c2303e4eec1a86949b10d501263f2935d83894aa7ba4fd007e37e009c55"
+    },
+    {
+      "path": "practice/starter/09-item-search/ItemService.search.java",
+      "sha256": "d454e1fe7db0e98b899cd5c4d5ad61f05c941a8674ccba58951ada8624f59b91"
+    },
+    {
+      "path": "practice/starter/10-purchase-order-create/PurchaseOrderService.create.java",
+      "sha256": "aa26ccfce57e9c3345fea1f4adde6d1df5b3a09de34b7260775aa0875daf088d"
+    },
+    {
+      "path": "practice/starter/11-purchase-order-approval/PurchaseOrderService.approval.java",
+      "sha256": "efa603678b175cfaf54ffdec805ba64f1d5d70da5a11a0bb1857d5e82f818aad"
+    },
+    {
+      "path": "practice/starter/12-notice-service/NoticeService.java",
+      "sha256": "90f7c169e11e43cb16cd9e0c3e79333e05fa5669ea22299d84c3c2859a3480c2"
+    },
+    {
+      "path": "practice/starter/13-sales-order-create/SalesOrderService.create.java",
+      "sha256": "74143cfb9aaceaab554b32e730a67cea9239fdf9a5ad2ba03d92a6e66589f797"
+    },
+    {
+      "path": "practice/starter/14-sales-order-decision/SalesOrderService.decision.java",
+      "sha256": "4010868f1e39d304941e2f0c532e9ecd339fee9996af30d8bc3269c7b296e66d"
+    },
+    {
+      "path": "practice/starter/15-error-model/ErrorCodeAndResponse.java",
+      "sha256": "d34072707d3e0cb14314ce21b39539885967376ae58b19497a042aef2b4f6ed1"
+    },
+    {
+      "path": "practice/starter/16-global-handler/GlobalExceptionHandler.java",
+      "sha256": "e436733b5e8f8aa4c1ed57aaff3490151c4627077caeae39b26014728d163765"
+    },
+    {
+      "path": "practice/starter/17-dto-validation/ItemCreateRequest.java",
+      "sha256": "c0f230da11e9f545d5a7ab910ababb0bbe22e265210ca5888a6ba2d23951bb76"
+    },
+    {
+      "path": "practice/starter/18-controller-item/ItemController.java",
+      "sha256": "53149c505f5b0a46cf7725dc11d9c562beed541044cf433452fd63d54c97955c"
+    },
+    {
+      "path": "practice/starter/19-controller-purchase/PurchaseOrderController.java",
+      "sha256": "ab06bf06fc80051b79038157c2c718c69f86cde6eca32108fe9a5d85c9d515ae"
+    },
+    {
+      "path": "practice/starter/20-security-session/SecurityFlow.md",
+      "sha256": "6c32c7a9412ec2641a28967620970c0a4f8651e2ea108b0b6c95cd1154c4c6a5"
+    },
+    {
+      "path": "practice/starter/21-test-flow/PurchaseFlowTest.java",
+      "sha256": "6d103ea7c3a84d37b574936f1c06b13408fb19d4629fec999356f84016db820b"
+    },
+    {
+      "path": "practice/starter/22-documentation/PortfolioDocs.md",
+      "sha256": "62189ed712a4344fcdf97dba68406f32ca6f796f551c1e234f33b889d1ed5bd5"
+    },
+    {
+      "path": "practice/starter/23-auth-login/AuthController.java",
+      "sha256": "237ec73a486fdc619816b2700545ea4c5df77f27075dbfa334a7979d828dd215"
+    },
+    {
+      "path": "practice/starter/23-auth-login/AuthService.login.java",
+      "sha256": "33a3c1414af93c7bf4a8c8db02e7771ab40296a6601a4173bd213071eab03236"
+    },
+    {
+      "path": "practice/starter/24-partner-service/CategoryService.java",
+      "sha256": "c1120cdce9f9b917f76a074e4554eb65b1dd62b2acefa60c4050c5b1dd50b41a"
+    },
+    {
+      "path": "practice/starter/24-partner-service/PartnerService.java",
+      "sha256": "38799d4f05ee520da60d1c86a58c1534cf301fed7a21b558a9d5f8916bc2386d"
+    },
+    {
+      "path": "practice/starter/25-partner-controller/CategoryController.java",
+      "sha256": "e88eeb9f4da36478b26f8072002a274b8173bd2955797c5293207b41a8c2f3ad"
+    },
+    {
+      "path": "practice/starter/25-partner-controller/PartnerController.java",
+      "sha256": "9e966cc07815a486d4059406d05cf24d9beca1816035b874c66abd0be32a2f23"
+    },
+    {
+      "path": "practice/starter/26-notice-controller/NoticeController.java",
+      "sha256": "73b4705a031502355f7e16ea82d7c4368b35a599af211a31f5b782203cf271f4"
+    },
+    {
+      "path": "practice/starter/27-sales-controller/SalesOrderController.java",
+      "sha256": "3ced6e7df7a83f2f1404820fd9dc3b69f7705fd6fef90ba4827401a8b44331a0"
+    },
+    {
+      "path": "practice/starter/28-item-detail-update/ItemService.detail.java",
+      "sha256": "06a906fa5f08275db66f8c65d59574c8cd47eafa73b51dcd10d195b5c7d5e77d"
+    },
+    {
+      "path": "practice/starter/29-purchase-my-cancel/PurchaseOrderService.my.java",
+      "sha256": "5fedf807ef5ddd9b5a427084f2c5385aef3c079902ac8e5912abc9dd71d02d40"
+    },
+    {
+      "path": "practice/starter/30-sales-lists/SalesOrderService.lists.java",
+      "sha256": "f2f3fa431c58a7808316b9183e09cbc724beb4b4264455a3c99774cf03255fd6"
+    },
+    {
+      "path": "practice/starter/31-repositories-all/AllRepositories.java",
+      "sha256": "dfcfdba6e9f7bfffd60a9b25843e70abe266fdde7397579196bc7777f8090922"
+    },
+    {
+      "path": "practice/starter/32-response-dto-mapping/ResponseDtoMapping.java",
+      "sha256": "8aa8e3c1a64da4cba4ccc8f639f4ab38850b367ba0e3a4c445adc0c27683f938"
+    },
+    {
+      "path": "practice/starter/33-config-beans/ConfigBeans.java",
+      "sha256": "a2bee6c3c34e729465c9eb15253e58972af6a4ec31c33d59c2673b5261f6f83b"
+    },
+    {
+      "path": "practice/starter/34-current-user-interceptor/CurrentUserAndInterceptor.java",
+      "sha256": "87784b5cb0c33573c8e82a24c6caedc53ebdc71d1d529b7ca0f4912c4c0ba903"
+    },
+    {
+      "path": "practice/starter/35-thymeleaf-views/ThymeleafViews.md",
+      "sha256": "4ae5dc2198bb0bc3744fad2b2a210ebddfe145bc394c3815f775333dbbb090cb"
+    },
+    {
+      "path": "practice/starter/36-package-architecture/PackageArchitecture.md",
+      "sha256": "2f4567bb865a3b4f2f9837eddaf6184022a3da47dd42f5e51e2535e1e0cdc509"
+    },
+    {
+      "path": "practice/starter/37-business-rules/BusinessRulesChecklist.md",
+      "sha256": "ae0d7a20b5674b5a1ebda2204cbfff855b38e0b4867a50cd630e6e15fc989da5"
+    },
+    {
+      "path": "practice/starter/38-troubleshooting/Troubleshooting.md",
+      "sha256": "924edc71ba4ab5cf4fd296691bfc11dee8f26ca5067298f3ec2bcb3f931fcff4"
+    },
+    {
+      "path": "practice/starter/39-interview-and-commit/InterviewAndCommit.md",
+      "sha256": "505e9e4f4c4811abe661dfc9c204a3259eda500254ae3648c0e51083b6e81386"
+    },
+    {
+      "path": "practice/sw-quiz/build_bank.py",
+      "sha256": "7a055197c2f886c3a2339a9e945ef5c134165df3793ca7e5fecc43c610b4f708"
+    },
+    {
+      "path": "practice/sw-quiz/build_workbook_bank.py",
+      "sha256": "215df925cfbd6385069f1ce6dd83228fa3259465c508105bcb1c8c3f066cf618"
+    },
+    {
+      "path": "practice/sw-quiz/conversion_map.json",
+      "sha256": "665c3249d70fe378b9f587ea2ed64037286adbbf12cdc86e714087dda9fbf490"
+    },
+    {
+      "path": "practice/sw-quiz/extra_choices.tsv",
+      "sha256": "f107665583a0c83433d6204bbb9001c0b6a0baef2c9dd094f88d67f0c758a2d6"
+    },
+    {
+      "path": "practice/sw-quiz/favicon.svg",
+      "sha256": "fa2f9cb0b36d64e2292721b629d350f03ea219fa78fad8e83f7041586f9d6e9f"
+    },
+    {
+      "path": "practice/sw-quiz/index.html",
+      "sha256": "8eb907491868689fcb739bfb921dfb9e17aee731e56dc1bc34ed29b090f6f072"
+    },
+    {
+      "path": "practice/sw-quiz/module_choices.tsv",
+      "sha256": "42ab9332a77b41314d90a0a2ebea38c43315942a5cfcf7ecbb7d06b06cef02ab"
+    },
+    {
+      "path": "practice/sw-quiz/questions.js",
+      "sha256": "6d413e4b3c12a396ef06652debcf75377b2341c8eabbd116157952923bf05d38"
+    },
+    {
+      "path": "practice/sw-quiz/questions.tsv",
+      "sha256": "79061d5b7c7fc04a9361eeb2af68f37fc3907265f45450570d577a9c9f39a8c7"
+    },
+    {
+      "path": "practice/sw-quiz/quiz.css",
+      "sha256": "211f3dd2e33c910e63654e3210f74cb2f2ebc8f84d150902529e0cffcd51022f"
+    },
+    {
+      "path": "practice/sw-quiz/quiz.js",
+      "sha256": "6448453e6b363985e1869f83bf769929e4d93a4bb2d69299cd474c14f13078a0"
+    },
+    {
+      "path": "practice/sw-quiz/remaining_choices.tsv",
+      "sha256": "09bc91e1633a99cf7a9d6b3ca130739de9321f38151cd2fbcf7bc6f2961019ad"
+    },
+    {
+      "path": "practice/sw-quiz/study-state.js",
+      "sha256": "7b6963f366500b73855901f5dc67c38118a608dd0dc4de844df9355cdf2e237f"
+    },
+    {
+      "path": "practice/sw-quiz/test_choices.tsv",
+      "sha256": "5d0c8875d75fcae27c7da1a653f5cb0be6a7e1840e103d85c08f0163362f692c"
+    },
+    {
+      "path": "practice/sw-quiz/workbook-questions.js",
+      "sha256": "5c93c3b6d8b5cbde1f2cc31641b7ef67061c391850ee1adb32efbf70a1471207"
+    },
+    {
+      "path": "practice/workbook-questions.md",
+      "sha256": "c795c2c237ed278cb30c311160c47c6b1b6f15f3d12bc43daeedce0fca47af9c"
+    },
+    {
+      "path": "scripts/verify-repository-boundary.sh",
+      "sha256": "0175c8445094866d4391dfceaa93ce533db8f597bba756ccb9562b262613c47f"
+    },
+    {
+      "path": "settings.gradle",
+      "sha256": "4cbd1918b1c2eb8bfc7551cd195a7bdb1b4333c1560526c4915a297294d2b1c7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/ScmApplication.java",
+      "sha256": "4ee3d96d3e9c73f10a36c6089b2e3ded4fb2dcaf0ad86236f2582bf896908e86"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/AdminOnlyInterceptor.java",
+      "sha256": "e5447632c97e1b0965fd6c00bc063d4a3a2e8c6f2d9bdc1d0ab799359b7828f1"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/Authz.java",
+      "sha256": "ab46243773dbaf953f073872b60b6a6e0fb4ebcd8084dafa6e8b7caf5fec163d"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/CurrentUser.java",
+      "sha256": "67f7803c8db408c1a9b3e61c657b91e67ca2e77c23d3145ff69e612a33fcda83"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/CurrentUserArgumentResolver.java",
+      "sha256": "7592c360c363bf9891e09643a084b9e7f266a651ec5f8abbe97fc37ddfb4446f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/LoginInterceptor.java",
+      "sha256": "56d771bd89fffa935005bd3d7c515979c16b1aa1c5cfd2b8dd60ef87346b9c1f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/LoginUser.java",
+      "sha256": "27f7e6732f564f017e82460117c8e7fa461ea5e56c80068c844d006e16e6d490"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/auth/SessionConst.java",
+      "sha256": "6224e77071d40b5cfeb1a59897f30b5e39f2044f141538459231446c46c4554e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/entity/BaseTimeEntity.java",
+      "sha256": "766f46b6318a973c4d6df4b17f52b8880982ad5065390dba009ba42f96881cb7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/exception/ApiExceptionHandler.java",
+      "sha256": "ab1ec77301388dd65b6095bc8cba81e119c4795f4b2e1b978f822de0b8eeb978"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/exception/BusinessException.java",
+      "sha256": "6735eb4394aedb33de3e039d842207a3cdc7db1623aafff0e3f672e0d3df5db7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/exception/ErrorCode.java",
+      "sha256": "c1abe8ccfce2037d291dc204b5bd326eec42f196d57a97b78960a00be4925a04"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/exception/WebExceptionHandler.java",
+      "sha256": "aa079c48f6398f8ac82b54d3834320c8332ee00d6f9c5ca49192aa6650a1e663"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/response/ErrorResponse.java",
+      "sha256": "4fdce9fe4c50ee0bf86ea7c9980aaeaac9a0118347b71a1cc77a0de020918f34"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/response/PageResponse.java",
+      "sha256": "cbe538865c205ee293ba915dc0de3f0335b2e5db55880bcfab5043b035b97cf0"
+    },
+    {
+      "path": "src/main/java/com/example/scm/common/validation/PageableValidator.java",
+      "sha256": "ee00aac30695fb824bd59a521687976f52eb4911d9346228421da3baf7a68d20"
+    },
+    {
+      "path": "src/main/java/com/example/scm/config/JpaAuditingConfig.java",
+      "sha256": "d9c1de1d77a75386399bc0fe1e80a6f71be128f680753adc3dddf194421f9328"
+    },
+    {
+      "path": "src/main/java/com/example/scm/config/PasswordConfig.java",
+      "sha256": "5e0e0d5944e7dedcd44f1bf286aa6454ea14c53d1c09861ac98ba03f06129bbc"
+    },
+    {
+      "path": "src/main/java/com/example/scm/config/SecurityConfig.java",
+      "sha256": "17a6f62a88d997cc573e6e2c8e1336c38075e1b2338cd888c6788ab91c0f748e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/config/WebMvcConfig.java",
+      "sha256": "7474e65a9959fa4ea9c423bd6c16f044779718493bfa059e4951b29cc8e43f1e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/AdminPurchaseOrderApiController.java",
+      "sha256": "5f341cac3dcd2e9263fb223182f3f00b6cacf15d96ba302363f6fb404a8bae00"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/AdminSalesOrderApiController.java",
+      "sha256": "d2bd98229005eb54c40f5e2d92a08cbf307bd26bb193b34db2a7c9d9809da086"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/AuthApiController.java",
+      "sha256": "65eba05995d65283b27058c392dcf93e63388edd59be508c6a7ba7e767e14af9"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/CategoryApiController.java",
+      "sha256": "ab24014330ad83f42d2b9f470fea1974e052b33256a88547e9d853ab7f2dc9e3"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/DashboardApiController.java",
+      "sha256": "1c9008e063e45ce537a232f3761dabbf89a9d8040523d30076114454cc1100ec"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/ItemApiController.java",
+      "sha256": "48d178b2d227f0d52e509d932745e41d5cb44ff716c843936a3a6a64afe5a55e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/NoticeApiController.java",
+      "sha256": "e579cf8b3396464cc6835dfb8dda7742ee143c6faada61e61f4fee9d34b38bf8"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/PartnerApiController.java",
+      "sha256": "0d82fc54d4e95669909a751c3ef4f315a38123223bfd7e94a3c2e6951d7469b1"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/PurchaseOrderApiController.java",
+      "sha256": "e451335f6fc065e212b0c2cfae09def3d81f0e2a3b723240630f77e557b6e080"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/SalesOrderApiController.java",
+      "sha256": "6f74896655ef664c75a2a872448f9aa3059c3db76dc9d4e0aa6f48ac4548ab32"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/StockApiController.java",
+      "sha256": "c75d6fb5401eb583149f332e4f06c6e97cb7fb597e1852dc6d6a9ccc87eb8b24"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/api/UserApiController.java",
+      "sha256": "36efecfa5b28ac9c4ff4e64788ff804979a496afdcb3a1f25db06c5b8db6ed22"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/AdminPurchaseOrderWebController.java",
+      "sha256": "8979fb78af52260619ea95bdd4669bf7c397051044d670ff3bbc0d6709a6f454"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/AdminSalesOrderWebController.java",
+      "sha256": "3ce9334cefb5ab2e629a89d336ec6d383e3540a01318ccf7e2d8a744caecdbdd"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/CategoryWebController.java",
+      "sha256": "84b6dc954c33686e35681b071157421fb9b9c949f89c1bd1769b58dba78ffe35"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/DashboardController.java",
+      "sha256": "be593e659ca0114e725af10fa800af412844bf794230600332b21b17d4c200f7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/GlobalModelAdvice.java",
+      "sha256": "ac2fa2d54d26125d67756222c7ec18e58335c6b60b0b98d915e8959fc6c56d73"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/ItemWebController.java",
+      "sha256": "31832e6c60440e0a7784662f86c614140eca56a127da804b2ac80ab982e26508"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/LoginController.java",
+      "sha256": "711fd64768e80fe249e62913c06a00f27bcd34adabcc5cc56aabbce5d94d44ff"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/MyPageController.java",
+      "sha256": "489490f01e1b7f71ff0d7596ac47b7dbd19f6edac52c98784c24a4a49f6233c2"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/NoticeWebController.java",
+      "sha256": "d3cedb493ae9364f08ca54dab09a557dc0d6544700c86addb893f3e849ceed03"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/PartnerWebController.java",
+      "sha256": "17655ac7a614b3aca87eb4cd33afd471f64cd9a366a9f698935a02cd31085ad6"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/PurchaseOrderWebController.java",
+      "sha256": "90c210b4a4ce64bc3bb92b16b5ce324447e52d54af4a88a67e739da8abf81ff7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/SalesOrderWebController.java",
+      "sha256": "8e7d70845a56a25b2f327880a07cc8bf5925e0ead5dcbb3e64eeeec4330fe80f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/controller/web/StockWebController.java",
+      "sha256": "ca6f4687ac7d1ef9e5f86009049f731ea849419604859f30f4714ad7d39dc61e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/Category.java",
+      "sha256": "7413b7609cc6d177f942f0e2d378906205f803cf89344379dce50527af81a430"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/Item.java",
+      "sha256": "504439b9058ff233365004ed1b614a10fed9057efc5a97858326154198818d1f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/Notice.java",
+      "sha256": "a050320e954238108fbbe1fcf6b0d8d3c6f1fd09b00ee3840e0b6e6cc909c2f5"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/Partner.java",
+      "sha256": "202ff28c8234fdbf157777e917d1a57b355b41e0c2066f54acbf4842417df084"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/PurchaseOrder.java",
+      "sha256": "46bd5d378680cb10fb277236f2806683131dfc881cef7b3365bd0e4d58a1439b"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/PurchaseOrderLine.java",
+      "sha256": "85814b8d03eb1bf1f15a4b08508ca7d49b2b9e24c8bc8fcef02cfebdadac435b"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/SalesOrder.java",
+      "sha256": "8cb198ca5a6d35636cb438ebde470d4cb60f06c482a66cb835ebc86469075764"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/SalesOrderLine.java",
+      "sha256": "69e259456529b97abfa672e77e9550efba703d3c5d2f0bfd093f0fd9fd3cea10"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/Stock.java",
+      "sha256": "26dcc0da6d1be1664f2d843317f9d2d8659a398587d975b8ab1a11ab695bf721"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/User.java",
+      "sha256": "24058692cdc0b40cc439e136c2b30e6f5e052daea59bdb03edfcf0da1f0f93b7"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/ItemStatus.java",
+      "sha256": "4701255b352156d6f34175a402c20aa3340cf2a522fe04fcfe782c8aec895162"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/PartnerStatus.java",
+      "sha256": "fd7b9263a7e3a034e4a521ca22b1a3e81281f5cae436268ceddb631e0b2cd615"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/PartnerType.java",
+      "sha256": "e9e039db29b742721a46d00cefc6a87daddef9c42a8b1f9d7d511463cbd9709a"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/PurchaseOrderStatus.java",
+      "sha256": "9a02f5bf871ef83babac759f481599caede0659307228eb5381e44a06e596fab"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/SalesOrderStatus.java",
+      "sha256": "b3e2c310fe7e68098f87d8a48d9e98a7fdf72373bc04ee5988637d9ce2396b60"
+    },
+    {
+      "path": "src/main/java/com/example/scm/domain/enums/UserRole.java",
+      "sha256": "6964cdd61fde03d1bf97d4c2737a205db597e19744cd56a0b1623b12071387a4"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/auth/LoginForm.java",
+      "sha256": "217e74cb9fa3fed0eec95f0070168663666b65917536030b5867f83598b68b22"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/auth/LoginRequest.java",
+      "sha256": "10feba05e593b42932f3ca2b6875bbd479b5d914dcd72dc70d29589757392838"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/category/CategoryCreateRequest.java",
+      "sha256": "11773cc109bff7ccfa2be901ae9f11f20171441e9d449ed15734dc7a0a3bfdbf"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/category/CategoryDetailView.java",
+      "sha256": "d2bdc023cc4af0ef1441522aadf527d02fdc9f28cdeed743429bc2a5a76d1e43"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/category/CategoryForm.java",
+      "sha256": "91b2b1d8a37ee73f54279b33343963a09017d5593b5313190f731b6a352c9591"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/category/CategoryUpdateRequest.java",
+      "sha256": "11a2e154ec03e762ec904631e10a9ca26425e289e76ca3f007dcb0a0856803be"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/category/CategoryView.java",
+      "sha256": "07baf6a157b968dcda3a2735388beffcd942bc4ae37cc19611feca3a57ff5105"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/dashboard/OrderStatisticsResponse.java",
+      "sha256": "23cfa518cdaf6e686247c87e800a64f1ac0a9cf006a30db46229db272634616e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemCreateRequest.java",
+      "sha256": "42b3e788cc69ef293384267296aa4f94541cb06ae9f1b03339bcfbab57076179"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemDetailView.java",
+      "sha256": "df95bd3697505bf2f169082fadb6fdee6d8686131c03a96e52839a6ec4bdef02"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemForm.java",
+      "sha256": "387a958d7a74cd30cc07bbc5b6c1aafb3344819cc35eaede7217a15a7c65abd8"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemListView.java",
+      "sha256": "6aa85a508f913e5bb8538d88db0132e374ef8c7f38b4cacbccff5c8218c3e079"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemSearchForm.java",
+      "sha256": "908361188645401ca966787d8205ca2050f789553488f3561e5ce42cccc004e5"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/item/ItemUpdateRequest.java",
+      "sha256": "2a2dacb03bedd15d3274b85682e4b16a10bdaeb79d38f2eae464aaf4ad200266"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/notice/NoticeRequest.java",
+      "sha256": "148e939505c12462787baffc83f2f8027780faf9102e8a81ea57a9e5e034ddbe"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/notice/NoticeResponse.java",
+      "sha256": "a111e64dcd372f76061fb06de2c76b6be708a0a60e8bf85298f169ec0e1b5f10"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerCreateRequest.java",
+      "sha256": "3567385cc7189e85710addbc8687a4906b4fbd8bca0156187f72b4c73f82f32f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerDetailView.java",
+      "sha256": "67210a8c3af13c93f0ee6e37ff2b350cc9a049257dc9649697a4eeb82aa092dc"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerForm.java",
+      "sha256": "ba56073afacbced0d21922a1a57988f7c95233578e63429d50323596adb25d73"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerListView.java",
+      "sha256": "ac91beb451f0c5c938b78fdecfed49635cb267dae0a00d40ed32e6434baff8fa"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerResponse.java",
+      "sha256": "c3d7c63dd941b55192d09aaf8e93b6ebafd3a0ccec39125e4cda9d1859487baa"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerSearchForm.java",
+      "sha256": "2425d7480a13824e047a4cbe865dc8488ff8b2c369c721a3ad66784445ad2dde"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/partner/PartnerUpdateRequest.java",
+      "sha256": "4dd6a29a6d01ab10dcbe6a34124dbf2ec9ceaaba875a890bc342ea628b103fd5"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/ItemOption.java",
+      "sha256": "8c5da0f01aac3dba874915708375f784b531d2215acb32bc82c67273f0ff5b3f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PartnerOption.java",
+      "sha256": "5b7b657d716ba5f3abf8ebe99c74ba53bae0f56f2efc2fb27168237dc9eee147"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderCreateRequest.java",
+      "sha256": "d474214942ae45d6b7ce6a4903b5f1d5933dfcc63ab3e742728d5088e0a47796"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderCreateResponse.java",
+      "sha256": "c991a9868e024a3df235c80a09e26c9a489202729c2aaa9e6806d90c37b6d50e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderDetailResponse.java",
+      "sha256": "e8fc2b0adea8eec93511c5d7142f745c40d15c3826994a4c364c99078dc9c413"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderDetailView.java",
+      "sha256": "8ffe5114605a2c3960155c2b72dc93cb3d4c6b63c62b53d5a8efa321e2466b2d"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderRejectRequest.java",
+      "sha256": "ceed00b28d61525f50f51cf86ba9589bc0913d482176431ebec376dd7a74613c"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderStatusResponse.java",
+      "sha256": "5768bb8e7147f4f9b540a6b39dbf9e05c4f4185f4dfce73026f030d3b11c0e73"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderSummaryResponse.java",
+      "sha256": "085e7aa3bcf92dcc5ecceacf180ad3d55d333cf248a32a1d930aa8b0d87a0b50"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/salesorder/SalesOrderCancelRequest.java",
+      "sha256": "6ad8d28f23aff2dd646c7c15aec830f87fc9db243c8d52486d138fc4ac525dc8"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/salesorder/SalesOrderCreateRequest.java",
+      "sha256": "65d5b9585e629195ae561b6078d1e2c2ee4ca5986f7cf2a25f87b64cb374fd1e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/salesorder/SalesOrderResponse.java",
+      "sha256": "f3de64d17419b068bde7201f0ebafa8cfc676d7a98d56f4506f1744c2e66d94f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/stock/StockLevel.java",
+      "sha256": "fc7d83aedaab45f736d38a7aa83ae810aa354e1842c98611504e84a309064802"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/stock/StockListView.java",
+      "sha256": "9d1d418550db9f6fcb5257b0733a77c45db91ab135e9c59599a4f12b449a298c"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/stock/StockSearchForm.java",
+      "sha256": "8878ac95bfd0092be56af26429a8be4d78a050bad3e959ba46c54d2eef1c63ce"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/stock/StockSummaryView.java",
+      "sha256": "77008798452e719c01767249fb2b12776e2ef4c46150738c27bd554b794a3f1e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/user/PasswordChangeRequest.java",
+      "sha256": "0c66a8bfd428c862b087bfe7530390f2b234a48568b0c79731b7b8c3c2477986"
+    },
+    {
+      "path": "src/main/java/com/example/scm/dto/user/UserResponse.java",
+      "sha256": "76e3ecd255ba4a39af78918538723e2d90846c30c7c045ea50ae53408e539203"
+    },
+    {
+      "path": "src/main/java/com/example/scm/init/DataInitializer.java",
+      "sha256": "5d936ce377a089ebe02902321b5a125fdf6f6ef0677afcaf4e4d49dae847bb5b"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/CategoryRepository.java",
+      "sha256": "30200b6624f19e2d02c8e3a2e26b3d122efba8e0ed2c0562c2fb421ec0d73520"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/ItemRepository.java",
+      "sha256": "37ccabb9e9957d8d8b4da84ad1141a0ddeb1626216b0ccbc101ef40b75cfa654"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/NoticeRepository.java",
+      "sha256": "a2e82e82194f785941474627c92a18c74dafcfebced2a604e1ee12a6ebb83818"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/OrderStatisticsRow.java",
+      "sha256": "0d76dfb0e1194a207aa5a2cb791d093bdd0b0511e027ed25387e0d34f260811a"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/PartnerRepository.java",
+      "sha256": "a77ecbb36256605ac9d3086146c7f3c42e998dd4449efa7f3ac9b1473d8ac050"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/PurchaseOrderRepository.java",
+      "sha256": "51529c1d7e3d61097c4e5065d0370f8b08862895c3a9a31232398677a28b42cc"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/SalesOrderRepository.java",
+      "sha256": "b8e6b41d97bfa79305359898d072ae4bb3682098c9e8dba271c759581b902452"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/StockRepository.java",
+      "sha256": "f9121b33d7ebce1e29e03935458da39cd2b73e04c52d001c0e7175471b14015e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/UserRepository.java",
+      "sha256": "9a9c4d6046a1d2f01e2e06e14689ed659dad37c44d5c9972f8660befdfd694da"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/spec/ItemSpecs.java",
+      "sha256": "d17959e09c083e58f69021437ab91303b3f71307abc813efd2b90cb7bb9bdf82"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/spec/PartnerSpecs.java",
+      "sha256": "ec557d72f730381a90c20c1cf775722e2913d341e3c3ad95a4c4cfbc7e385b3e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/spec/PurchaseOrderSpecs.java",
+      "sha256": "87f8a51247e6b7eb8b933961e89e9845f20d811ac7eda21213158fcf1047c12d"
+    },
+    {
+      "path": "src/main/java/com/example/scm/repository/spec/SalesOrderSpecs.java",
+      "sha256": "f244328d9b065739f7c4ad5997ca15f8fc8caf964339f53a31006bdaf3633ded"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/AuthService.java",
+      "sha256": "6eb1fefd02654da8436ebf6999b53b8b734505f1aa6ed6832e296f6a5424b234"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/CategoryService.java",
+      "sha256": "73704091d493ff7dbc2ad37e9aafe726f6369859b11fcf70ead28a649bfcbeec"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/ItemService.java",
+      "sha256": "6c18da968a417a7b69401825045354e357b6f4ca5a191ce7f463269b1fa2f59b"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/NoticeService.java",
+      "sha256": "a87d09561b0a1e0a43eda1cc15d3adb1e105947c260da10104a483ab6cc9df3f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/OrderNumberGenerator.java",
+      "sha256": "4429f23cfbaa368c276ebfe1402097eb73b39e6560e976d6b2c893062a2a9cef"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/OrderStatisticsService.java",
+      "sha256": "585c9513942e8381e97a59e1aa271aa1cb1b6cdad738ae3d3c73383991df1289"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/PartnerService.java",
+      "sha256": "5bdcc04f5782a59eb78a49ba63b64088217a0a34a50c9d2fe0ae1a0f36a4073a"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/PurchaseOrderPersistenceService.java",
+      "sha256": "0b86a14e37f4d0b35493d0df280f4ee74b38f5b78db33a156e2583503f4ff8a5"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/PurchaseOrderService.java",
+      "sha256": "17ab11a2f5836a9022a20291e890e72758daa1b0dcbde57b19556c8a9207307e"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/SalesOrderNumberGenerator.java",
+      "sha256": "eedea3877bcfc76f578ca2344040fbdf2283091579f89127e8f393418a2c8392"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/SalesOrderPersistenceService.java",
+      "sha256": "f02f39c2ec43db05b94b58fb3e45b27296b06a683650388acd0bcb46f65791b9"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/SalesOrderService.java",
+      "sha256": "04fbc463d29ecc6ae9954f3d792af29bbbfef0652da91d0b2bf962de1313c977"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/StockService.java",
+      "sha256": "16eb4b5da12cdb56d944c940f3d04df067037700f3580c4a72dc6200e5bd556f"
+    },
+    {
+      "path": "src/main/java/com/example/scm/service/UserService.java",
+      "sha256": "0eee8b6417a277b3f8a46db8477628c4b9254a1987b58bf88bfd0bf2c61162fa"
+    },
+    {
+      "path": "src/main/resources/application-mysql.yml",
+      "sha256": "794cdab57f1b2b3d51236e52c9bea6014c0c574f859bd0f24259c1c5cfd55a68"
+    },
+    {
+      "path": "src/main/resources/application.yml",
+      "sha256": "78908a7bc1249a3e8421f0150b4f979c4ca04f569d311fe31e3f4fc53b78ad3e"
+    },
+    {
+      "path": "src/main/resources/db/migration/mysql/V1__baseline_schema.sql",
+      "sha256": "713d50dcf5c04fdf70e0148c503ad781baa03ccc9f3ba75882f9b3fa87b4f8a4"
+    },
+    {
+      "path": "src/main/resources/db/migration/mysql/V2__sales_orders_and_notices.sql",
+      "sha256": "b78bd28e0800703c257e607295d172baf2623257c480e25c60cc47539fc2caf3"
+    },
+    {
+      "path": "src/main/resources/static/css/app.css",
+      "sha256": "aafae4d04d135082ba105dd25aee5e8425d53255f151ba3cc02253ec9a390967"
+    },
+    {
+      "path": "src/main/resources/static/js/purchase-order-form.js",
+      "sha256": "522a251cfb473ef72ec5ff262149d159ecbc1ce65fe7d0006a1aafa6e17a71ab"
+    },
+    {
+      "path": "src/main/resources/templates/category/detail.html",
+      "sha256": "9605f629caded7d312a4c3e799883b8becdde6636be0c34b68d589fce2bbaaea"
+    },
+    {
+      "path": "src/main/resources/templates/category/form.html",
+      "sha256": "a7173da970b88c932679868d7a0706dbc53520975be738b1ad118fa221b574b2"
+    },
+    {
+      "path": "src/main/resources/templates/category/list.html",
+      "sha256": "910de62fd8f5e339c6c5f4a77b3c6df5f37c418f7083f1157887998fbfcb51ad"
+    },
+    {
+      "path": "src/main/resources/templates/dashboard.html",
+      "sha256": "77f207478d4db63e2d913009f1bb23f447217ccb10476075e24564e81cb53aad"
+    },
+    {
+      "path": "src/main/resources/templates/error.html",
+      "sha256": "d631f6ea89920604e0eacea6e194b61f4ec1e27d3064f832e468ce82ee15f149"
+    },
+    {
+      "path": "src/main/resources/templates/fragments/layout.html",
+      "sha256": "efb534ec4885ff012957afb302b3d5d25fee37caa99e6c79b50c6a15a8669394"
+    },
+    {
+      "path": "src/main/resources/templates/item/detail.html",
+      "sha256": "b04a282d57dfa3d48d627286e3680d00058fb8119eed37a8ed04ea3b7bbd14a8"
+    },
+    {
+      "path": "src/main/resources/templates/item/form.html",
+      "sha256": "9ffacff0bdbe5dfad8cd5fd3a8b7ed5264a62996e166e1929c71b6b6e889dcd6"
+    },
+    {
+      "path": "src/main/resources/templates/item/list.html",
+      "sha256": "5be30adc672bbb46523adf5612f79083ebd9ca918f28024310078eba3c3ad29e"
+    },
+    {
+      "path": "src/main/resources/templates/login.html",
+      "sha256": "93bfc3f43e4f40f84a674a1db8f0355dcca10ce1deb17a42ee1a996c8496486a"
+    },
+    {
+      "path": "src/main/resources/templates/mypage.html",
+      "sha256": "728be84ba775745a9da64dd1fff6ede393e45f260770238816174caaa9226581"
+    },
+    {
+      "path": "src/main/resources/templates/notice/detail.html",
+      "sha256": "1feea4e7518804447e3870ad3cfdb88aa5c7c05e51b776f62a90303c2e31a179"
+    },
+    {
+      "path": "src/main/resources/templates/notice/form.html",
+      "sha256": "d2ddb0390fca8d712416200759d6bcc35b4142268c9d0a811955f11c7189ac4a"
+    },
+    {
+      "path": "src/main/resources/templates/notice/list.html",
+      "sha256": "ab78ed3ae9fe12b66e007c3edf449d75dcd102a962730a8ec17101acecf41bc3"
+    },
+    {
+      "path": "src/main/resources/templates/partner/detail.html",
+      "sha256": "026a9d5edea7ad6c9109741a1b834a7ee12fa4b3d3b2b3fbeff18bc8ad6770f1"
+    },
+    {
+      "path": "src/main/resources/templates/partner/form.html",
+      "sha256": "ddb4ca6b9822acbcb0f113e3d3e401c5e3e24f91b91462c3462b7473e910d93f"
+    },
+    {
+      "path": "src/main/resources/templates/partner/list.html",
+      "sha256": "6a982bfcc261a0365424c1cfadfee5fd78fa65283955651a70c6358d66678604"
+    },
+    {
+      "path": "src/main/resources/templates/purchaseorder/admin-list.html",
+      "sha256": "2f06d86d10eef45de09828be92992f40b3425e27b685b22826848b5ae20af8ae"
+    },
+    {
+      "path": "src/main/resources/templates/purchaseorder/detail.html",
+      "sha256": "bfa7b67b85727f912d67c72d07920138bf915f8836b960db90ffa6b9d6a05d82"
+    },
+    {
+      "path": "src/main/resources/templates/purchaseorder/form.html",
+      "sha256": "baacb308cd83ca12263790f256f449c48f9ce53df9edf1ae8327383df5fe76c6"
+    },
+    {
+      "path": "src/main/resources/templates/purchaseorder/my-list.html",
+      "sha256": "d5980ddb6ab2d077038c5e0175c881ec3c74845990ea5cf9ee09f4bd146639a4"
+    },
+    {
+      "path": "src/main/resources/templates/salesorder/admin-list.html",
+      "sha256": "fd000ab3f90c10678edd6bffb16ae99a41880dac2a259326986f7a85469dcf4b"
+    },
+    {
+      "path": "src/main/resources/templates/salesorder/detail.html",
+      "sha256": "00ab912c0ffc4437f429d3a28d4e7c9159c18d58f94157009cc1f1cac0fb0ac9"
+    },
+    {
+      "path": "src/main/resources/templates/salesorder/form.html",
+      "sha256": "a5720ff6991af1895784e52ff6e89e529f0fd18af932afa6535e6a419e8897d0"
+    },
+    {
+      "path": "src/main/resources/templates/salesorder/list.html",
+      "sha256": "ace9f24837c506e3ba02d6a9203a457f413a173bf1ea1e5d24001f949c4aa9dd"
+    },
+    {
+      "path": "src/main/resources/templates/stock/list.html",
+      "sha256": "14fd87ec1db237ff4388f96664d67312291390ffcafa60f9533959b659385b90"
+    },
+    {
+      "path": "src/test/java/com/example/scm/common/auth/AdminOnlyInterceptorTest.java",
+      "sha256": "c220abbc76c143d73fd8e16d2b9d3aa485b8e6b666e6d228bfb9e49d4beba016"
+    },
+    {
+      "path": "src/test/java/com/example/scm/common/auth/LoginInterceptorTest.java",
+      "sha256": "0a5b5517acd3f2a78d1e5213338a163900fceb96ffa44200214bd1d7f7d114b1"
+    },
+    {
+      "path": "src/test/java/com/example/scm/common/exception/WebExceptionHandlerTest.java",
+      "sha256": "3e3c32faa8f25bd6e53a9a6b73ee9d3bdbd332400da6c4ce43125cb144d6ad9e"
+    },
+    {
+      "path": "src/test/java/com/example/scm/config/FlywayStartupIntegrationTest.java",
+      "sha256": "41925bbb13a21ed10b09e8b5d21c1bbe3c06e5cbcf62afa51d084bba1522c0da"
+    },
+    {
+      "path": "src/test/java/com/example/scm/config/H2ConsoleIntegrationTest.java",
+      "sha256": "1a5235b19a91dd0d1068d195834e423eac497d8c53371d6b7443220a0fac99b1"
+    },
+    {
+      "path": "src/test/java/com/example/scm/config/MySqlMigrationContractTest.java",
+      "sha256": "a0e39276a4575b85373f07e09f8a1c2bc91eb94504905c9c543a845c41504e4b"
+    },
+    {
+      "path": "src/test/java/com/example/scm/config/WebSecurityIntegrationTest.java",
+      "sha256": "b27e5212c02d9fa09b03584f279d4f2a895473897eaa38281c6442aaeb81e7b7"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/MoneyViewIntegrationTest.java",
+      "sha256": "4423a24eb89dcf5c6319f274300d3084b94fd2b04f3b895d24d2313468e8c5f9"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/OrderManagementIntegrationTest.java",
+      "sha256": "32244f0eb1dc1f5c512a1367d0922900210d8cb513fca09a2a5e431c6ac73767"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/OrderPartnerFilterIntegrationTest.java",
+      "sha256": "a46a7eaf067a5da70ba0893476deeb629d543831bd25b77e9805e8d81c7d64c2"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/PaginationIntegrationTest.java",
+      "sha256": "70a867b74fbf09c8866ba4f1943755ce724d7b2d01ed727a68f25f0037f3cc16"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/PasswordBoundaryIntegrationTest.java",
+      "sha256": "c108415ceb54d7edc4f1cc783aed47628cd40e7bdfff778686616df9c37590a7"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/RequestBoundaryIntegrationTest.java",
+      "sha256": "de5548969ef427d9d1405669ddf46f4c82cb3d5dd9881ad89d41683cbb3e37a0"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/RequestValidationIntegrationTest.java",
+      "sha256": "b8602aa4f373c58d5d4c4c06e20f0a43d4240cf65a0559b646c654ef68ca8c64"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/SalesAndNoticeIntegrationTest.java",
+      "sha256": "1570b42ece5c9359225f38b81edb7be8f7ee7c02a52af641da7184cbe23b958a"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/SortValidationIntegrationTest.java",
+      "sha256": "0f20996c58fd20cae11aeeef5375ade82ac00f8e927177b89355fedefda09803"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/StockFeatureIntegrationTest.java",
+      "sha256": "082a724883fd08602d573240193e4b5f9ec2d629f538a0deff8b775d6f57f24f"
+    },
+    {
+      "path": "src/test/java/com/example/scm/controller/web/LoginControllerTest.java",
+      "sha256": "97681310252b4dc3420cd7fa8dfacb3994d83acb99e149a035a7e7fce4812f2e"
+    },
+    {
+      "path": "src/test/java/com/example/scm/domain/StockTest.java",
+      "sha256": "2305d11d28787c58cc00887e9361cdbd2566bf9d06cd3af5a89ff32fe44fc547"
+    },
+    {
+      "path": "src/test/java/com/example/scm/practice/SwQuizBankTest.java",
+      "sha256": "76d1e13103632c718544e1ef49690a0463087af77e36a027b75bf83d20d3f95d"
+    },
+    {
+      "path": "src/test/java/com/example/scm/practice/WorkbookStructureTest.java",
+      "sha256": "1aa1a7e0a0d86edc5b7aacbcb2e88b795c4715894207948605a165efe6fa0ec6"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/AuthServiceTest.java",
+      "sha256": "c9b426e955cdbab205a934b89beda38f40994f12e038027ece1c6cbc9e6790e1"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/CategoryServiceTest.java",
+      "sha256": "ee3be24fe8aa25974ed83e4571dd2073792e4ecf2fc236d1a5ed0f24f4d09808"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/ItemServiceTest.java",
+      "sha256": "8253594d34d888c7d763a627f349fa5e22df3a8f8662039d20954766c6ff2330"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/MySqlStockSnapshotIntegrationTest.java",
+      "sha256": "a20f2cfdb2ca4e5ec57cff1904e5d9d66113a6899767d85173a034146f79e204"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/OrderNumberGeneratorTest.java",
+      "sha256": "a647b68a06104f447dea8122c75764fd322a4793d8f453c22c987fec773ab8ad"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/PartnerServiceTest.java",
+      "sha256": "b16c13853dd5e462e736172896e14641bbd6aebbc579fc262d96532839ed47de"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/PurchaseOrderConcurrencyIntegrationTest.java",
+      "sha256": "65613d2e158f64a9f6e2355485c0d0055827b230cb61c6f817aa20b7c3a5c4e9"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/PurchaseOrderFlowIntegrationTest.java",
+      "sha256": "2e10cdef6b6e4295f6a6f1bf3577d2c5241d900a02a381d813569c844976feb3"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/PurchaseOrderServiceTest.java",
+      "sha256": "05fcec6b5e91edbebce5a1d1e68cf023fc6549d708336b1dca9530892920a993"
+    },
+    {
+      "path": "src/test/java/com/example/scm/service/UserServiceTest.java",
+      "sha256": "62531f16c20af6cd65fef689b2f4d0f07a06b4ffba3296168b350fc2bf772773"
+    },
+    {
+      "path": "src/test/js/study-state.test.cjs",
+      "sha256": "14b060316d675a9467371eb3002cdc80b5c35895360d314ac15a1ad5c459ab00"
+    }
+  ],
+  "country": "UNKNOWN",
+  "delivery": "UNKNOWN",
+  "commercial_customer_type": "UNKNOWN",
+  "product_name": "SCM 실전 워크북과 SCM 참조 구현",
+  "output_reason": "AGENTS.md의 정식 문서 경로 규칙에 따라 docs/diagnostics 사용"
+}

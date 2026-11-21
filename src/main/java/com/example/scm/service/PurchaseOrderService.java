@@ -1,5 +1,7 @@
 package com.example.scm.service;
 
+import com.example.scm.common.validation.PageableValidator;
+
 import com.example.scm.common.auth.Authz;
 import com.example.scm.common.auth.LoginUser;
 import com.example.scm.common.exception.BusinessException;
@@ -11,6 +13,7 @@ import com.example.scm.domain.PurchaseOrderLine;
 import com.example.scm.domain.Stock;
 import com.example.scm.domain.User;
 import com.example.scm.domain.enums.ItemStatus;
+import com.example.scm.domain.enums.PartnerType;
 import com.example.scm.domain.enums.PurchaseOrderStatus;
 import com.example.scm.domain.enums.UserRole;
 import com.example.scm.dto.purchaseorder.ItemOption;
@@ -43,14 +46,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 발주(PurchaseOrder) 비즈니스 로직. 상태머신 T1~T8 + 권한 + 검증 + 채번 + 입고 재고 증가.
- * (02_architect_datamodel §5~7, 02_architect_contracts §1/§4/§5, analyst 7.1 확정 우선)
+ * 우리 회사가 물건을 사는 주문인 발주를 처리합니다.
+ * 작성 → 승인 요청 → 승인 또는 반려 → 입고 순서로 진행하며, 입고하면 창고 수량을 늘립니다.
+ *
+ * 발주 업무 흐름 전체를 조정하는 핵심 서비스.
+ *
+ * <p>컨트롤러에서 받은 요청을 검증하고, 발주번호를 만들고, 헤더와 라인을 저장한다.
+ * 이후 결재 요청 → 승인/반려 → 입고 또는 취소라는 상태 전이를 권한과 함께 검사한다.
+ * 입고 시에는 발주 상태 변경과 재고 증가를 하나의 트랜잭션으로 묶어 둘 중 하나만
+ * 반영되는 일을 막는다.</p>
+ *
+ * <p>큰 파일을 읽을 때는 {@code 작성 -> 상태 전이 -> 조회 -> DTO 변환} 구역 순서로
+ * 보면 된다. 상태 변경 자체의 규칙은 {@link PurchaseOrder}에, 여러 저장소를 함께
+ * 사용하는 작업 순서는 이 서비스에 둔다.</p>
+ *
+ * <p>학습 순서: 모듈 10 작성 → 11 결재·입고 → 29 조회·취소 순으로 구역을 배치했다.
+ * 모듈 04의 발주 엔티티와 07의 Repository 기초를 끝낸 뒤 읽는다.</p>
  */
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderService {
 
-    private static final int ORDER_NUMBER_RETRY = 5;
+    private static final int REJECT_REASON_MAX_LENGTH = 500;
+    private static final BigDecimal MAX_MONEY = new BigDecimal("9999999999999.99");
 
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final StockRepository stockRepository;
@@ -58,12 +76,13 @@ public class PurchaseOrderService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final OrderNumberGenerator orderNumberGenerator;
+    private final PurchaseOrderPersistenceService purchaseOrderPersistenceService;
 
     // ====================================================================
-    // 작성 (T1, REQ-PO-001) — 헤더+라인 cascade 동시 저장, 서버 계산, 채번
+    // 모듈 10: 헤더와 라인 함께 저장, 금액 서버 계산, 발주번호 생성
     // ====================================================================
 
-    @Transactional
+    // 입력값을 먼저 검사합니다. 실제 저장은 번호 중복 재시도가 가능한 별도 저장 담당자에게 맡깁니다.
     public PurchaseOrderCreateResponse create(PurchaseOrderCreateRequest request, LoginUser loginUser) {
         Authz.requireLogin(loginUser);
 
@@ -71,6 +90,10 @@ public class PurchaseOrderService {
         List<PurchaseOrderCreateRequest.LineRequest> lineReqs = request.getLines();
         if (lineReqs == null || lineReqs.isEmpty()) {
             throw new BusinessException(ErrorCode.EMPTY_ORDER_LINES);
+        }
+        // HTTP 검증을 거치지 않는 직접 호출에서도 null 행을 저장 전에 거부한다.
+        if (lineReqs.stream().anyMatch(line -> line == null)) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "발주 라인은 비어 있을 수 없습니다.");
         }
 
         // 2) 공급사 검증: 존재 / SUPPLIER|BOTH / ACTIVE
@@ -81,7 +104,7 @@ public class PurchaseOrderService {
         }
         if (!partner.isActive()) {
             throw new BusinessException(ErrorCode.INVALID_STATUS,
-                    "비활성 상태의 거래처로는 발주할 수 없습니다."); // OQ-12
+                    "비활성 상태의 거래처로는 발주할 수 없습니다.");
         }
 
         // 3) 날짜 검증: orderDate ≤ dueDate (dueDate 있을 때)
@@ -96,13 +119,16 @@ public class PurchaseOrderService {
 
     private PurchaseOrder saveWithOrderNumber(PurchaseOrderCreateRequest request, LoginUser loginUser,
                                               List<PurchaseOrderCreateRequest.LineRequest> lineReqs) {
-        // 라인 검증 + 단가 결정(OQ-13) — 채번/재시도와 무관하므로 1회만 수행.
+        // 라인 검증과 단가 결정은 발주번호 재시도와 무관하므로 한 번만 수행한다.
         List<ResolvedLine> resolvedLines = lineReqs.stream().map(this::resolveLine).toList();
         BigDecimal totalAmount = resolvedLines.stream()
-                .map(rl -> rl.unitPrice().multiply(BigDecimal.valueOf(rl.quantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add); // totalAmount 서버 계산 (OQ-1)
+                .map(this::calculateLineAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add); // 클라이언트 값을 받지 않고 총액을 서버 계산
+        validateMoney(totalAmount, "총금액");
 
-        for (int attempt = 0; attempt < ORDER_NUMBER_RETRY; attempt++) {
+        // 동시에 같은 번호를 만든 요청이 있으면 DB UNIQUE 제약이 한 요청을 막는다.
+        // 그 경우에만 잠깐 무작위로 기다린 뒤 새 번호를 받아 제한된 횟수만큼 다시 저장한다(OrderNumberRetry).
+        for (int attempt = 0; attempt < OrderNumberRetry.MAX_ATTEMPTS; attempt++) {
             String orderNumber = orderNumberGenerator.generate(LocalDate.now());
             PurchaseOrder po = PurchaseOrder.builder()
                     .orderNumber(orderNumber)
@@ -122,16 +148,20 @@ public class PurchaseOrderService {
             }
 
             try {
-                return purchaseOrderRepository.saveAndFlush(po); // flush 로 UNIQUE 충돌 즉시 감지
+                return purchaseOrderPersistenceService.saveAndFlush(po);
             } catch (DataIntegrityViolationException e) {
-                // 채번 충돌 가능성 → 재시도 (다음 루프에서 재채번)
+                // 실제 발주번호 충돌만 재시도한다. 다른 제약 위반은 원인을 숨기지 않는다.
+                if (!purchaseOrderRepository.existsByOrderNumber(orderNumber)) {
+                    throw e;
+                }
+                OrderNumberRetry.backoff(attempt);
             }
         }
         throw new BusinessException(ErrorCode.INTERNAL_ERROR,
                 "발주번호 채번에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
 
-    /** 라인 검증 + 단가 결정(OQ-13). lineAmount 는 엔티티 빌더가 서버 계산(OQ-1). */
+    /** 라인을 검증하고 적용 단가를 정한다. 라인 금액은 엔티티 빌더가 서버에서 계산한다. */
     private ResolvedLine resolveLine(PurchaseOrderCreateRequest.LineRequest lr) {
         if (lr.getItemId() == null) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "품목은 필수입니다.");
@@ -147,11 +177,25 @@ public class PurchaseOrderService {
 
         BigDecimal unitPrice = lr.getUnitPrice();
         if (unitPrice == null) {
-            unitPrice = item.getUnitPrice(); // OQ-13: 누락 시 품목 표준단가
+            unitPrice = item.getUnitPrice(); // 요청에서 생략하면 품목의 표준단가를 사용한다.
         } else if (unitPrice.signum() < 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "단가는 0 이상이어야 합니다.");
         }
+        validateMoney(unitPrice, "단가");
         return new ResolvedLine(item.getId(), lr.getQuantity(), unitPrice);
+    }
+
+    private BigDecimal calculateLineAmount(ResolvedLine line) {
+        BigDecimal lineAmount = line.unitPrice().multiply(BigDecimal.valueOf(line.quantity()));
+        validateMoney(lineAmount, "라인 금액");
+        return lineAmount;
+    }
+
+    private void validateMoney(BigDecimal value, String fieldName) {
+        if (value.scale() > 2 || value.compareTo(MAX_MONEY) > 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT,
+                    fieldName + "은 정수 13자리, 소수 2자리 이하여야 합니다.");
+        }
     }
 
     /** 검증·해소가 끝난 라인 데이터 (채번 재시도 간 재사용). */
@@ -159,12 +203,13 @@ public class PurchaseOrderService {
     }
 
     // ====================================================================
-    // 상태 전이 (작성자 본인: submit/cancel)
+    // 모듈 11: 작성자의 결재 요청 (DRAFT → REQUESTED)
     // ====================================================================
 
-    /** T2: submit (DRAFT → REQUESTED), 작성자 본인. */
+    /** 임시 저장 발주를 작성자 본인이 결재 요청 상태로 바꾼다. */
     @Transactional
     public PurchaseOrderStatusResponse submit(Long poId, LoginUser loginUser) {
+        // 사람 확인 → 발주 찾기 → 작성자 확인 → 순서 확인과 상태 변경 → 결과 안내 순서입니다.
         Authz.requireLogin(loginUser);
         PurchaseOrder po = getEntity(poId);
         requireWriter(po, loginUser);
@@ -172,45 +217,44 @@ public class PurchaseOrderService {
         return PurchaseOrderStatusResponse.of(po, "결재 요청되었습니다.");
     }
 
-    /** T6~T8: cancel ({DRAFT,REQUESTED,APPROVED} → CANCELED), 작성자 본인. */
-    @Transactional
-    public PurchaseOrderStatusResponse cancel(Long poId, LoginUser loginUser) {
-        Authz.requireLogin(loginUser);
-        PurchaseOrder po = getEntity(poId);
-        requireWriter(po, loginUser);
-        po.cancel();
-        return PurchaseOrderStatusResponse.of(po, "발주가 취소되었습니다.");
-    }
-
     // ====================================================================
-    // 상태 전이 (ADMIN+MANAGER: approve/reject/receive)
+    // 모듈 11: ADMIN/MANAGER의 승인, 반려, 입고
     // ====================================================================
 
     /** T3: approve (REQUESTED → APPROVED), ADMIN/MANAGER. 동시 승인은 @Version 으로 방지. */
     @Transactional
     public PurchaseOrderStatusResponse approve(Long poId, LoginUser loginUser) {
+        // 승인할 권한은 여기서 확인하고, 지금 승인 가능한 단계인지는 발주서의 approve가 확인합니다.
         Authz.requireRole(loginUser, UserRole.ADMIN, UserRole.MANAGER);
         PurchaseOrder po = getEntity(poId);
+        requireNotWriter(po, loginUser);
         po.approve(loginUser.id());
         return PurchaseOrderStatusResponse.of(po, "발주가 승인되었습니다.");
     }
 
-    /** T4: reject (REQUESTED → REJECTED), ADMIN/MANAGER. rejectReason 필수, approverId 기록(OQ-11). */
+    /** 결재 요청을 반려한다. ADMIN/MANAGER만 가능하며 사유와 처리자 ID를 기록한다. */
     @Transactional
     public PurchaseOrderStatusResponse reject(Long poId, String rejectReason, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN, UserRole.MANAGER);
         if (rejectReason == null || rejectReason.isBlank()) {
             throw new BusinessException(ErrorCode.INVALID_INPUT, "반려 사유는 필수입니다.");
         }
+        String normalizedReason = rejectReason.trim();
+        if (normalizedReason.length() > REJECT_REASON_MAX_LENGTH) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "반려 사유는 500자 이하여야 합니다.");
+        }
         PurchaseOrder po = getEntity(poId);
-        po.reject(loginUser.id(), rejectReason);
+        requireNotWriter(po, loginUser);
+        po.reject(loginUser.id(), normalizedReason);
         return PurchaseOrderStatusResponse.of(po, "발주가 반려되었습니다.");
     }
 
     /**
-     * T5: receive (APPROVED → RECEIVED), ADMIN/MANAGER.
-     * 상태전이 + 라인별 Stock 증가가 동일 트랜잭션(원자성, OQ-4). 일부 실패 시 전체 롤백.
+     * 승인된 발주를 입고 완료로 바꾼다. ADMIN/MANAGER만 실행할 수 있다.
+     * 상태 변경과 라인별 재고 증가는 같은 트랜잭션이므로 일부가 실패하면 모두 롤백된다.
      */
+    // 트랜잭션은 여러 저장 작업을 한 묶음으로 처리하는 것입니다.
+    // 입고 상태만 바뀌거나 재고만 늘어나는 일을 막기 위해 둘 다 성공해야 저장을 확정합니다.
     @Transactional
     public PurchaseOrderStatusResponse receive(Long poId, LoginUser loginUser) {
         Authz.requireRole(loginUser, UserRole.ADMIN, UserRole.MANAGER);
@@ -219,16 +263,27 @@ public class PurchaseOrderService {
 
         po.receive(); // 상태 검증(APPROVED) 포함
 
+        // 처음 입고하는 품목은 아직 재고 행이 없으므로 품목을 먼저 잠가 중복 생성을 막습니다.
+        List<Long> itemIds = po.getLines().stream()
+                .map(PurchaseOrderLine::getItemId)
+                .distinct()
+                .sorted()
+                .toList();
+        // 여러 품목을 항상 같은 번호 순서로 잠가 서로 상대방의 잠금 해제만 기다리는 일을 줄입니다.
+        itemRepository.findAllByIdForUpdate(itemIds);
+
         for (PurchaseOrderLine line : po.getLines()) {
-            Stock stock = stockRepository.findByItemId(line.getItemId())
+            // 주문을 읽은 뒤 다른 입고가 끝났을 수 있으므로, 여기서 최신 재고를 다시 확인합니다.
+            Stock stock = stockRepository.findByItemIdForUpdate(line.getItemId())
                     .orElseGet(() -> stockRepository.save(new Stock(line.getItemId(), 0)));
-            stock.increase(line.getQuantity()); // 재고 증가 (OQ-4)
+            // 예: 연필 5개를 입고했다면 연필 장부의 현재 수량에 5를 더합니다.
+            stock.increase(line.getQuantity());
         }
         return PurchaseOrderStatusResponse.of(po, "입고 처리되었습니다.");
     }
 
     // ====================================================================
-    // 조회
+    // 모듈 29: 내 목록, 관리자 목록, 상세, 작성자 취소
     // ====================================================================
 
     /** 내 발주서 목록 (writerId, 선택 status). */
@@ -237,6 +292,7 @@ public class PurchaseOrderService {
                                                           PurchaseOrderStatus status,
                                                           Pageable pageable) {
         Authz.requireLogin(loginUser);
+        PageableValidator.validate(pageable, PageableValidator.PURCHASE_ORDER);
         Page<PurchaseOrder> page = (status != null)
                 ? purchaseOrderRepository.findByWriterIdAndStatus(loginUser.id(), status, pageable)
                 : purchaseOrderRepository.findByWriterId(loginUser.id(), pageable);
@@ -250,12 +306,13 @@ public class PurchaseOrderService {
                                                              Long partnerId,
                                                              Pageable pageable) {
         Authz.requireRole(loginUser, UserRole.ADMIN, UserRole.MANAGER);
+        PageableValidator.validate(pageable, PageableValidator.PURCHASE_ORDER);
         Page<PurchaseOrder> page = purchaseOrderRepository.findAll(
                 PurchaseOrderSpecs.adminSearch(status, partnerId), pageable);
         return toSummaryPage(page);
     }
 
-    /** 발주 상세 (작성자 본인 또는 ADMIN/MANAGER, OQ-6). */
+    /** 발주 상세를 조회한다. 작성자 본인 또는 ADMIN/MANAGER만 접근할 수 있다. */
     @Transactional(readOnly = true)
     public PurchaseOrderDetailResponse getDetail(Long poId, LoginUser loginUser) {
         Authz.requireLogin(loginUser);
@@ -275,10 +332,13 @@ public class PurchaseOrderService {
         PurchaseOrderStatus status = detail.getStatus();
 
         boolean canSubmit = isWriter && status == PurchaseOrderStatus.DRAFT;
+        // can으로 시작하는 값은 버튼을 보여 줘도 되는지 알려 주는 참/거짓입니다.
+        // 버튼을 숨기는 것만으로 권한을 지킬 수 없어 실제 처리 메서드에서도 다시 검사합니다.
         boolean canCancel = isWriter && (status == PurchaseOrderStatus.DRAFT
                 || status == PurchaseOrderStatus.REQUESTED
                 || status == PurchaseOrderStatus.APPROVED);
-        boolean canApproveReject = isAdminOrManager && status == PurchaseOrderStatus.REQUESTED;
+        // 작성자 본인은 ADMIN/MANAGER라도 자기 발주를 결재할 수 없다(requireNotWriter와 같은 규칙).
+        boolean canApproveReject = isAdminOrManager && !isWriter && status == PurchaseOrderStatus.REQUESTED;
         boolean canReceive = isAdminOrManager && status == PurchaseOrderStatus.APPROVED;
 
         return PurchaseOrderDetailView.builder()
@@ -290,11 +350,29 @@ public class PurchaseOrderService {
                 .build();
     }
 
+    /** 진행 중인 발주를 작성자 본인이 취소한다. 종료 상태는 PurchaseOrder가 거부한다. */
+    @Transactional
+    public PurchaseOrderStatusResponse cancel(Long poId, LoginUser loginUser) {
+        Authz.requireLogin(loginUser);
+        PurchaseOrder po = getEntity(poId);
+        requireWriter(po, loginUser);
+        po.cancel();
+        return PurchaseOrderStatusResponse.of(po, "발주가 취소되었습니다.");
+    }
+
     // ====================================================================
     // 드롭다운 옵션 (Web 폼/필터)
     // ====================================================================
 
-    /** 공급사 옵션 (SUPPLIER|BOTH & ACTIVE). 작성 폼 / 관리자 거래처 필터. */
+    /** 현재 공급사와 발주 이력이 있는 거래처를 관리자 검색 옵션으로 반환한다. */
+    @Transactional(readOnly = true)
+    public List<PartnerOption> getSupplierSearchOptions(LoginUser loginUser) {
+        Authz.requireRole(loginUser, UserRole.ADMIN, UserRole.MANAGER);
+        return partnerRepository.findPurchaseSearchPartners(List.of(PartnerType.SUPPLIER, PartnerType.BOTH))
+                .stream().map(PartnerOption::from).toList();
+    }
+
+    /** 유형이 SUPPLIER/BOTH이면서 ACTIVE인 거래처를 선택 옵션으로 반환한다. */
     @Transactional(readOnly = true)
     public List<PartnerOption> getSupplierOptions() {
         return partnerRepository.findAll().stream()
@@ -343,6 +421,15 @@ public class PurchaseOrderService {
         }
     }
 
+    // 결재(승인·반려)는 작성자가 아닌 다른 사람이 해야 합니다.
+    // 매니저가 자기 발주를 직접 승인하면 검토 없이 구매가 확정되므로, 역할과 관계없이 막는다.
+    // 본인 발주를 멈추고 싶다면 승인·반려 대신 cancel(작성자 취소)을 사용한다.
+    private void requireNotWriter(PurchaseOrder po, LoginUser loginUser) {
+        if (po.isWriter(loginUser.id())) {
+            throw new BusinessException(ErrorCode.ACCESS_DENIED, "본인이 작성한 발주는 승인하거나 반려할 수 없습니다.");
+        }
+    }
+
     private void requireDetailAccess(PurchaseOrder po, LoginUser loginUser) {
         boolean isWriter = po.isWriter(loginUser.id());
         boolean isAdminOrManager = loginUser.role() == UserRole.ADMIN
@@ -354,9 +441,12 @@ public class PurchaseOrderService {
 
     /** 목록 → Summary 변환 (partnerName 일괄 resolve). */
     private Page<PurchaseOrderSummaryResponse> toSummaryPage(Page<PurchaseOrder> page) {
+        // 거래처를 발주 건마다 조회하지 않고 필요한 ID를 모아 한 번에 조회한다.
+        // Set은 중복 없는 목록입니다. 같은 공급사가 여러 번 나와도 번호는 한 번만 모읍니다.
         Set<Long> partnerIds = page.getContent().stream()
                 .map(PurchaseOrder::getPartnerId)
                 .collect(Collectors.toCollection(HashSet::new));
+        // Map은 번호 → 이름 짝을 보관합니다. 전화번호부처럼 회사 번호로 이름을 바로 찾습니다.
         Map<Long, String> partnerNames = partnerRepository.findAllById(partnerIds).stream()
                 .collect(Collectors.toMap(Partner::getId, Partner::getName));
         return page.map(po ->
@@ -373,6 +463,7 @@ public class PurchaseOrderService {
                 ? userRepository.findById(po.getApproverId()).map(User::getName).orElse(null)
                 : null;
 
+        // 라인별 품목명도 같은 방식으로 일괄 조회해 반복 쿼리를 피한다.
         List<PurchaseOrderLine> lines = po.getLines();
         Set<Long> itemIds = lines.stream()
                 .map(PurchaseOrderLine::getItemId)

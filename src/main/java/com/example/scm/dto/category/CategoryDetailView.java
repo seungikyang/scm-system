@@ -8,7 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 분류 하나의 정보와 그 안에 속한 물건 목록을 보여 줍니다.
+ * 분류 정보와 물건 목록을 함께 담아 상세 화면을 만들 수 있게 합니다.
+ *
  * 카테고리 상세 View DTO (소속 품목 목록 포함). REST 상세 + Web 상세 공용.
+ * 학습 모듈 32에서 단순 DTO 변환을 본 뒤, 품목 DTO 목록을 포함하는 중첩 응답으로 읽는다.
  */
 @Getter
 @Builder

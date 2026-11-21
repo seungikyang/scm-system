@@ -1,7 +1,10 @@
+// Java 컴파일/테스트, Boot 실행/JAR 생성, 의존성 버전 관리 기능을 추가한다.
+// 기술별 사용 이유와 실행 흐름: docs/TECHNOLOGY_GUIDE.md
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.5'
-    id 'io.spring.dependency-management' version '1.1.4'
+    // 4.1.3은 Tomcat 11.0.27·Jackson 3.1.8 보안 수정판을 함께 관리한다(점검 보고서의 CVE 수정 기준 이상).
+    id 'org.springframework.boot' version '4.1.3'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.example'
@@ -16,29 +19,206 @@ repositories {
     mavenCentral()
 }
 
+// Boot 4.1.3은 MySQL 드라이버를 새 번호 체계(26.x)로 올린다. 실제 MySQL 검증(mysqlSchemaTest)을 마치기 전까지
+// 기존에 검증한 9.7.0을 유지한다. 드라이버를 올릴 때는 이 줄을 지우고 mysqlSchemaTest를 먼저 실행한다.
+ext['mysql.version'] = '9.7.0'
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // starter는 기능별 라이브러리 묶음이다. implementation은 컴파일과 실행에 모두 필요하다.
+    // MVC: URL 요청 처리, JPA: 객체의 DB 저장, Thymeleaf: 서버에서 HTML 완성.
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // Validation: DTO 입력 제약 검사, Security: 폼 CSRF·보안 헤더·콘솔 접근 제한.
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Flyway 라이브러리뿐 아니라 시작 시 migrate()를 호출하는 Boot 자동 설정도 포함한다.
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
 
+    // DB 드라이버는 실행 시 연결에 필요하다. 사용할 DB는 application*.yml에서 선택한다.
     runtimeOnly 'com.h2database:h2'
+    // Boot 4에서는 H2 드라이버와 콘솔 자동 설정이 분리되어 별도 모듈이 필요하다.
+    runtimeOnly 'org.springframework.boot:spring-boot-h2console'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.flywaydb:flyway-mysql'
 
+    // Lombok은 컴파일 중 생성자/getter 등을 생성한다. Spring의 런타임 DI와는 별개다.
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // test 접두사 의존성은 테스트 코드용이며 서비스 실행 의존성과 구분한다.
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    // 워크북 테스트가 직접 읽는 자료도 입력으로 추적해 문항 수정 시 다시 검증한다.
+    // Git 제외 개인 풀이 파일은 테스트 입력에 포함하지 않는다.
+    inputs.files(fileTree('practice') { exclude 'workspace/**' })
+    inputs.files(fileTree('docs') { include '**/*.md' })
+    inputs.files('index.html', '.gitignore', 'gradle/wrapper/gradle-wrapper.properties')
+    useJUnitPlatform {
+        excludeTags 'mysql'
+    }
+}
+
+tasks.register('mysqlSchemaTest', Test) {
+    group = 'verification'
+    description = '실제 MySQL에서 Flyway 마이그레이션과 JPA 스키마 계약을 검증한다.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'mysql'
+    }
+    shouldRunAfter tasks.named('test')
 }
 
 // 실행 가능한 bootJar 하나만 생성 (plain jar 비활성 → Docker COPY 시 단일 jar 보장)
 tasks.named('jar') {
     enabled = false
+}
+
+// 테스트와 실행 가능한 JAR를 한 번에 검증하는 포트폴리오 품질 게이트.
+tasks.register('verifyRepositoryBoundary') {
+    group = 'verification'
+    description = '임시 영역에 프로그램 파일이 추적되지 않는지 검증한다.'
+
+    doLast {
+        File repositoryRoot = rootProject.projectDir.canonicalFile
+        File invocationDirectory = new File(System.getProperty('user.dir')).canonicalFile
+        if (invocationDirectory != repositoryRoot) {
+            throw new GradleException("저장소 루트에서 Gradle을 실행하세요: ${repositoryRoot}")
+        }
+
+        Process process = new ProcessBuilder('git', 'ls-files')
+                .directory(repositoryRoot)
+                .redirectErrorStream(true)
+                .start()
+        String output = process.inputStream.getText('UTF-8')
+        int exitCode = process.waitFor()
+        if (exitCode != 0) {
+            throw new GradleException("Git 추적 파일 검사 실패:\n${output}")
+        }
+
+        List<String> forbiddenPrefixes = [
+                '.omc/', '.playwright-cli/', '.gradle/', 'build/', 'bin/',
+                'out/', 'output/', '_workspace/', '_workspace_prev/',
+                'practice/workspace/'
+        ]
+        List<String> violations = output.readLines().findAll { String path ->
+            path == 'build-report.json' || forbiddenPrefixes.any { path.startsWith(it) }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException(
+                    "임시 영역의 파일은 프로그램 변경으로 추적할 수 없습니다:\n" +
+                            violations.collect { " - ${it}" }.join('\n'))
+        }
+        println "Repository boundary OK: ${repositoryRoot}"
+    }
+}
+
+tasks.register('portfolioCheck') {
+    group = 'verification'
+    description = '전체 자동 테스트와 실행 가능한 bootJar 생성을 검증한다.'
+    dependsOn tasks.named('verifyRepositoryBoundary'), tasks.named('test'), tasks.named('bootJar')
+}
+
+// ============================================================================
+// 학습 워크북 도구
+// ============================================================================
+
+def practiceStarterDir = layout.projectDirectory.dir('practice/starter')
+def practiceWorkspaceDir = layout.projectDirectory.dir('practice/workspace')
+def practiceNotesTemplate = layout.projectDirectory.file('practice/LEARNING_NOTES.template.md')
+
+tasks.register('practiceInit', Copy) {
+    group = 'practice'
+    description = '4지 선다 학습 파일을 개인 학습 공간(practice/workspace)에 복사한다.'
+    outputs.upToDateWhen { false }
+    from practiceStarterDir
+    from(practiceNotesTemplate) {
+        rename { 'LEARNING_NOTES.md' }
+    }
+    into practiceWorkspaceDir
+    filesMatching('LEARNING_NOTES.md') {
+        filter { String line ->
+            line.replace('(sw-quiz/', '(../sw-quiz/').replace('(answers.md', '(../answers.md')
+        }
+    }
+
+    doFirst {
+        File workspace = practiceWorkspaceDir.asFile
+        if (workspace.exists() && workspace.listFiles()?.length > 0) {
+            throw new GradleException(
+                    'practice/workspace가 이미 존재합니다. 기존 풀이를 보존하기 위해 덮어쓰지 않습니다.')
+        }
+    }
+
+    doLast {
+        println '학습 공간 생성 완료: practice/workspace'
+        println './gradlew practiceStatus 로 모듈별 4지 선다 문항 수를 확인하세요.'
+    }
+}
+
+// 브라우저와 같은 문제 자료를 읽어 학습 문항을 안내한다.
+def readPracticeQuestionBank = {
+    String script = layout.projectDirectory.file('practice/sw-quiz/workbook-questions.js')
+            .asFile.getText('UTF-8')
+    String marker = 'window.SCM_WORKBOOK_QUIZ_BANK = '
+    int start = script.indexOf(marker)
+    if (start < 0) {
+        throw new GradleException('모듈 문제 자료를 읽을 수 없습니다.')
+    }
+    String json = script.substring(start + marker.length()).trim()
+    if (!json.endsWith(';')) {
+        throw new GradleException('모듈 문제 자료의 형식이 잘못되었습니다.')
+    }
+    new groovy.json.JsonSlurper().parseText(json.substring(0, json.length() - 1))
+}
+
+tasks.register('practiceStatus') {
+    group = 'practice'
+    description = '40개 모듈의 4지 선다 문항 수와 문제집 실행 방법을 보여준다.'
+
+    doLast {
+        def bank = readPracticeQuestionBank()
+        println String.format('%-10s %10s', 'MODULE', 'QUESTIONS')
+        bank.categories.each { category ->
+            int count = bank.questions.count { it.category == category.id }
+            println String.format('%-10s %10d', category.id, count)
+        }
+        println "총 ${bank.questions.size()}문항 · 선택지 4개 · 정답과 해설"
+        println '문제집: practice/sw-quiz/index.html → SCM 모듈 워크북'
+        println '풀이 기록과 오답 복습은 브라우저 문제집에서 확인합니다.'
+    }
+}
+
+tasks.register('practiceCheck') {
+    group = 'practice'
+    description = '모듈 문제집의 선택지·정답·분야 연결을 확인한다.'
+
+    doLast {
+        def bank = readPracticeQuestionBank()
+        if (!(bank.questions instanceof List) || bank.questions.isEmpty()) {
+            throw new GradleException('문항이 없는 문제집입니다.')
+        }
+        Set categories = bank.categories.collect { it.id } as Set
+        Set ids = [] as Set
+        bank.questions.each { question ->
+            if (!ids.add(question.id) || !categories.contains(question.category)
+                    || !(question.options instanceof List) || question.options.size() != 4
+                    || question.options.toSet().size() != 4
+                    || question.options.any { !(it instanceof String) || it.isBlank() }
+                    || !(question.answer instanceof Number) || question.answer < 0 || question.answer > 3
+                    || !(question.explanation instanceof String) || question.explanation.isBlank()) {
+                throw new GradleException("선택형 문항 형식 오류: ${question.id}")
+            }
+        }
+        println "4지 선다 문제집 구조 검사 통과: ${bank.questions.size()}문항"
+        println '정답 채점과 오답 복습은 브라우저 문제집에서 실행합니다.'
+    }
 }

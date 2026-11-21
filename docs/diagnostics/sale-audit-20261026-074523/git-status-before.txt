@@ -1,0 +1,245 @@
+ M .github/workflows/ci.yml
+ M AGENTS.md
+ D CLAUDE.md
+ M Dockerfile
+ M README.md
+ M build.gradle
+ M docs/API_SPEC.md
+ M docs/ERD.md
+ M docs/GLOSSARY.md
+ M docs/HEALTH_CHECK.md
+ M docs/INDEX.md
+ M docs/LOOP_ENGINEERING.md
+ M docs/PORTFOLIO_GUIDE.md
+ M docs/STATE_MACHINE.md
+ M docs/TECHNOLOGY_GUIDE.md
+ M docs/TROUBLESHOOTING.md
+ M index.html
+ M practice/DESIGN_DECISIONS.md
+ M practice/LEARNING_NOTES.template.md
+ M practice/README.md
+ M practice/REFERENCE_MAP.md
+ M practice/answers.md
+ M practice/feature-implementation-workbook.md
+ M practice/problems.md
+ M practice/starter/00-build-config/application.yml.fragment
+ M practice/starter/00-build-config/build.gradle.fragment
+ M practice/starter/01-user-entity/User.entity.java
+ M practice/starter/02-category-entity/Category.entity.java
+ M practice/starter/02-category-entity/Partner.entity.java
+ M practice/starter/03-item-entity/Item.entity.java
+ M practice/starter/04-purchase-order-entity/PurchaseOrder.entity.java
+ M practice/starter/05-notice-entity/Notice.entity.java
+ M practice/starter/06-sales-order-entity/SalesOrder.entity.java
+ M practice/starter/07-repository/ItemRepository.java
+ M practice/starter/08-item-register/ItemService.register.java
+ M practice/starter/09-item-search/ItemService.search.java
+ M practice/starter/10-purchase-order-create/PurchaseOrderService.create.java
+ M practice/starter/11-purchase-order-approval/PurchaseOrderService.approval.java
+ M practice/starter/12-notice-service/NoticeService.java
+ M practice/starter/13-sales-order-create/SalesOrderService.create.java
+ M practice/starter/14-sales-order-decision/SalesOrderService.decision.java
+ M practice/starter/15-error-model/ErrorCodeAndResponse.java
+ M practice/starter/16-global-handler/GlobalExceptionHandler.java
+ M practice/starter/17-dto-validation/ItemCreateRequest.java
+ M practice/starter/18-controller-item/ItemController.java
+ M practice/starter/19-controller-purchase/PurchaseOrderController.java
+ M practice/starter/20-security-session/SecurityFlow.md
+ M practice/starter/21-test-flow/PurchaseFlowTest.java
+ M practice/starter/22-documentation/PortfolioDocs.md
+ M practice/starter/23-auth-login/AuthController.java
+ M practice/starter/23-auth-login/AuthService.login.java
+ M practice/starter/24-partner-service/CategoryService.java
+ M practice/starter/24-partner-service/PartnerService.java
+ M practice/starter/25-partner-controller/CategoryController.java
+ M practice/starter/25-partner-controller/PartnerController.java
+ M practice/starter/26-notice-controller/NoticeController.java
+ M practice/starter/27-sales-controller/SalesOrderController.java
+ M practice/starter/28-item-detail-update/ItemService.detail.java
+ M practice/starter/29-purchase-my-cancel/PurchaseOrderService.my.java
+ M practice/starter/30-sales-lists/SalesOrderService.lists.java
+ M practice/starter/31-repositories-all/AllRepositories.java
+ M practice/starter/32-response-dto-mapping/ResponseDtoMapping.java
+ M practice/starter/33-config-beans/ConfigBeans.java
+ M practice/starter/34-current-user-interceptor/CurrentUserAndInterceptor.java
+ M practice/starter/35-thymeleaf-views/ThymeleafViews.md
+ M practice/starter/36-package-architecture/PackageArchitecture.md
+ M practice/starter/37-business-rules/BusinessRulesChecklist.md
+ M practice/starter/38-troubleshooting/Troubleshooting.md
+ M practice/starter/39-interview-and-commit/InterviewAndCommit.md
+ D scm_system_PRD_TRD.md
+ M src/main/java/com/example/scm/ScmApplication.java
+ M src/main/java/com/example/scm/common/auth/AdminOnlyInterceptor.java
+ M src/main/java/com/example/scm/common/auth/Authz.java
+ M src/main/java/com/example/scm/common/auth/CurrentUser.java
+ M src/main/java/com/example/scm/common/auth/CurrentUserArgumentResolver.java
+ M src/main/java/com/example/scm/common/auth/LoginInterceptor.java
+ M src/main/java/com/example/scm/common/auth/LoginUser.java
+ M src/main/java/com/example/scm/common/auth/SessionConst.java
+ M src/main/java/com/example/scm/common/entity/BaseTimeEntity.java
+ M src/main/java/com/example/scm/common/exception/ApiExceptionHandler.java
+ M src/main/java/com/example/scm/common/exception/BusinessException.java
+ M src/main/java/com/example/scm/common/exception/ErrorCode.java
+ M src/main/java/com/example/scm/common/exception/WebExceptionHandler.java
+ M src/main/java/com/example/scm/common/response/ErrorResponse.java
+ M src/main/java/com/example/scm/common/response/PageResponse.java
+ M src/main/java/com/example/scm/config/JpaAuditingConfig.java
+ M src/main/java/com/example/scm/config/PasswordConfig.java
+ M src/main/java/com/example/scm/config/SecurityConfig.java
+ M src/main/java/com/example/scm/config/WebMvcConfig.java
+ M src/main/java/com/example/scm/controller/api/AdminPurchaseOrderApiController.java
+ M src/main/java/com/example/scm/controller/api/AuthApiController.java
+ M src/main/java/com/example/scm/controller/api/CategoryApiController.java
+ M src/main/java/com/example/scm/controller/api/ItemApiController.java
+ M src/main/java/com/example/scm/controller/api/PartnerApiController.java
+ M src/main/java/com/example/scm/controller/api/PurchaseOrderApiController.java
+ M src/main/java/com/example/scm/controller/api/StockApiController.java
+ M src/main/java/com/example/scm/controller/api/UserApiController.java
+ M src/main/java/com/example/scm/controller/web/AdminPurchaseOrderWebController.java
+ M src/main/java/com/example/scm/controller/web/CategoryWebController.java
+ M src/main/java/com/example/scm/controller/web/DashboardController.java
+ M src/main/java/com/example/scm/controller/web/GlobalModelAdvice.java
+ M src/main/java/com/example/scm/controller/web/ItemWebController.java
+ M src/main/java/com/example/scm/controller/web/LoginController.java
+ M src/main/java/com/example/scm/controller/web/MyPageController.java
+ M src/main/java/com/example/scm/controller/web/PartnerWebController.java
+ M src/main/java/com/example/scm/controller/web/PurchaseOrderWebController.java
+ M src/main/java/com/example/scm/controller/web/StockWebController.java
+ M src/main/java/com/example/scm/domain/Category.java
+ M src/main/java/com/example/scm/domain/Item.java
+ M src/main/java/com/example/scm/domain/Partner.java
+ M src/main/java/com/example/scm/domain/PurchaseOrder.java
+ M src/main/java/com/example/scm/domain/PurchaseOrderLine.java
+ M src/main/java/com/example/scm/domain/Stock.java
+ M src/main/java/com/example/scm/domain/User.java
+ M src/main/java/com/example/scm/domain/enums/ItemStatus.java
+ M src/main/java/com/example/scm/domain/enums/PartnerStatus.java
+ M src/main/java/com/example/scm/domain/enums/PartnerType.java
+ M src/main/java/com/example/scm/domain/enums/PurchaseOrderStatus.java
+ M src/main/java/com/example/scm/domain/enums/UserRole.java
+ M src/main/java/com/example/scm/dto/auth/LoginForm.java
+ M src/main/java/com/example/scm/dto/auth/LoginRequest.java
+ M src/main/java/com/example/scm/dto/category/CategoryCreateRequest.java
+ M src/main/java/com/example/scm/dto/category/CategoryDetailView.java
+ M src/main/java/com/example/scm/dto/category/CategoryForm.java
+ M src/main/java/com/example/scm/dto/category/CategoryUpdateRequest.java
+ M src/main/java/com/example/scm/dto/category/CategoryView.java
+ M src/main/java/com/example/scm/dto/item/ItemCreateRequest.java
+ M src/main/java/com/example/scm/dto/item/ItemDetailView.java
+ M src/main/java/com/example/scm/dto/item/ItemForm.java
+ M src/main/java/com/example/scm/dto/item/ItemListView.java
+ M src/main/java/com/example/scm/dto/item/ItemSearchForm.java
+ M src/main/java/com/example/scm/dto/item/ItemUpdateRequest.java
+ M src/main/java/com/example/scm/dto/partner/PartnerCreateRequest.java
+ M src/main/java/com/example/scm/dto/partner/PartnerDetailView.java
+ M src/main/java/com/example/scm/dto/partner/PartnerForm.java
+ M src/main/java/com/example/scm/dto/partner/PartnerListView.java
+ M src/main/java/com/example/scm/dto/partner/PartnerResponse.java
+ M src/main/java/com/example/scm/dto/partner/PartnerSearchForm.java
+ M src/main/java/com/example/scm/dto/partner/PartnerUpdateRequest.java
+ M src/main/java/com/example/scm/dto/purchaseorder/ItemOption.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PartnerOption.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderCreateRequest.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderCreateResponse.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderDetailResponse.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderDetailView.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderRejectRequest.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderStatusResponse.java
+ M src/main/java/com/example/scm/dto/purchaseorder/PurchaseOrderSummaryResponse.java
+ M src/main/java/com/example/scm/dto/stock/StockLevel.java
+ M src/main/java/com/example/scm/dto/stock/StockListView.java
+ M src/main/java/com/example/scm/dto/stock/StockSearchForm.java
+ M src/main/java/com/example/scm/dto/stock/StockSummaryView.java
+ M src/main/java/com/example/scm/dto/user/PasswordChangeRequest.java
+ M src/main/java/com/example/scm/dto/user/UserResponse.java
+ M src/main/java/com/example/scm/init/DataInitializer.java
+ M src/main/java/com/example/scm/repository/CategoryRepository.java
+ M src/main/java/com/example/scm/repository/ItemRepository.java
+ M src/main/java/com/example/scm/repository/PartnerRepository.java
+ M src/main/java/com/example/scm/repository/PurchaseOrderRepository.java
+ M src/main/java/com/example/scm/repository/StockRepository.java
+ M src/main/java/com/example/scm/repository/UserRepository.java
+ M src/main/java/com/example/scm/repository/spec/ItemSpecs.java
+ M src/main/java/com/example/scm/repository/spec/PartnerSpecs.java
+ M src/main/java/com/example/scm/repository/spec/PurchaseOrderSpecs.java
+ M src/main/java/com/example/scm/service/AuthService.java
+ M src/main/java/com/example/scm/service/CategoryService.java
+ M src/main/java/com/example/scm/service/ItemService.java
+ M src/main/java/com/example/scm/service/OrderNumberGenerator.java
+ M src/main/java/com/example/scm/service/PartnerService.java
+ M src/main/java/com/example/scm/service/PurchaseOrderPersistenceService.java
+ M src/main/java/com/example/scm/service/PurchaseOrderService.java
+ M src/main/java/com/example/scm/service/StockService.java
+ M src/main/java/com/example/scm/service/UserService.java
+ M src/main/resources/application-mysql.yml
+ M src/main/resources/application.yml
+ M src/main/resources/static/css/app.css
+ M src/main/resources/static/js/purchase-order-form.js
+ M src/main/resources/templates/category/detail.html
+ M src/main/resources/templates/category/form.html
+ M src/main/resources/templates/category/list.html
+ M src/main/resources/templates/dashboard.html
+ M src/main/resources/templates/error.html
+ M src/main/resources/templates/fragments/layout.html
+ M src/main/resources/templates/item/detail.html
+ M src/main/resources/templates/item/form.html
+ M src/main/resources/templates/item/list.html
+ M src/main/resources/templates/login.html
+ M src/main/resources/templates/mypage.html
+ M src/main/resources/templates/partner/detail.html
+ M src/main/resources/templates/partner/form.html
+ M src/main/resources/templates/partner/list.html
+ M src/main/resources/templates/purchaseorder/admin-list.html
+ M src/main/resources/templates/purchaseorder/detail.html
+ M src/main/resources/templates/purchaseorder/form.html
+ M src/main/resources/templates/purchaseorder/my-list.html
+ M src/main/resources/templates/stock/list.html
+ M src/test/java/com/example/scm/config/FlywayStartupIntegrationTest.java
+ M src/test/java/com/example/scm/config/MySqlMigrationContractTest.java
+ M src/test/java/com/example/scm/practice/WorkbookStructureTest.java
+ M src/test/java/com/example/scm/service/PurchaseOrderServiceTest.java
+?? docs/INTERVIEW_QUIZ.md
+?? docs/PRD_TRD.md
+?? docs/REA_REVIEW_2026-10-21.md
+?? docs/REA_REVIEW_2026-10-23.md
+?? docs/diagnostics/
+?? docs/scm_system_PRD_TRD.md
+?? practice/sw-quiz/
+?? practice/workbook-questions.md
+?? src/main/java/com/example/scm/common/validation/
+?? src/main/java/com/example/scm/controller/api/AdminSalesOrderApiController.java
+?? src/main/java/com/example/scm/controller/api/DashboardApiController.java
+?? src/main/java/com/example/scm/controller/api/NoticeApiController.java
+?? src/main/java/com/example/scm/controller/api/SalesOrderApiController.java
+?? src/main/java/com/example/scm/controller/web/AdminSalesOrderWebController.java
+?? src/main/java/com/example/scm/controller/web/NoticeWebController.java
+?? src/main/java/com/example/scm/controller/web/SalesOrderWebController.java
+?? src/main/java/com/example/scm/domain/Notice.java
+?? src/main/java/com/example/scm/domain/SalesOrder.java
+?? src/main/java/com/example/scm/domain/SalesOrderLine.java
+?? src/main/java/com/example/scm/domain/enums/SalesOrderStatus.java
+?? src/main/java/com/example/scm/dto/dashboard/
+?? src/main/java/com/example/scm/dto/notice/
+?? src/main/java/com/example/scm/dto/salesorder/
+?? src/main/java/com/example/scm/repository/NoticeRepository.java
+?? src/main/java/com/example/scm/repository/OrderStatisticsRow.java
+?? src/main/java/com/example/scm/repository/SalesOrderRepository.java
+?? src/main/java/com/example/scm/repository/spec/SalesOrderSpecs.java
+?? src/main/java/com/example/scm/service/NoticeService.java
+?? src/main/java/com/example/scm/service/OrderStatisticsService.java
+?? src/main/java/com/example/scm/service/SalesOrderNumberGenerator.java
+?? src/main/java/com/example/scm/service/SalesOrderPersistenceService.java
+?? src/main/java/com/example/scm/service/SalesOrderService.java
+?? src/main/resources/db/migration/mysql/V2__sales_orders_and_notices.sql
+?? src/main/resources/templates/notice/
+?? src/main/resources/templates/salesorder/
+?? src/test/java/com/example/scm/controller/OrderManagementIntegrationTest.java
+?? src/test/java/com/example/scm/controller/OrderPartnerFilterIntegrationTest.java
+?? src/test/java/com/example/scm/controller/PaginationIntegrationTest.java
+?? src/test/java/com/example/scm/controller/PasswordBoundaryIntegrationTest.java
+?? src/test/java/com/example/scm/controller/RequestBoundaryIntegrationTest.java
+?? src/test/java/com/example/scm/controller/SalesAndNoticeIntegrationTest.java
+?? src/test/java/com/example/scm/controller/SortValidationIntegrationTest.java
+?? src/test/java/com/example/scm/practice/SwQuizBankTest.java
+?? src/test/java/com/example/scm/service/MySqlStockSnapshotIntegrationTest.java
+?? src/test/js/

@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 브라우저의 거래처 등록·수정 화면에 사용하는 입력 양식입니다.
+ * from 함수가 기존 회사 정보를 옮겨 수정할 때 다시 처음부터 입력하지 않게 합니다.
+ *
  * 거래처 등록/수정 폼 객체 (Web). th:object="${partnerForm}".
  */
 @Getter

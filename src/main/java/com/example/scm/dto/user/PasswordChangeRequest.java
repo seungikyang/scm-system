@@ -6,6 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 비밀번호를 바꿀 때 보내는 현재 비밀번호와 새 비밀번호입니다.
+ * 형식 검사를 통과한 뒤에도 현재 비밀번호가 맞는지 UserService에서 확인합니다.
+ *
+ * 비밀번호 변경 API의 입력 DTO. 여기서는 빈 값과 길이 같은 형식만 검증하며,
+ * 현재 비밀번호 일치 여부와 새 비밀번호 암호화는 UserService가 처리한다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

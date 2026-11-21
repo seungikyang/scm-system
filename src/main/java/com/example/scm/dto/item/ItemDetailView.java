@@ -8,7 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 물건 하나의 자세한 정보와 만들고 고친 시각을 보여 줍니다.
+ * 저장용 자료를 그대로 공개하지 않고 화면에 필요한 정보만 옮겨 담습니다.
+ *
  * 품목 상세 View DTO. categoryName 은 Service 가 채운다(OSIV off).
+ * 학습 모듈 32에서 ItemListView와 필드 차이를 비교하고 같은 변환 패턴을 확인한다.
  */
 @Getter
 @Builder

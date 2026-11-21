@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  수주 목록 화면입니다. th:each는 여러 자료를 하나씩 꺼내 표의 행을 만드는 반복 표시입니다.
+  검색은 GET 요청으로 조건을 보내며, 페이지 이동 버튼은 긴 목록을 나눠 보여 줍니다.
+  pendingView가 참이면 출고 대기 주문, 거짓이면 내가 작성한 주문을 보여 줍니다.
+-->
+<head th:replace="~{fragments/layout :: head('SCM')}"></head>
+<body><nav th:replace="~{fragments/layout :: nav}"></nav><main>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="page-header"><h1 th:text="${pendingView ? '처리 대기 수주' : '내 수주'}">내 수주</h1>
+<a th:if="${currentUser.isAdmin() or currentUser.isManager()}" class="btn btn-ghost" th:href="@{/admin/sales-orders}">수주 관리</a>
+<a class="btn btn-primary" th:href="@{/sales-orders/new}">수주서 작성</a></div>
+<form th:unless="${pendingView}" th:action="@{/sales-orders/my}" method="get" class="search-bar">
+<select name="status"><option value="">전체 상태</option>
+<option th:each="s : ${statusOptions}" th:value="${s}" th:text="${s}" th:selected="${s == selectedStatus}"></option></select>
+<button class="btn btn-ghost" type="submit">검색</button></form>
+<p class="muted" th:text="|총 ${orders.totalElements}건|"></p>
+<div class="table-scroll"><table class="data"><thead><tr><th>수주번호</th><th>고객사</th><th>작성자</th><th>수주일</th><th>금액</th><th>상태</th></tr></thead>
+<tbody><tr th:each="o : ${orders.content}">
+<td><a th:href="@{/sales-orders/{id}(id=${o.salesOrderId})}" th:text="${o.orderNumber}"></a></td>
+<td th:text="${o.partnerName}"></td><td th:text="${o.writerName}"></td><td th:text="${o.orderDate}"></td>
+<td th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td><td th:text="${o.status}"></td></tr>
+<tr th:if="${orders.empty}"><td colspan="6">수주서가 없습니다.</td></tr></tbody></table></div>
+<!-- 페이지를 옮겨도 배포 경로와 표시 건수를 유지하고, 내 수주에서는 선택한 상태도 유지합니다. -->
+<div th:with="base=${pendingView} ? @{/sales-orders/pending(size=${orders.size})} : @{/sales-orders/my(status=${selectedStatus},size=${orders.size})}">
+<nav th:replace="~{fragments/layout :: pagination(${orders}, ${base + '&amp;page='})}"></nav></div>
+</main><footer th:replace="~{fragments/layout :: footer}"></footer></body></html>

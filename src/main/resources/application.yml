@@ -1,3 +1,5 @@
+# 이 파일은 실행 설정표입니다. 들여쓰기로 '어느 설정에 속하는 값인지' 구분합니다.
+# 기본 모드는 메모리 안의 연습용 H2 장부입니다. 프로그램을 다시 켜면 예전 데이터가 사라집니다.
 spring:
   datasource:
     url: jdbc:h2:mem:scm;MODE=MySQL;DB_CLOSE_DELAY=-1
@@ -5,17 +7,29 @@ spring:
     username: sa
     password:
   jpa:
+    # JPA는 Java 자료를 데이터베이스에 저장하고 읽는 도구입니다.
     hibernate:
       ddl-auto: create          # 1차: 매 기동 스키마 생성 (운영은 validate)
     properties:
       hibernate.format_sql: true
+    # 화면을 그릴 때는 장부를 다시 읽지 않도록, Service에서 필요한 이름과 내역을 준비합니다.
     open-in-view: false         # OSIV off — 표시값은 Service에서 DTO로 채운다
+  flyway:
+    enabled: false              # 기본 H2 학습 모드는 Hibernate가 임시 스키마를 생성한다
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /h2-console
   thymeleaf:
     cache: false
+  jackson:
+    deserialization:
+      # JSON의 1.5 같은 소수를 정수 칸(수량 등)에 넣으면 1로 잘라 저장하지 않고 입력 오류로 거부합니다.
+      accept-float-as-int: false
 logging:
   level:
-    org.hibernate.SQL: debug
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG_LEVEL:info}
+scm:
+  seed:
+    # ${이름:기본값}은 실행 환경의 값을 우선 쓰고, 없으면 콜론 뒤 값을 쓰는 표시입니다.
+    enabled: ${SCM_SEED_ENABLED:true}

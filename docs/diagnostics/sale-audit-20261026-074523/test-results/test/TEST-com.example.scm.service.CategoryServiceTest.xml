@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="CategoryService 단위 테스트" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:48.703Z" hostname="yangseouui-MacBookPro.local" time="0.073">
+  <properties/>
+  <testcase name="소속 품목 없는 카테고리 삭제 → 정상" classname="com.example.scm.service.CategoryServiceTest" time="0.068"/>
+  <testcase name="USER 등록 → ACCESS_DENIED (마스터 등록은 ADMIN만)" classname="com.example.scm.service.CategoryServiceTest" time="0.001"/>
+  <testcase name="소속 품목 있는 카테고리 삭제 → CATEGORY_HAS_ITEMS" classname="com.example.scm.service.CategoryServiceTest" time="0.001"/>
+  <testcase name="미존재 카테고리 삭제 → CATEGORY_NOT_FOUND" classname="com.example.scm.service.CategoryServiceTest" time="0.001"/>
+  <testcase name="정상 등록: ADMIN, 미중복 → id 반환" classname="com.example.scm.service.CategoryServiceTest" time="0.001"/>
+  <testcase name="카테고리명 중복 → DUPLICATE_CATEGORY_NAME" classname="com.example.scm.service.CategoryServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

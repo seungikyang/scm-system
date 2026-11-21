@@ -1,0 +1,341 @@
+{
+  "java": {
+    "module": ".",
+    "task": "test",
+    "totals": {
+      "tests": 250,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "suite": "CategoryService 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.CategoryServiceTest.xml",
+        "mtime": "2026-10-25T22:45:50.002374+00:00",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "AuthService 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.AuthServiceTest.xml",
+        "mtime": "2026-10-25T22:45:50.002128+00:00",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.practice.SwQuizBankTest",
+        "report": "build/test-results/test/TEST-com.example.scm.practice.SwQuizBankTest.xml",
+        "mtime": "2026-10-25T22:45:50.002833+00:00",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.RequestBoundaryIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.RequestBoundaryIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:49.999336+00:00",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "WebExceptionHandler 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.common.exception.WebExceptionHandlerTest.xml",
+        "mtime": "2026-10-25T22:45:50.006014+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "PartnerService 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PartnerServiceTest.xml",
+        "mtime": "2026-10-25T22:45:50.002837+00:00",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "AdminOnlyInterceptor 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.common.auth.AdminOnlyInterceptorTest.xml",
+        "mtime": "2026-10-25T22:45:49.997602+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "발주 요청(submit)",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$Submit.xml",
+        "mtime": "2026-10-25T22:45:50.004996+00:00",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.SalesAndNoticeIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.SalesAndNoticeIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.001953+00:00",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "UserService 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.UserServiceTest.xml",
+        "mtime": "2026-10-25T22:45:50.005103+00:00",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "LoginController 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.web.LoginControllerTest.xml",
+        "mtime": "2026-10-25T22:45:50.001233+00:00",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.PaginationIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.PaginationIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.001502+00:00",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "학습 워크북 구조 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.practice.WorkbookStructureTest.xml",
+        "mtime": "2026-10-25T22:45:50.002798+00:00",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "ItemService 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.ItemServiceTest.xml",
+        "mtime": "2026-10-25T22:45:50.002510+00:00",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.PasswordBoundaryIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.PasswordBoundaryIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.000580+00:00",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "소수 금액 화면 표시 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.MoneyViewIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:49.999177+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "취소(cancel) — OQ-3: DRAFT/REQUESTED/APPROVED 가능, RECEIVED 불가",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$Cancel.xml",
+        "mtime": "2026-10-25T22:45:50.004299+00:00",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "웹 보안 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.config.WebSecurityIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.003362+00:00",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "H2 콘솔 실제 HTTP 접근 제어",
+        "report": "build/test-results/test/TEST-com.example.scm.config.H2ConsoleIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.004464+00:00",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "재고 조회 수직 슬라이스 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.StockFeatureIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.001870+00:00",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Stock 도메인 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.domain.StockTest.xml",
+        "mtime": "2026-10-25T22:45:50.001667+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "LoginInterceptor 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.common.auth.LoginInterceptorTest.xml",
+        "mtime": "2026-10-25T22:45:49.997602+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.OrderPartnerFilterIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.OrderPartnerFilterIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.003661+00:00",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "발주서 작성",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$Create.xml",
+        "mtime": "2026-10-25T22:45:50.005272+00:00",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "입고(receive) + 재고 증가",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$Receive.xml",
+        "mtime": "2026-10-25T22:45:50.004920+00:00",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Flyway 자동 실행 및 JPA 스키마 검증",
+        "report": "build/test-results/test/TEST-com.example.scm.config.FlywayStartupIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.005252+00:00",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.OrderManagementIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.OrderManagementIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.000574+00:00",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "발주 전체 흐름 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderFlowIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.006169+00:00",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "상세 접근 권한",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$DetailAccess.xml",
+        "mtime": "2026-10-25T22:45:50.003104+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "HTTP 요청 입력 검증 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.RequestValidationIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.000578+00:00",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "OrderNumberGenerator 단위 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.OrderNumberGeneratorTest.xml",
+        "mtime": "2026-10-25T22:45:50.002765+00:00",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "com.example.scm.controller.SortValidationIntegrationTest",
+        "report": "build/test-results/test/TEST-com.example.scm.controller.SortValidationIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.005668+00:00",
+        "tests": 50,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "승인/반려(approve/reject)",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderServiceTest$ApproveReject.xml",
+        "mtime": "2026-10-25T22:45:50.003932+00:00",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "발주 동시성 통합 테스트",
+        "report": "build/test-results/test/TEST-com.example.scm.service.PurchaseOrderConcurrencyIntegrationTest.xml",
+        "mtime": "2026-10-25T22:45:50.006172+00:00",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "excluded_tags": [
+      "mysql"
+    ],
+    "status": "PASS",
+    "report_freshness_verified": true,
+    "original_xml_copy": "test-results/test/"
+  },
+  "node": {
+    "command": "node --test src/test/js/study-state.test.cjs",
+    "log": "node-test.log",
+    "status": "PASS",
+    "tests": 15,
+    "passed": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unexecuted": [
+    "mysqlSchemaTest: 명시적으로 격리된 MySQL DB 없음; Flyway와 테스트 데이터 쓰기를 수반",
+    "브라우저 E2E",
+    "성능·장애복구"
+  ]
+}

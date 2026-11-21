@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.practice.SwQuizBankTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.926Z" hostname="yangseouui-MacBookPro.local" time="0.564">
+  <properties/>
+  <testcase name="expansionPreservesExisting2000QuestionsChoicesAndStorageKey()" classname="com.example.scm.practice.SwQuizBankTest" time="0.06"/>
+  <testcase name="studyDocumentsHaveNoUnconvertedEssayQuestionsOrWrittenAnswerInstructions()" classname="com.example.scm.practice.SwQuizBankTest" time="0.052"/>
+  <testcase name="convertedWorkbookExpansionPreservesExisting363AnswersAndStorageKey()" classname="com.example.scm.practice.SwQuizBankTest" time="0.006"/>
+  <testcase name="allRemainingInlineQuestionsHaveChoicesAndNoEssayPromptsRemain()" classname="com.example.scm.practice.SwQuizBankTest" time="0.024"/>
+  <testcase name="learningFilesContainOnlyChoiceQuestionsAndNoWrittenAnswerForms()" classname="com.example.scm.practice.SwQuizBankTest" time="0.008"/>
+  <testcase name="bankHas3000UniqueQuestionsWithFourChoicesAndBalancedAnswers()" classname="com.example.scm.practice.SwQuizBankTest" time="0.043"/>
+  <testcase name="runtimeQuestionTextAnswerAndExplanationMatchEditableSource()" classname="com.example.scm.practice.SwQuizBankTest" time="0.044"/>
+  <testcase name="convertedWorkbookCoversOriginalTopicsWithFourChoicesAndExistingReferences()" classname="com.example.scm.practice.SwQuizBankTest" time="0.296"/>
+  <testcase name="allMarkdownChoicesAndAnswersMatchPlayableWorkbook()" classname="com.example.scm.practice.SwQuizBankTest" time="0.031"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,218 +1,444 @@
-# 포트폴리오 문서화 워크북
+# 문서화 (TRD 3.15 ~ 3.17) · 4지 선다
 
-TRD 3.15 ~ 3.17 에서 정의한 문서 묶음을 직접 채워봅니다. 이 워크북을 다 채우면 GitHub 저장소에 그대로 옮겨 README/ERD/API/트러블슈팅 문서 초안이 됩니다.
+[이 모듈을 브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&module=22) · [전체 문제집](../../workbook-questions.md)
 
----
+각 문제에서 1~4번 중 하나를 고르고 정답·해설을 확인합니다.
 
-## 1. README.md 8 섹션 채우기
+<a id="w031"></a>
+### W031. 수주의 정상 처리 상태 흐름은?
 
-빈칸을 채워 보세요.
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=31)
 
-```md
-# Supply Chain Management System
+1. DRAFT → CONFIRMED → SHIPPED → COMPLETED
+2. DRAFT → RECEIVED → REQUESTED → COMPLETED
+3. SHIPPED → DRAFT → APPROVED
+4. COMPLETED → CONFIRMED → DRAFT
 
-Java Spring Boot 기반 공급망 관리 시스템.
-거래처 / 품목 / 카테고리 / 발주 / 수주 / 공지 기능을 구현한 SI 취업용 포트폴리오 프로젝트입니다.
+<details>
+<summary>정답·해설 보기</summary>
 
-## 1. 프로젝트 소개
-- 한 줄 소개:
-- 만든 기간 (예: 2026-02 ~ 2026-04):
-- 1인 / 팀 여부:
+**정답: 1번** · DRAFT → CONFIRMED → SHIPPED → COMPLETED
 
-## 2. 개발 목적
-- ____
-- ____
-- ____
+취소 가능 상태는 별도로 관리하며 COMPLETED·CANCELED는 종료 상태입니다.
 
-## 3. 사용 기술
-| 구분 | 기술 |
-|---|---|
-| Language | Java ____ |
-| Framework | Spring Boot ____ |
-| DB | ____ / ____ |
-| ORM | ____ |
-| View | Thymeleaf |
-| Build | ____ |
-| Test | JUnit 5, ____ |
-| Version Control | Git / GitHub |
+</details>
 
-## 4. 주요 기능
-- 로그인 / 권한 구분 (USER / ADMIN / MANAGER)
-- 거래처 관리 (CRUD, 검색, 페이징, 사업자번호 unique)
-- 카테고리 / 품목 관리 (CRUD, 검색, 페이징, 단종 처리)
-- 발주(구매) 작성/요청/승인/반려/입고 (DRAFT → REQUESTED → APPROVED → RECEIVED)
-- 수주(판매) 작성/확정/출고/완료/취소 (DRAFT → CONFIRMED → SHIPPED → COMPLETED)
-- 공지사항 관리
 
-## 5. 시스템 구조
-Browser → Controller → Service → Repository → Database
+<a id="w046"></a>
+### W046. 발주 헤더와 라인을 같은 트랜잭션으로 저장하는 이유는?
 
-## 6. ERD
-docs/ERD.md 참고.
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=46)
 
-## 7. API 명세
-docs/API_SPEC.md 참고.
+1. 헤더 저장 후 실패한 라인은 영구 누락시킨다
+2. 조회 속도가 항상 정확히 두 배가 된다
+3. 트랜잭션이 외래키를 없애 준다
+4. 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
 
-## 8. 실행 방법
-- ./gradlew bootRun
-- 기본 포트: ____
-- H2 콘솔: http://localhost:____/h2-console
-```
+<details>
+<summary>정답·해설 보기</summary>
 
----
+**정답: 4번** · 라인 실패 시 헤더까지 롤백해 부분 주문을 방지한다
 
-## 2. ERD 표기 선택
+주문 구성 요소는 함께 성공하거나 함께 실패해야 합니다.
 
-| 도구 | 장점 | 단점 |
-|---|---|---|
-| 텍스트 트리 (현재 TRD 3.4 방식) | 빠르게 갱신, diff 가능 | 시각적 구조 파악이 어려움 |
-| dbdiagram.io | 무료, DSL 로 작성, 이미지 export | 별도 사이트 |
-| draw.io | 자유도 높음 | ____ |
-| ERD Plus / Lucidchart | 협업에 강함 | 유료 |
+</details>
 
-선택 기준:
 
-- [ ] 처음에는 **____** 로 빠르게 시작
-- [ ] 면접 직전 자료는 **____** 로 깔끔하게 다시 그림
+<a id="w054"></a>
+### W054. 발주 승인·반려·입고가 허용되는 역할은?
 
-### 텍스트 트리 직접 채우기
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=54)
 
-```text
-User      1 : N  PurchaseOrder(____)        ← 작성자
-User      1 : N  PurchaseOrder(____)        ← 승인자
-User      1 : N  SalesOrder(____)           ← 작성자
-User      1 : N  SalesOrder(____)           ← 처리자(매니저)
-User      1 : N  Notice
-Category  1 : N  Item
-Partner   1 : N  PurchaseOrder              ← 공급사
-Partner   1 : N  SalesOrder                 ← 고객사
-PurchaseOrder 1 : N PurchaseOrderLine
-SalesOrder    1 : N SalesOrderLine
-Item      1 : N  PurchaseOrderLine
-Item      1 : N  SalesOrderLine
-```
+1. ADMIN 또는 MANAGER
+2. USER만
+3. 모든 비로그인 사용자
+4. 거래처 유형이 CUSTOMER인 사용자만
 
----
+<details>
+<summary>정답·해설 보기</summary>
 
-## 3. 트러블슈팅 4단계 템플릿
+**정답: 1번** · ADMIN 또는 MANAGER
 
-TRD 3.16 에서 정의한 형식대로 직접 한 건을 채워 보세요.
+현재 참조 구현은 ADMIN과 MANAGER를 허용하며 USER는 거절합니다.
 
-### A. 발주 승인 상태 중복 처리
+</details>
 
-```md
-### 발주 승인 상태 중복 처리 문제
 
-#### 문제
-이미 승인된 발주를 다시 ____ 또는 ____ 할 수 있는 버그가 발생했다.
+<a id="w080"></a>
+### W080. 일반 발주 API와 관리자 API 경로를 나누어도 필요한 것은?
 
-#### 원인
-승인/반려 처리 전에 현재 ____ 가 REQUESTED 인지 검증하지 않았다.
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=80)
 
-#### 해결
-- Service 가 아닌 ____ 의 메서드(`approve`, `reject`)에서 REQUESTED 검증을 강제했다.
-- 새 통합 테스트로 "이미 APPROVED 인 발주를 다시 승인 시도 → INVALID_STATUS" 시나리오를 추가했다.
+1. 경로 이름만 있으면 누구나 접근해도 된다
+2. 관리자 경로에서 실제 역할 인가를 수행한다
+3. 관리자 API는 세션을 제거한다
+4. 모든 API에 같은 작성자 ID를 저장한다
 
-#### 배운 점
-승인/반려 같은 상태 머신은 _______(엔티티 / 서비스) 안에서 상태 전이를 캡슐화하면,
-호출부에서 검증을 잊는 실수를 막을 수 있다.
-```
+<details>
+<summary>정답·해설 보기</summary>
 
-### B. 발주 헤더-라인 부분 저장
+**정답: 2번** · 관리자 경로에서 실제 역할 인가를 수행한다
 
-```md
-### 발주 헤더는 저장되었는데 라인이 일부만 저장되는 문제
+경로 분리는 계약을 명확히 하지만 실행 권한은 서버 검사로 보장합니다.
 
-#### 문제
-발주서 작성 중 라인 저장 단계에서 예외가 발생하면 헤더만 남는 경우가 있었다.
+</details>
 
-#### 원인
-Service 메서드에 ____ 가 빠져 있었고, cascade 설정도 ____ 만 두어 라인이 자동 저장되지 않았다.
 
-#### 해결
-- Service 메서드에 `@____` 적용.
-- `@OneToMany(cascade = CascadeType.____, orphanRemoval = true)` 로 헤더 저장과 라인 저장을 묶음.
-- 라인 검증을 헤더 save 호출 ____ 에 끝내도록 순서 정리.
+<a id="w090"></a>
+### W090. README에 포함할 내용의 올바른 묶음은?
 
-#### 배운 점
-헤더-라인 도메인은 ____ 한 트랜잭션에서 끝내야 하며, 검증을 헤더 저장 전에 완료해야 안전하다.
-```
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=90)
 
----
+1. 비밀번호 해시와 운영 비밀키만 담는다
+2. 기능 이름 한 단어만 담는다
+3. 목적·기술·기능·구조·DB·API·실행 등 독자의 시작 정보를 담는다
+4. 실행 명령을 모두 제거한다
 
-## 4. API 명세 작성 방법
+<details>
+<summary>정답·해설 보기</summary>
 
-### A. 손으로 적기 (Markdown)
+**정답: 3번** · 목적·기술·기능·구조·DB·API·실행 등 독자의 시작 정보를 담는다
 
-장점:
-- diff 친화적, 코드와 함께 PR 리뷰 가능.
-- 신입 단계에서 어떤 필드가 어떤 의미인지 직접 생각하게 된다.
+개요와 실제로 재현 가능한 실행 절차·문서 연결이 필요합니다.
 
-단점:
-- 실제 코드와 어긋날 수 있다.
+</details>
 
-### B. 자동 생성 (springdoc-openapi)
 
-`build.gradle` 에 의존성 추가만으로 `/swagger-ui.html` 이 뜬다.
+<a id="w091"></a>
+### W091. ERD 표기 도구를 선택하는 기준은?
 
-```groovy
-implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:____'
-```
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=91)
 
-선택 기준:
+1. 갱신·diff·공유·시각 전달 요구를 함께 고려한다
+2. 가장 유료인 도구를 무조건 고른다
+3. 표기 도구가 DB 무결성을 자동 보장한다
+4. 도구 이름만 쓰고 관계를 생략한다
 
-- [ ] 학습 1~2주차: ____ 로 시작
-- [ ] 학습 3~4주차: ____ 로 자동 생성하고, 손으로 적은 명세는 차이점만 유지
+<details>
+<summary>정답·해설 보기</summary>
 
-### 발주 API 명세 표 직접 채우기
+**정답: 1번** · 갱신·diff·공유·시각 전달 요구를 함께 고려한다
 
-| Method | URL | 권한 | 요청 본문 핵심 | 응답 핵심 |
-|---|---|---|---|---|
-| POST | /api/purchase-orders | ____ | partnerId, lines[] | purchaseOrderId, orderNumber, status |
-| PATCH | /api/purchase-orders/{poId}/submit | 작성자 | (없음) | status=____ |
-| GET | /api/purchase-orders/my | USER | page, size | Page<PurchaseOrderResponse> |
-| GET | /api/purchase-orders/{poId} | 본인/ADMIN | (없음) | 헤더 + lines[] |
-| PATCH | /api/admin/purchase-orders/{poId}/approve | ____ | (없음) | status=____ |
-| PATCH | /api/admin/purchase-orders/{poId}/reject | ADMIN | reason | status=REJECTED |
-| PATCH | /api/admin/purchase-orders/{poId}/receive | ADMIN | (없음) | status=____ |
+텍스트와 시각 도구에는 유지 비용과 표현력의 차이가 있습니다.
 
----
+</details>
 
-## 5. docs 폴더 권장 구조 채우기
 
-```text
-docs/
-├── ____.md             # 제품 요구사항 (현재 PRD/TRD 통합 문서를 분리해도 됨)
-├── TRD.md
-├── ____.md             # 데이터베이스 모델 다이어그램
-├── API_SPEC.md
-├── ____.md             # 트러블슈팅 모음 (TRD 3.16 의 5가지 + 본인이 추가한 항목)
-└── ____.md             # 화면 캡처 / 데모 영상 링크
-```
+<a id="w092"></a>
+### W092. 트러블슈팅 기록의 기본 순서는?
 
----
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=92)
 
-## 6. 면접 답변 카드 (TRD 3.19 응용)
+1. 해결 → 비밀번호 → CSS → 주문번호
+2. 문제 → 원인 → 해결 → 배운 점
+3. 기술 이름만 나열
+4. 실패 기록을 모두 삭제
 
-면접관이 물어볼 12가지 질문(TRD 3.19) 중 5개를 골라, 30초 분량의 답변을 한 문단으로 적어 보세요.
+<details>
+<summary>정답·해설 보기</summary>
 
-| # | 질문 요지 | 30초 답변 (직접 작성) |
-|---|---|---|
-| 1 | 왜 이 프로젝트를 만들었나? |  |
-| 2 | User 와 Partner 를 왜 분리했나? |  |
-| 3 | @Transactional 을 어디에, 왜? |  |
-| 4 | 헤더-라인 구조에서 가장 중요한 검증은? |  |
-| 5 | Entity 를 직접 응답하지 않고 DTO 를 쓴 이유? |  |
-| 6 | 가장 어려웠던 문제와 해결 방법? |  |
+**정답: 2번** · 문제 → 원인 → 해결 → 배운 점
 
----
+재현 조건·원인·해결 및 검증을 남겨 같은 문제를 다시 분석할 수 있게 합니다.
 
-## 7. 셀프 체크리스트
+</details>
 
-- [ ] README 가 8 섹션을 모두 갖추고 있는가?
-- [ ] ERD 가 TRD 3.4 의 관계(User/Partner/Category/Item/PurchaseOrder/SalesOrder/Notice)를 빠짐없이 표현하는가?
-- [ ] API 명세에 인증 헤더 형식이 명시되어 있는가?
-- [ ] 트러블슈팅 문서가 최소 5건 이상 있는가? (PRD 3.16 기준)
-- [ ] 실행 방법(`./gradlew bootRun`)이 클론한 사람이 그대로 따라 할 수 있을 만큼 구체적인가?
-- [ ] 화면 캡처 또는 데모 영상이 README 에 1개 이상 있는가?
-- [ ] 발주/수주 상태 전이 다이어그램이 docs/ 또는 README 에 포함되어 있는가?
+
+<a id="w093"></a>
+### W093. Markdown과 자동 생성 API 문서의 올바른 비교는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=93)
+
+1. 자동 문서는 모든 업무 정책을 완벽히 작성한다
+2. 수동 문서는 설명·diff에 유리하고 자동 문서도 의미·정책 검토가 필요하다
+3. Markdown이면 코드와 절대 어긋나지 않는다
+4. 둘 다 인증 조건을 적으면 안 된다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 수동 문서는 설명·diff에 유리하고 자동 문서도 의미·정책 검토가 필요하다
+
+어떤 방식이든 실제 입력·응답·권한·오류 계약과 동기화해야 합니다.
+
+</details>
+
+
+<a id="w167"></a>
+### W167. 본인이 겪은 장애를 포트폴리오에 쓰는 올바른 방식은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=167)
+
+1. 겪지 않은 장애를 해결했다고 꾸민다
+2. 다른 사람 수치를 자기 결과로 복사한다
+3. 실제 재현·관찰·선택·검증 근거로 작성한다
+4. 원인과 해결을 비밀번호 값으로 대신한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 실제 재현·관찰·선택·검증 근거로 작성한다
+
+개인 기록의 내용은 사람마다 다르지만 증거에 근거한 작성 기준은 같습니다.
+
+</details>
+
+
+<a id="w168"></a>
+### W168. 짧은 면접 기술 답변의 좋은 구성은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=168)
+
+1. 문제·선택 이유·대안·코드나 테스트 근거를 연결한다
+2. 라이브러리 이름만 외운다
+3. 실패 조건을 모두 숨긴다
+4. 실제 구현과 다른 정책을 확정 사실로 말한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 문제·선택 이유·대안·코드나 테스트 근거를 연결한다
+
+기술 선택을 구체적인 업무 상황과 검증에 연결합니다.
+
+</details>
+
+
+<a id="w177"></a>
+### W177. 응답 DTO에서 제외해야 할 정보는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=177)
+
+1. 비밀번호 해시·내부 토큰 등 민감정보
+2. 공개 품목 이름
+3. 공개 카테고리 이름
+4. 공지 제목
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 비밀번호 해시·내부 토큰 등 민감정보
+
+평문뿐 아니라 비밀번호 해시와 내부 인증 자료도 응답 계약에서 제외합니다.
+
+</details>
+
+
+<a id="w181"></a>
+### W181. 발주 결재 요청의 정상 전이는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=181)
+
+1. DRAFT → RECEIVED
+2. DRAFT → REQUESTED
+3. APPROVED → DRAFT
+4. RECEIVED → REQUESTED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · DRAFT → REQUESTED
+
+작성자가 유효한 DRAFT 발주를 요청하며 이미 요청된 상태를 재요청하면 상태 오류가 됩니다.
+
+</details>
+
+
+<a id="w182"></a>
+### W182. 발주 입고의 정상 전이는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=182)
+
+1. DRAFT → RECEIVED
+2. REQUESTED → APPROVED
+3. APPROVED → RECEIVED
+4. CANCELED → RECEIVED
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · APPROVED → RECEIVED
+
+입고는 승인된 발주만 가능하며 재고 증가와 같은 트랜잭션에서 처리합니다.
+
+</details>
+
+
+<a id="w234"></a>
+### W234. User와 Partner를 분리하는 이유는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=234)
+
+1. 모든 거래처가 반드시 로그인해야 하기 때문이다
+2. 로그인·권한 계정과 공급·고객 거래처의 책임·생명주기가 다르기 때문이다
+3. User가 있으면 Partner는 저장할 수 없기 때문이다
+4. 사용자 비밀번호를 거래처 번호로 쓰기 위해서다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 로그인·권한 계정과 공급·고객 거래처의 책임·생명주기가 다르기 때문이다
+
+거래처 마스터는 로그인 계정과 다른 업무 개념입니다.
+
+</details>
+
+
+<a id="w235"></a>
+### W235. 이 프로젝트의 학습 목적을 가장 잘 설명한 것은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=235)
+
+1. 이미지 편집만 제공한다
+2. 문제집이 MySQL 서버를 대체한다
+3. 비밀번호를 평문으로 공유하는 도구다
+4. SCM 마스터·주문 상태·권한·재고 흐름을 Java/Spring으로 구현하고 검증한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · SCM 마스터·주문 상태·권한·재고 흐름을 Java/Spring으로 구현하고 검증한다
+
+실제 기능과 코드·테스트 근거에 맞게 프로젝트 목적을 설명합니다.
+
+</details>
+
+
+<a id="w236"></a>
+### W236. 기본 SCM 프로그램의 로그인 주소와 실행 명령은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=236)
+
+1. python3 questions.tsv / localhost:3306/login
+2. node quiz.css / localhost:443/db
+3. ./gradlew bootRun / http://localhost:8080/login
+4. git status / localhost:8000/mysql
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · ./gradlew bootRun / http://localhost:8080/login
+
+기본 서버 포트는 8080이며 문제집의 정적 서버 8000과 구분합니다.
+
+</details>
+
+
+<a id="w237"></a>
+### W237. ERD를 실제 구현과 맞출 때 필요한 것은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=237)
+
+1. 그림 색만 맞춘다
+2. 모든 관계를 무조건 OneToOne으로 표시한다
+3. 엔티티·마이그레이션의 키·관계·nullable·제약을 대조한다
+4. 모든 SQL 파일을 삭제한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 엔티티·마이그레이션의 키·관계·nullable·제약을 대조한다
+
+업무 관계와 실제 JPA 매핑·DB 외래키는 구분해 정확히 표시합니다.
+
+</details>
+
+
+<a id="w238"></a>
+### W238. 현재 API 인증 조건을 문서에 쓸 때 올바른 방식은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=238)
+
+1. 모든 API가 JWT Bearer라고 가정한다
+2. 운영 비밀키를 문서에 복사한다
+3. 관리자 API라는 URL 이름만 적는다
+4. 세션 쿠키·로그인·역할과 현재 CSRF 정책을 명시한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 4번** · 세션 쿠키·로그인·역할과 현재 CSRF 정책을 명시한다
+
+현재 참조 구현은 세션 기반이므로 인증 방식과 예외 정책을 실제 코드와 맞춥니다.
+
+</details>
+
+
+<a id="w239"></a>
+### W239. 텍스트 ERD와 시각 ERD를 함께 사용할 때의 올바른 설명은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=239)
+
+1. 그림을 만들면 DB 스키마가 자동 변경된다
+2. 텍스트는 diff·갱신, 시각 자료는 관계 전달에 유리하지만 동기화가 필요하다
+3. 텍스트 ERD에는 기본키를 쓸 수 없다
+4. 시각 ERD는 관계 검증이 불필요하다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 2번** · 텍스트는 diff·갱신, 시각 자료는 관계 전달에 유리하지만 동기화가 필요하다
+
+도구에 대한 취향보다 변경 추적과 독자의 이해 요구를 기준으로 판단합니다.
+
+</details>
+
+
+<a id="w265"></a>
+### W265. README의 화면 캡처·데모 자료가 해야 할 역할은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=265)
+
+1. 실제 구현과 재현 가능한 기능 흐름을 보여 준다
+2. 구현하지 않은 기능을 완성했다고 보여 준다
+3. 운영 비밀키와 비밀번호 해시를 공개한다
+4. 오류 화면을 숨기기만 한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 1번** · 실제 구현과 재현 가능한 기능 흐름을 보여 준다
+
+시연 자료는 현재 기능과 실행 방법을 독자가 확인하는 증거입니다.
+
+</details>
+
+
+<a id="w267"></a>
+### W267. 신규 주문의 헤더를 저장하기 전에 해야 할 일은?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=267)
+
+1. 헤더만 먼저 독립 커밋하고 오류 라인을 버린다
+2. 클라이언트 금액을 그대로 저장한다
+3. 라인 존재·품목·수량·단가 등 입력과 업무 규칙을 검증한다
+4. 검증은 상세 화면을 볼 때만 한다
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 라인 존재·품목·수량·단가 등 입력과 업무 규칙을 검증한다
+
+사전 검증과 주문 전체 트랜잭션으로 부분 저장과 잘못된 주문을 방지합니다.
+
+</details>
+
+
+<a id="w274"></a>
+### W274. PUT·PATCH 입력 정책과 허용 필드를 기록할 문서는?
+
+[브라우저에서 풀기](../../sw-quiz/index.html?bank=workbook&question=274)
+
+1. 비밀번호 해시 컬럼
+2. Gradle 다운로드 캐시
+3. 실제 코드와 동기화한 API 명세
+4. 브라우저 세션 쿠키
+
+<details>
+<summary>정답·해설 보기</summary>
+
+**정답: 3번** · 실제 코드와 동기화한 API 명세
+
+입력·응답·권한·오류·수정 의미를 독자가 재현할 수 있게 API 계약에 적습니다.
+
+</details>

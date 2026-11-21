@@ -1,76 +1,51 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/SalesOrderService.java (create + confirm)
-// 목표: 수주서 작성 / 확정 흐름을 채우세요. TRD 3.8.5 참고.
+// 수주서 작성 Service (TRD 3.8.5) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=13
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ============ 수주서 작성 (DRAFT) ============
-// TODO 01: 헤더 + 라인 트랜잭션 보장 어노테이션.
-@____
-public SalesOrderResponse create(Long currentUserId, SalesOrderCreateRequest request) {
+// 선택형 [W060] 수주 작성과 확정 API를 분리하는 장점은?
+//    1. 확정 전에 자동으로 출고한다
+//    2. 트랜잭션을 모두 제거한다
+//    3. 임시 작성과 최종 확정의 상태·검증 시점을 구분한다
+//    4. 권한 검사를 브라우저에만 둔다
+//    정답·해설: practice/workbook-questions.md#w060
+//    정답: 3번 · 현재 프로젝트는 작성과 confirm 상태 전이를 구분합니다.
 
-    User writer = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+// 선택형 [W061] 수주 확정 전 확인해야 할 조건은?
+//    1. DRAFT 상태와 권한·소유권 등 확정 정책을 검사한다
+//    2. 수주 ID만 있으면 무조건 허용한다
+//    3. 이미 COMPLETED이면 다시 확정한다
+//    4. 처리자 비밀번호를 주문 금액으로 쓴다
+//    정답·해설: practice/workbook-questions.md#w061
+//    정답: 1번 · 현재 구현의 정책과 상태 가드를 함께 적용해야 합니다.
 
-    Partner partner = partnerRepository.findById(request.getPartnerId())
-        .orElseThrow(() -> new BusinessException(ErrorCode.PARTNER_NOT_FOUND));
+// 선택형 [W062] 신규 수주의 거래처 유형 검증은?
+//    1. SUPPLIER 전용만 허용한다
+//    2. Service에서 CUSTOMER 또는 BOTH를 허용한다
+//    3. 브라우저 필터만 검사한다
+//    4. 거래처 유형을 무시한다
+//    정답·해설: practice/workbook-questions.md#w062
+//    정답: 2번 · 수주는 판매 흐름이므로 고객 역할이 있는 거래처를 요구합니다.
 
-    // TODO 02: 거래처가 수주 가능한 유형인지 확인 (CUSTOMER 또는 BOTH).
-    if (partner.getPartnerType() != PartnerType.____
-            && partner.getPartnerType() != PartnerType.BOTH) {
-        throw new BusinessException(ErrorCode.PARTNER_TYPE_MISMATCH);
-    }
+// 선택형 [W063] 신규 주문 라인에 단종 품목이 오면?
+//    1. 신규 라인에 무조건 허용한다
+//    2. 품목을 자동 삭제한다
+//    3. ITEM_DISCONTINUED로 거절한다
+//    4. 거래처를 관리자 계정으로 변경한다
+//    정답·해설: practice/workbook-questions.md#w063
+//    정답: 3번 · 단종은 신규 사용 제한이며 과거 라인은 보존합니다.
 
-    // TODO 03: 라인 검증.
-    if (request.getLines() == null || request.getLines().isEmpty()) {
-        throw new BusinessException(ErrorCode.____);
-    }
+// 선택형 [W161] DTO·Entity·Service·DB 검증 책임의 조합은?
+//    1. 화면 글꼴·CSS·이미지·북마크
+//    2. 모두 HTTP 쿠키 생성
+//    3. 모두 같은 역할 문자열 비교만
+//    4. 입력 형식·불변식·업무 흐름·최종 무결성
+//    정답·해설: practice/workbook-questions.md#w161
+//    정답: 4번 · 검증은 서로 다른 진입 경로·업무 경계·경쟁 상태를 방어합니다.
 
-    String orderNumber = orderNumberGenerator.next("SO", LocalDate.now());
-
-    SalesOrder so = SalesOrder.create(
-        orderNumber,
-        partner,
-        writer.getId(),
-        request.getOrderDate(),
-        request.getShipDate()
-    );
-
-    for (SalesOrderCreateRequest.LineDto lineDto : request.getLines()) {
-        Item item = itemRepository.findById(lineDto.getItemId())
-            .orElseThrow(() -> new BusinessException(ErrorCode.ITEM_NOT_FOUND));
-
-        // TODO 04: DRAFT 단계에서는 단종 품목을 허용할지 막을지 도메인 정책을 적어 보세요.
-        // A:
-        if (item.getStatus() == ItemStatus.DISCONTINUED) {
-            throw new BusinessException(ErrorCode.ITEM_DISCONTINUED);
-        }
-
-        so.addLine(item, lineDto.getQuantity(), lineDto.getUnitPrice());
-    }
-
-    return SalesOrderResponse.from(salesOrderRepository.save(so));
-}
-
-// ============ 수주 확정 (DRAFT → CONFIRMED) ============
-@Transactional
-public SalesOrderResponse confirm(Long currentUserId, Long salesOrderId) {
-    SalesOrder so = salesOrderRepository.findById(salesOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SALES_ORDER_NOT_FOUND));
-
-    // TODO 05: 도메인 메서드 confirm() 안에서 작성자/상태 검증이 모두 일어나는 구조.
-    try {
-        so.____(currentUserId);
-    } catch (IllegalStateException e) {
-        throw new BusinessException(ErrorCode.INVALID_STATUS, e.getMessage());
-    } catch (AccessDeniedException e) {
-        throw new BusinessException(ErrorCode.____, e.getMessage());
-    }
-
-    return SalesOrderResponse.from(so);
-}
-
-// 학습 질문:
-// Q1. 작성(POST)과 확정(PATCH /confirm) 을 분리한 이유는?
-//     A:
-// Q2. 거래처 유형이 SUPPLIER 인 거래처로 수주를 작성하면 어떻게 막아야 하는가?
-//     A:
-// Q3. 도메인 메서드 confirm() 안의 검증 vs Service 의 검증, 어디까지를 어디서 책임지나?
-//     A:
+// 선택형 [W186] 현재 수주 confirm을 실행할 수 있는 사용자 기준은?
+//    1. 수주 작성자
+//    2. 아무 비로그인 사용자
+//    3. 작성자가 아닌 USER
+//    4. 요청 본문에 임의 ID를 넣은 사람
+//    정답·해설: practice/workbook-questions.md#w186
+//    정답: 1번 · SalesOrderService.confirm은 로그인과 작성자 ID를 확인합니다. ADMIN이라는 이유만으로 타인 수주 confirm을 허용하지 않습니다.

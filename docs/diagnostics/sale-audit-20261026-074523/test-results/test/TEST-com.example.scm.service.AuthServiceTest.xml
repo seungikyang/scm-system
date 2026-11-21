@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="AuthService 단위 테스트" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:48.608Z" hostname="yangseouui-MacBookPro.local" time="0.095">
+  <properties/>
+  <testcase name="존재하지 않는 이메일은 계정 존재 여부를 숨긴 공통 로그인 실패로 처리한다" classname="com.example.scm.service.AuthServiceTest" time="0.093"/>
+  <testcase name="등록된 사용자와 올바른 비밀번호면 세션용 사용자 정보를 반환한다" classname="com.example.scm.service.AuthServiceTest" time="0.001"/>
+  <testcase name="틀린 비밀번호도 이메일 오류와 같은 메시지로 처리한다" classname="com.example.scm.service.AuthServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

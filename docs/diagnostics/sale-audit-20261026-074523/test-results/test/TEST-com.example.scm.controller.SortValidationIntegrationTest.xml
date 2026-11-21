@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.controller.SortValidationIntegrationTest" tests="50" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:47.450Z" hostname="yangseouui-MacBookPro.local" time="0.343">
+  <properties/>
+  <testcase name="[1] path = &quot;/notices&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.01"/>
+  <testcase name="[2] path = &quot;/api/notices&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[1] path = &quot;/items&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.006"/>
+  <testcase name="[2] path = &quot;/api/items&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[3] path = &quot;/partners&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.004"/>
+  <testcase name="[4] path = &quot;/api/partners&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[5] path = &quot;/stocks&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.007"/>
+  <testcase name="[6] path = &quot;/api/stocks&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[7] path = &quot;/purchase-orders/my&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.004"/>
+  <testcase name="[8] path = &quot;/api/purchase-orders/my&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[9] path = &quot;/admin/purchase-orders&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.004"/>
+  <testcase name="[10] path = &quot;/api/admin/purchase-orders&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[11] path = &quot;/sales-orders/my&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.003"/>
+  <testcase name="[12] path = &quot;/api/sales-orders/my&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[13] path = &quot;/sales-orders/pending&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[14] path = &quot;/api/sales-orders/pending&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[15] path = &quot;/admin/sales-orders&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.004"/>
+  <testcase name="[16] path = &quot;/api/admin/sales-orders&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[1] path = &quot;/items&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[2] path = &quot;/items&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[3] path = &quot;/api/items&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[4] path = &quot;/api/items&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[5] path = &quot;/partners&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[6] path = &quot;/partners&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[7] path = &quot;/api/partners&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[8] path = &quot;/api/partners&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[9] path = &quot;/stocks&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[10] path = &quot;/stocks&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[11] path = &quot;/api/stocks&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[12] path = &quot;/api/stocks&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.0"/>
+  <testcase name="[13] path = &quot;/purchase-orders/my&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[14] path = &quot;/purchase-orders/my&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[15] path = &quot;/api/purchase-orders/my&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.0"/>
+  <testcase name="[16] path = &quot;/api/purchase-orders/my&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[17] path = &quot;/admin/purchase-orders&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[18] path = &quot;/admin/purchase-orders&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[19] path = &quot;/api/admin/purchase-orders&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.0"/>
+  <testcase name="[20] path = &quot;/api/admin/purchase-orders&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.0"/>
+  <testcase name="[21] path = &quot;/sales-orders/my&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[22] path = &quot;/sales-orders/my&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[23] path = &quot;/api/sales-orders/my&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[24] path = &quot;/api/sales-orders/my&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[25] path = &quot;/sales-orders/pending&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.002"/>
+  <testcase name="[26] path = &quot;/sales-orders/pending&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[27] path = &quot;/api/sales-orders/pending&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[28] path = &quot;/api/sales-orders/pending&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[29] path = &quot;/admin/sales-orders&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[30] path = &quot;/admin/sales-orders&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[31] path = &quot;/api/admin/sales-orders&quot;, property = &quot;missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <testcase name="[32] path = &quot;/api/admin/sales-orders&quot;, property = &quot;name.missing&quot;" classname="com.example.scm.controller.SortValidationIntegrationTest" time="0.001"/>
+  <system-out><![CDATA[2026-10-26T07:45:47.450+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.SortValidationIntegrationTest]: SortValidationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.450+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.SortValidationIntegrationTest
+2026-10-26T07:45:47.451+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.SortValidationIntegrationTest]: SortValidationIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:47.451+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.SortValidationIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T07:45:47.457+09:00  INFO 48339 --- [    Test worker] c.e.s.c.SortValidationIntegrationTest    : Starting SortValidationIntegrationTest using Java 17.0.21.0.2 with PID 48339 (started by seoowoo in /Users/seoowoo/Documents/scm-system)
+2026-10-26T07:45:47.457+09:00  INFO 48339 --- [    Test worker] c.e.s.c.SortValidationIntegrationTest    : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T07:45:47.494+09:00  INFO 48339 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-26T07:45:47.502+09:00  INFO 48339 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 8 JPA repository interfaces.
+2026-10-26T07:45:47.521+09:00  INFO 48339 --- [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-26T07:45:47.527+09:00  INFO 48339 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-26T07:45:47.527+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-10-26T07:45:47.527+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection conn40: url=jdbc:h2:mem:scm user=SA
+2026-10-26T07:45:47.527+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-10-26T07:45:47.528+09:00  INFO 48339 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:scm]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: SCM/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-26T07:45:47.558+09:00  INFO 48339 --- [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-26T07:45:47.563+09:00  INFO 48339 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-26T07:45:47.625+09:00  INFO 48339 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-26T07:45:47.625+09:00  INFO 48339 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-26T07:45:47.625+09:00  INFO 48339 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-26T07:45:47.631+09:00  INFO 48339 --- [    Test worker] c.e.s.c.SortValidationIntegrationTest    : Started SortValidationIntegrationTest in 0.179 seconds (process running for 6.38)
+2026-10-26T07:45:47.632+09:00  INFO 48339 --- [    Test worker] com.example.scm.init.DataInitializer     : [DataInitializer] 시드 데이터를 생성합니다.
+2026-10-26T07:45:47.689+09:00  INFO 48339 --- [    Test worker] com.example.scm.init.DataInitializer     : [DataInitializer] 시드 데이터 생성 완료.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 거래처 한 곳의 자세한 회사 정보와 연락처를 보여 줍니다.
+ * from 함수는 저장된 회사 자료를 화면에 쓸 양식으로 옮깁니다.
+ *
  * 거래처 상세 View DTO (Web 상세 + REST 상세 공용).
  */
 @Getter

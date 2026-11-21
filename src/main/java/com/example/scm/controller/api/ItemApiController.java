@@ -27,6 +27,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 다른 프로그램이 URL로 요청하는 물건 관련 작업의 접수 창구입니다.
+ * 요청을 Service 담당자에게 전달하고 결과를 JSON 자료로 보냅니다. API는 프로그램끼리 요청과 결과를 주고받는 통로입니다.
+ *
+ * 품목 CRUD를 JSON으로 제공하는 REST 컨트롤러.
+ *
+ * <p>학습 모듈 18: create → list → detail → update → discontinue 순서로 HTTP 메서드,
+ * DTO, Service 호출, 응답 상태를 한 줄씩 대응시킨다.</p>
+ *
+ * <p>매핑 애너테이션은 HTTP 메서드와 URL을 Java 메서드에 연결한다. 컨트롤러는 요청을
+ * DTO로 받고 응답 상태를 정하며, ADMIN 권한·중복·단종 같은 업무 규칙은 ItemService에
+ * 맡긴다.</p>
+ */
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
@@ -34,10 +47,13 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
+    // GET은 조회, POST는 새 자료 등록, PUT은 수정, PATCH는 일부 변경, DELETE는 삭제 요청에 사용합니다.
     @PostMapping
     public ResponseEntity<ItemDetailView> create(@Valid @RequestBody ItemCreateRequest request,
                                                  @CurrentUser LoginUser loginUser) {
+        // MVC가 Jackson으로 JSON을 DTO로 변환하고 @Valid 제약 검사 후 이 메서드를 호출한다.
         Long id = itemService.create(request, loginUser);
+        // 응답 DTO는 JSON이 된다. 201 CREATED는 새 자원이 생성되었다는 뜻이다.
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.getDetail(id));
     }
 
@@ -46,6 +62,7 @@ public class ItemApiController {
             @ModelAttribute ItemSearchForm searchForm,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable) {
+        // query string은 searchForm에, page/size/sort는 Pageable에 자동 바인딩된다.
         Page<ItemListView> page = itemService.search(searchForm, pageable);
         return ResponseEntity.ok(PageResponse.of(page));
     }

@@ -1,89 +1,67 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/SalesOrderService.java (ship/complete/cancel)
-// 목표: 수주 출고/완료/취소 상태 전이를 채우세요. TRD 3.8.5, 3.10.4 참고.
+// 수주 출고/완료/취소 Service (TRD 3.8.5, 3.10.4) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=14
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ============ 출고 (CONFIRMED → SHIPPED) ============
-@Transactional
-public SalesOrderResponse ship(Long currentUserId, Long salesOrderId) {
-    User manager = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+// 선택형 [W031] 수주의 정상 처리 상태 흐름은?
+//    1. DRAFT → CONFIRMED → SHIPPED → COMPLETED
+//    2. DRAFT → RECEIVED → REQUESTED → COMPLETED
+//    3. SHIPPED → DRAFT → APPROVED
+//    4. COMPLETED → CONFIRMED → DRAFT
+//    정답·해설: practice/workbook-questions.md#w031
+//    정답: 1번 · 취소 가능 상태는 별도로 관리하며 COMPLETED·CANCELED는 종료 상태입니다.
 
-    // TODO 01: MANAGER 또는 ADMIN 권한 확인.
-    if (manager.getRole() != UserRole.MANAGER && manager.getRole() != UserRole.____) {
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
+// 선택형 [W064] 수주 출고·완료 상태 전이의 올바른 규칙은?
+//    1. DRAFT에서 바로 완료한다
+//    2. COMPLETED에서 다시 출고한다
+//    3. CANCELED에서 재고를 차감한다
+//    4. CONFIRMED에서 출고하고 SHIPPED에서 완료한다
+//    정답·해설: practice/workbook-questions.md#w064
+//    정답: 4번 · 종료 상태 추가 전이는 차단하고 취소 가능 상태를 따로 검증합니다.
 
-    SalesOrder so = salesOrderRepository.findById(salesOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SALES_ORDER_NOT_FOUND));
+// 선택형 [W065] 수주 처리자 검증의 올바른 기준은?
+//    1. 클라이언트가 보낸 managerId만 신뢰한다
+//    2. 현재 인증 사용자의 역할과 해당 수주의 접근 정책을 확인한다
+//    3. 매니저 문자열이 요청 본문에 있으면 허용한다
+//    4. 주문 ID가 짝수면 권한을 부여한다
+//    정답·해설: practice/workbook-questions.md#w065
+//    정답: 2번 · 역할 검증과 소유권·담당 정책은 서버에서 인증 사용자 기준으로 적용합니다.
 
-    try {
-        // TODO 02: 도메인 메서드 ship() 호출 (managerId 함께 기록).
-        so.____(manager.getId());
-    } catch (IllegalStateException e) {
-        throw new BusinessException(ErrorCode.INVALID_STATUS, e.getMessage());
-    }
+// 선택형 [W066] shippedAt과 completedAt을 설정하는 시점은?
+//    1. 각각 출고·완료 상태 전이가 성공할 때
+//    2. 목록 조회마다 둘 다 갱신한다
+//    3. 수주 생성 시 둘 다 완료 시각으로 기록한다
+//    4. 로그인 실패 시 기록한다
+//    정답·해설: practice/workbook-questions.md#w066
+//    정답: 1번 · 업무 이벤트 발생 시각은 그 상태 변경과 같은 작업에서 기록합니다.
 
-    // 확장: 라인별 재고 -quantity 차감 (Inventory 도메인 추가 시)
-    // TODO 03: 출고 시 재고는 어디서 차감해야 할까?
-    // A:
+// 선택형 [W067] 수주 취소 사유 정책은?
+//    1. 모든 취소는 사유 없이 처리한다
+//    2. 사유가 있으면 완료 상태도 무조건 취소한다
+//    3. 공백이 아닌 사유를 요구한다
+//    4. 사유를 비밀번호 필드에 저장한다
+//    정답·해설: practice/workbook-questions.md#w067
+//    정답: 3번 · 사유 검증과 취소 가능한 상태 검증을 모두 수행합니다.
 
-    return SalesOrderResponse.from(so);
-}
+// 선택형 [W189] 현재 수주 취소의 올바른 정책은?
+//    1. 비로그인 누구나 완료 수주를 취소한다
+//    2. 작성자 또는 ADMIN/MANAGER가 허용 상태에서 사유를 입력한다
+//    3. 사유를 넣으면 모든 종료 상태도 취소한다
+//    4. USER가 URL ID만 바꾸면 타인 수주 취소가 가능하다
+//    정답·해설: practice/workbook-questions.md#w189
+//    정답: 2번 · DRAFT·CONFIRMED·SHIPPED에서만 취소하며 출고 후 취소는 재고를 복원합니다.
 
-// ============ 완료 (SHIPPED → COMPLETED) ============
-@Transactional
-public SalesOrderResponse complete(Long currentUserId, Long salesOrderId) {
-    User manager = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    if (manager.getRole() != UserRole.MANAGER && manager.getRole() != UserRole.ADMIN) {
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
-    }
+// 선택형 [W259] 현재 수주 출고·완료 처리가 허용되는 역할은?
+//    1. USER만
+//    2. 비로그인만
+//    3. SUPPLIER 또는 CUSTOMER
+//    4. ADMIN 또는 MANAGER
+//    정답·해설: practice/workbook-questions.md#w259
+//    정답: 4번 · 역할 검증 뒤 허용 상태·재고 등 업무 조건도 검사합니다.
 
-    SalesOrder so = salesOrderRepository.findById(salesOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SALES_ORDER_NOT_FOUND));
-
-    try {
-        so.complete();
-    } catch (IllegalStateException e) {
-        throw new BusinessException(ErrorCode.____, e.getMessage());
-    }
-
-    return SalesOrderResponse.from(so);
-}
-
-// ============ 취소 ============
-@Transactional
-public SalesOrderResponse cancel(Long currentUserId, Long salesOrderId, String reason) {
-    User user = userRepository.findById(currentUserId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-    SalesOrder so = salesOrderRepository.findById(salesOrderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SALES_ORDER_NOT_FOUND));
-
-    // TODO 04: 매니저/관리자 또는 작성자 본인이 취소 가능하다고 가정. 누구 권한?
-    boolean isManager  = (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.ADMIN);
-    boolean isWriter   = so.getWriterId().equals(user.getId());
-    if (!isManager && !isWriter) {
-        throw new BusinessException(ErrorCode.____);
-    }
-
-    // TODO 05: 취소 사유 blank 검증.
-    if (reason == null || reason.isBlank()) {
-        throw new BusinessException(ErrorCode.____, "취소 사유는 필수입니다.");
-    }
-
-    try {
-        so.cancel(reason);
-    } catch (IllegalStateException e) {
-        throw new BusinessException(ErrorCode.INVALID_STATUS, e.getMessage());
-    }
-
-    return SalesOrderResponse.from(so);
-}
-
-// 학습 질문:
-// Q1. SHIPPED 상태가 아닌 수주를 complete() 시도하면 어디서 막히는가?
-//     A:
-// Q2. CANCELED 또는 COMPLETED 가 종료 상태인 이유는?
-//     A:
-// Q3. 권한 표(매니저/관리자/작성자) 를 도식으로 그릴 수 있는가?
-//     A:
+// 선택형 [W363] 수주 출고 시 재고 차감을 처리하는 올바른 업무 경계는?
+//    1. 서버에서 출고 상태 변경과 모든 라인 재고 차감을 같은 트랜잭션으로 묶는다
+//    2. 출고 상태만 먼저 커밋하고 재고 실패를 무시한다
+//    3. 브라우저 계산값을 재고로 그대로 저장한다
+//    4. 재고 부족이어도 항상 출고를 완료한다
+//    정답·해설: practice/workbook-questions.md#w363
+//    정답: 1번 · 현재 Service는 출고 상태·품목 잠금·재고 차감을 조정합니다. 한 라인 실패 시 부분 출고가 남지 않게 합니다.

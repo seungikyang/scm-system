@@ -1,135 +1,139 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/service/CategoryService.java
-// 목표: 카테고리 CRUD + 삭제 정책을 채우세요. PRD 2.5.3, TRD 3.7.3 참고.
-//
-// 주의: 24 폴더 안에 PartnerService 와 CategoryService 를 함께 두었습니다.
-//       Partner Service 와 패턴이 같아 비교하며 학습하기 좋습니다.
+// 거래처 Service / 카테고리 Service — CRUD + 정책 (PRD 2.5.2, 2.5.3, TRD 3.7.2, 3.7.3) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=24
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-@Service
-@RequiredArgsConstructor
-public class CategoryService {
+// 선택형 [W099] 사업자번호 exists 검사와 unique 제약을 함께 두는 이유는?
+//    1. 사전 안내와 동시 등록의 최종 무결성을 각각 보장한다
+//    2. exists 검사로 모든 경쟁 상태가 제거된다
+//    3. unique 제약으로 화면 입력 형식까지 검증한다
+//    4. 중복 번호를 일부러 두 번 저장한다
+//    정답·해설: practice/workbook-questions.md#w099
+//    정답: 1번 · 사전 조회 이후 다른 트랜잭션이 저장할 수 있으므로 DB 제약이 필요합니다.
 
-    private final CategoryRepository categoryRepository;
-    private final ItemRepository itemRepository;
+// 선택형 [W100] 이력이 있는 거래처를 삭제 요청할 때 현재 정책은?
+//    1. 주문 라인까지 모두 삭제한다
+//    2. 사용자 계정 비밀번호를 초기화한다
+//    3. 항상 DB 테이블 전체를 삭제한다
+//    4. INACTIVE로 바꿔 이력을 보존한다
+//    정답·해설: practice/workbook-questions.md#w100
+//    정답: 4번 · 참조 구현의 거래처 삭제는 비활성화 정책입니다.
 
-    // ============ 등록 ============
-    @Transactional
-    public CategoryResponse create(CategoryCreateRequest request) {
-        String name = request.getName().trim();
+// 선택형 [W101] 거래처 유형 변경 시 올바른 판단은?
+//    1. 과거 이력과 신규 주문 허용 정책을 명시해 일관되게 검증한다
+//    2. 과거 발주를 모두 수주로 자동 변환한다
+//    3. 모든 유형 변경을 JPA가 자동으로 허가·거부한다
+//    4. HTTP status만 바꾸면 이력 무결성이 보장된다
+//    정답·해설: practice/workbook-questions.md#w101
+//    정답: 1번 · 과거 참조를 보존하고 변경 뒤 신규 사용 정책을 구분해야 합니다.
 
-        // TODO 01: 카테고리명 중복 검사. 어떤 ErrorCode?
-        if (categoryRepository.existsByName(name)) {
-            throw new BusinessException(ErrorCode.____);
-        }
+// 선택형 [W102] 이름·사업자번호·유형 검색 조건이 늘면 적절한 방법은?
+//    1. 모든 결과를 브라우저에서만 필터한다
+//    2. 검색할 때 DB를 초기화한다
+//    3. 정적 비밀번호를 검색어로 쓴다
+//    4. 조건별 Specification을 구성해 필요한 조건을 결합한다
+//    정답·해설: practice/workbook-questions.md#w102
+//    정답: 4번 · Repository 검색 추상화에 선택 조건을 모아 조합 폭증을 줄입니다.
 
-        Category category = Category.create(name, request.getDescription());
-        return CategoryResponse.from(categoryRepository.save(category));
-    }
+// 선택형 [W103] 카테고리명 중복 검사의 다층 조합은?
+//    1. 화면 label만 표시
+//    2. DB 연결 포트를 비교
+//    3. Service existsByName과 DB unique
+//    4. 엔티티 createdAt만 비교
+//    정답·해설: practice/workbook-questions.md#w103
+//    정답: 3번 · 사용자 오류 안내와 경쟁 요청의 무결성을 서로 보완합니다.
 
-    // ============ 목록 ============
-    @Transactional(readOnly = true)
-    public List<CategoryResponse> list() {
-        // TODO 02: 카테고리는 수가 적어 MVP 에서는 전체 조회로 충분합니다.
-        //          하지만 1000개를 넘어가면 어떤 대안을 두어야 할까요?
-        // A:
-        return categoryRepository.findAll(Sort.by("name").____())
-            .stream()
-            .map(CategoryResponse::from)
-            .toList();
-    }
+// 선택형 [W104] 소속 품목이 있는 카테고리 삭제의 현재 정책은?
+//    1. 품목을 함께 무조건 삭제한다
+//    2. CATEGORY_HAS_ITEMS로 거부한다
+//    3. 품목 카테고리를 존재하지 않는 ID로 바꾼다
+//    4. 모든 품목을 단종 상태로 자동 변경한다
+//    정답·해설: practice/workbook-questions.md#w104
+//    정답: 2번 · 현재 구현은 소속 품목이 있으면 삭제를 차단합니다.
 
-    // ============ 상세 (소속 품목 포함) ============
-    @Transactional(readOnly = true)
-    public CategoryDetailResponse getDetail(Long categoryId, Pageable itemPageable) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.____));
+// 선택형 [W105] 카테고리 상세의 품목 조회에서 N+1을 줄이는 방법은?
+//    1. LAZY만 붙이면 항상 한 쿼리다
+//    2. 각 품목마다 카테고리를 다시 조회한다
+//    3. DTO로 바꾸기만 하면 모든 SQL이 사라진다
+//    4. 필요한 관계를 fetch join·EntityGraph 또는 별도 일괄 조회로 가져온다
+//    정답·해설: practice/workbook-questions.md#w105
+//    정답: 4번 · 조회 계획을 의도적으로 정해야 하며 컬렉션 fetch와 페이징의 제약도 고려합니다.
 
-        // TODO 03: 소속 품목은 N+1 을 피하기 위해 어떻게 조회할까?
-        //          (a) Category 양방향 매핑 + fetch join
-        //          (b) 별도 Repository 쿼리 ← MVP 권장
-        Page<ItemResponse> items = itemRepository.findByCategory_Id(categoryId, itemPageable)
-            .map(ItemResponse::from);
+// 선택형 [W106] 소수 카테고리 전체 조회가 대규모에서 달라져야 하는 이유는?
+//    1. 1000개가 되면 모든 데이터가 자동 삭제된다
+//    2. 응답 크기·메모리·지연이 늘어 페이징을 고려해야 한다
+//    3. List 반환은 Java에서 항상 금지되어 있다
+//    4. 전체 조회면 DB 연결이 필요 없다
+//    정답·해설: practice/workbook-questions.md#w106
+//    정답: 2번 · 데이터 규모와 화면 요구에 맞춰 전체 조회 또는 페이지 계약을 선택합니다.
 
-        return new CategoryDetailResponse(
-            category.getId(),
-            category.getName(),
-            category.getDescription(),
-            items
-        );
-    }
+// 선택형 [W111] 카테고리 상세에 모든 품목을 중첩할 때 고려할 것은?
+//    1. 응답 크기와 N+1, 필요하면 별도 품목 페이징이다
+//    2. JSON이면 조회 비용이 없다
+//    3. nested DTO면 SQL이 자동 최적화된다
+//    4. 모든 품목의 비밀번호를 포함한다
+//    정답·해설: practice/workbook-questions.md#w111
+//    정답: 1번 · 응답 구조와 조회 계획은 함께 검토해야 합니다.
 
-    // ============ 수정 ============
-    @Transactional
-    public CategoryResponse update(Long categoryId, CategoryUpdateRequest request) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+// 선택형 [W112] CATEGORY_HAS_ITEMS의 현재 HTTP 응답은?
+//    1. 200 OK
+//    2. 400 Bad Request
+//    3. 401 Unauthorized
+//    4. 500 Internal Server Error
+//    정답·해설: practice/workbook-questions.md#w112
+//    정답: 2번 · 현재 ErrorCode는 업무 삭제 금지 규칙을 400으로 응답합니다.
 
-        // TODO 04: 이름이 바뀌었을 때만 중복 재검사.
-        if (request.getName() != null
-                && !request.getName().equals(category.getName())
-                && categoryRepository.existsByName(request.getName())) {
-            throw new BusinessException(ErrorCode.____);
-        }
+// 선택형 [W246] 카테고리명·품목코드·사업자번호 unique의 공통 의미는?
+//    1. 업무 식별 값의 중복을 DB에서 차단한다
+//    2. 사용자 권한을 자동 부여한다
+//    3. 모든 참조 데이터를 물리 삭제한다
+//    4. 모든 값에 자동으로 비밀번호 해시를 만든다
+//    정답·해설: practice/workbook-questions.md#w246
+//    정답: 1번 · 각 식별자의 의미는 다르지만 최종 중복 방어라는 DB 제약의 역할은 같습니다.
 
-        category.update(request.getName(), request.getDescription());
-        return CategoryResponse.from(category);
-    }
+// 선택형 [W248] INACTIVE 거래처의 신규 발주·수주 사용을 어디에서 막는가?
+//    1. CSS에서 버튼 색상만 변경
+//    2. 거래처를 조회한 Service 업무 검증
+//    3. 브라우저 주소 표시줄
+//    4. README의 제목
+//    정답·해설: practice/workbook-questions.md#w248
+//    정답: 2번 · 화면 우회를 막기 위해 서버 업무 계층에서 거래처 상태를 검사합니다.
 
-    // ============ 삭제 (소속 품목 정책) ============
-    @Transactional
-    public void delete(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+// 선택형 [W348] 품목이 있는 카테고리를 거절 또는 기본 카테고리로 이관할 때의 비교는?
+//    1. 이관하면 모든 품목의 과거 주문을 삭제해야 한다
+//    2. 거절 정책은 외래키와 무관하다
+//    3. 거절은 현재 참조 보호, 이관은 대상·일괄 변경·트랜잭션 정책이 필요하다
+//    4. 두 방법 모두 권한 검사가 필요 없다
+//    정답·해설: practice/workbook-questions.md#w348
+//    정답: 3번 · 현재는 삭제 거절이며 이관은 별도 업무 정책·구현·테스트가 필요한 대안입니다.
 
-        // TODO 05: 소속 품목이 있으면 어떤 에러?
-        long itemCount = itemRepository.countByCategory_Id(categoryId);
-        if (itemCount > 0) {
-            throw new BusinessException(ErrorCode.____);
-        }
+// 선택형 [W349] 카테고리 목록 캐시를 사용할 때 필요한 무효화 시점은?
+//    1. 조회 때 비밀번호 해시를 캐시 키로 공개한다
+//    2. 등록·수정·삭제 성공 후 해당 조회 캐시를 갱신하거나 제거한다
+//    3. 캐시가 있으면 DB 변경은 언제나 즉시 반영된다
+//    4. 테이블을 삭제해 캐시를 비운다
+//    정답·해설: practice/workbook-questions.md#w349
+//    정답: 2번 · 트랜잭션 성공 시점과 캐시 갱신·만료·일관성 요구를 함께 설계합니다.
 
-        categoryRepository.delete(category);
-    }
-}
+// 선택형 [W350] 과거 고객 이력 때문에 BOTH→SUPPLIER를 금지하는 정책이라면?
+//    1. 브라우저가 드롭다운만 숨기면 충분하다
+//    2. JPA enum 이름이 모든 이력을 자동 검증한다
+//    3. DB 포트가 같으면 무조건 허용한다
+//    4. Service가 관련 이력과 변경 정책을 검사한다
+//    정답·해설: practice/workbook-questions.md#w350
+//    정답: 4번 · 이 문제는 명시한 변경 금지 정책을 전제로 하며 현재 참조 구현의 정책과 구분합니다.
 
-// ===== DTO =====
-@Getter @NoArgsConstructor
-public class CategoryCreateRequest {
-    @NotBlank @Size(max = 100)
-    private String name;
-    @Size(max = 255)
-    private String description;
-}
+// 선택형 [W390] 이미 사용 중인 이름으로 카테고리를 등록하려 할 때 업무 오류 코드는?
+//    1. CATEGORY_NOT_FOUND
+//    2. CATEGORY_HAS_ITEMS
+//    3. PARTNER_TYPE_MISMATCH
+//    4. DUPLICATE_CATEGORY_NAME
+//    정답·해설: practice/workbook-questions.md#w390
+//    정답: 4번 · 이름 중복은 DUPLICATE_CATEGORY_NAME입니다. 미존재와 참조 중인 카테고리의 삭제 금지는 서로 다른 오류입니다.
 
-@Getter @NoArgsConstructor
-public class CategoryUpdateRequest {
-    @Size(max = 100)
-    private String name;
-    @Size(max = 255)
-    private String description;
-}
-
-public record CategoryResponse(
-        Long categoryId,
-        String name,
-        String description
-) {
-    public static CategoryResponse from(Category c) {
-        return new CategoryResponse(c.getId(), c.getName(), c.getDescription());
-    }
-}
-
-public record CategoryDetailResponse(
-        Long categoryId,
-        String name,
-        String description,
-        Page<ItemResponse> items
-) {}
-
-// 학습 질문:
-// Q1. 카테고리 삭제를 거부하는 정책 vs 품목을 "기본 카테고리" 로 이관하는 정책의 트레이드오프는?
-//     A:
-// Q2. 카테고리명 unique 를 DB unique + Service exists 둘 다 두는 이유는?
-//     A:
-// Q3. 카테고리 상세에 소속 품목까지 넣으면 응답 페이로드가 커진다. 어떻게 분리할까?
-//     A:
-// Q4. 카테고리 목록 응답을 캐싱한다면 어떤 무효화(invalidation) 전략이 필요한가?
-//     A:
+// 선택형 [W391] 카테고리 상세에 소속 품목 페이지를 포함하는 starter에서 적절한 조회 방식은?
+//    1. 모든 카테고리의 전체 품목을 읽고 화면에서 자른다
+//    2. 카테고리 ID로 별도 품목 페이지를 조회하고 DTO로 변환한다
+//    3. 각 품목마다 같은 카테고리를 다시 조회한다
+//    4. 컬렉션 fetch join이면 페이징 위험이 모두 사라진다고 가정한다
+//    정답·해설: practice/workbook-questions.md#w391
+//    정답: 2번 · 해당 starter는 findByCategory_Id(categoryId, pageable) 결과를 DTO로 매핑합니다. 현재 상세 API의 계약과 소속 품목을 포함하는 대안 연습을 구분합니다.

@@ -1,80 +1,67 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/controller/ItemController.java
-// 목표: 품목 REST API 와 권한/검증을 채우세요. TRD 3.7.4 참고.
+// ItemController (TRD 3.7.4) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=18
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// TODO 01: REST 컨트롤러임을 표시.
-@____
-@RequestMapping("/api/items")
-@RequiredArgsConstructor
-public class ItemController {
+// 선택형 [W020] 단종 시 삭제 대신 DISCONTINUED를 사용하는 이유는?
+//    1. 신규 주문에 단종 품목을 강제로 추가하기 위해서다
+//    2. 과거 주문 라인의 참조와 거래 이력을 보존하기 위해서다
+//    3. 재고를 무조건 0으로 만들기 위해서다
+//    4. DB 백업 없이 테이블을 초기화하기 위해서다
+//    정답·해설: practice/workbook-questions.md#w020
+//    정답: 2번 · 단종은 신규 사용 제한이며 과거 데이터를 파괴하는 삭제와 다릅니다.
 
-    private final ItemService itemService;
+// 선택형 [W077] 품목 REST API의 기본 HTTP 메서드 조합은?
+//    1. 조회 POST·등록 GET·수정 TRACE
+//    2. 모든 기능을 GET만으로 처리
+//    3. 모든 기능을 OPTIONS만으로 처리
+//    4. 조회 GET·등록 POST·전체 수정 PUT
+//    정답·해설: practice/workbook-questions.md#w077
+//    정답: 4번 · 리소스 경로와 행위에 맞는 HTTP 계약을 정합니다. 부분 수정은 PATCH를 고려합니다.
 
-    // ============ 등록 (ADMIN) ============
-    // TODO 02: 메서드/경로/권한을 채우세요.
-    @____
-    @PreAuthorize("hasRole('____')")
-    public ResponseEntity<ItemResponse> create(@RequestBody @____ ItemCreateRequest request) {
-        ItemResponse body = itemService.register(request);
-        return ResponseEntity.status(HttpStatus.____).body(body);
-    }
+// 선택형 [W078] PathVariable·RequestBody·RequestParam의 입력 위치는?
+//    1. 경로 값·요청 본문·쿼리/폼 파라미터
+//    2. 비밀번호·CSS·DB 스키마
+//    3. 모두 HTTP 응답 본문
+//    4. 모두 서버 환경 변수
+//    정답·해설: practice/workbook-questions.md#w078
+//    정답: 1번 · 서로 다른 요청 데이터 위치를 컨트롤러 파라미터에 바인딩합니다.
 
-    // ============ 목록 / 검색 ============
-    @GetMapping
-    public Page<ItemResponse> search(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Long categoryId,
-            // TODO 03: 기본 페이지 크기와 정렬을 지정.
-            @____(size = 20, sort = "id") Pageable pageable
-    ) {
-        return itemService.search(keyword, categoryId, pageable);
-    }
+// 선택형 [W079] 관리자 전용 품목 변경을 보호하는 방법은?
+//    1. URL에 admin을 쓰면 자동으로 보호된다
+//    2. HTML 버튼을 숨기기만 한다
+//    3. 인증된 사용자의 ADMIN 역할을 서버 가드에서 검사한다
+//    4. 품목 코드에 ADMIN을 붙인다
+//    정답·해설: practice/workbook-questions.md#w079
+//    정답: 3번 · 경로 이름과 UI만으로는 권한을 보장할 수 없습니다.
 
-    // ============ 상세 ============
-    @GetMapping("/{itemId}")
-    public ItemResponse get(@PathVariable Long itemId) {
-        return itemService.getDetail(itemId);
-    }
+// 선택형 [W196] PreAuthorize 사용을 위해 필요한 대표 설정은?
+//    1. EnableJpaAuditing만
+//    2. EntityScan만
+//    3. NotBlank만
+//    4. EnableMethodSecurity
+//    정답·해설: practice/workbook-questions.md#w196
+//    정답: 4번 · 어노테이션을 붙였다는 사실만으로 메서드 보안이 활성화되지는 않습니다.
 
-    // ============ 수정 (ADMIN) ============
-    @PutMapping("/{itemId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ItemResponse update(@PathVariable Long itemId,
-                               @RequestBody @Valid ItemUpdateRequest request) {
-        return itemService.update(itemId, request);
-    }
+// 선택형 [W250] 품목 상세 경로 /api/items/{id}의 PathVariable이 나타내는 것은?
+//    1. 로그인 사용자 비밀번호
+//    2. HTTP 상태 코드
+//    3. DB 서버 포트
+//    4. 조회할 품목 ID
+//    정답·해설: practice/workbook-questions.md#w250
+//    정답: 4번 · 인증·역할 확인과 별도로 조회 대상 식별자를 해석합니다.
 
-    // ============ 단종 처리 (ADMIN) ============
-    // TODO 04: 상태 전이를 동사형 경로로 표현.
-    @____("/{itemId}/discontinue")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ItemResponse discontinue(@PathVariable Long itemId) {
-        return itemService.discontinue(itemId);
-    }
-}
+// 선택형 [W336] 모든 수정 필드가 nullable일 때 필요한 입력 정책은?
+//    1. null이면 항상 DB 전체를 삭제한다
+//    2. 필드 누락과 명시적 null·삭제 의도를 구분하고 수정 의미를 정한다
+//    3. 모든 입력 누락을 무조건 200으로 처리한다
+//    4. nullable이면 업무 검증이 필요 없다
+//    정답·해설: practice/workbook-questions.md#w336
+//    정답: 2번 · 전체 교체와 부분 변경 계약을 구분하고 필요한 값의 검증을 명시합니다.
 
-// ===== Request DTO =====
-// 17-dto-validation 의 ItemCreateRequest 와 짝이 되는 수정용 DTO.
-public record ItemUpdateRequest(
-        // TODO 05: 수정 요청은 부분 갱신 허용 — null 이면 변경 안 함.
-        //          그래서 @NotBlank 가 아닌 @Size 로 길이만 검증.
-        @____(max = 150) String name,
-        // 카테고리 변경은 선택적이므로 null 허용.
-        Long categoryId,
-        @Size(max = 20) String unit,
-        // TODO 06: 단가 변경 시 0 이상 검증.
-        @____(value = "0.00") BigDecimal unitPrice,
-        // TODO 07: 안전재고 변경 시 음수 금지.
-        @____(value = 0) Integer safetyStock
-) {}
-
-// 학습 질문:
-// Q1. @PathVariable, @RequestBody, @RequestParam 의 차이는?
-//     A:
-// Q2. @PreAuthorize 를 쓰려면 어떤 설정이 필요한가?
-//     A:
-// Q3. 단종 처리 경로를 DELETE 가 아니라 PATCH .../discontinue 로 표현한 이유는?
-//     A:
-// Q4. ItemUpdateRequest 의 모든 필드가 nullable 일 때 어떤 위험이 있는가?
-//     A:
-// Q5. PUT(전체 갱신) 시멘틱과 PATCH(부분 갱신) 시멘틱 중 이 DTO 는 어느 쪽에 가까운가?
-//     A:
+// 선택형 [W337] 전달된 선택 필드만 바꾸는 수정 DTO는 어떤 계약에 가까운가?
+//    1. GET 조회
+//    2. PATCH 부분 변경
+//    3. HEAD 조회
+//    4. TRACE 진단
+//    정답·해설: practice/workbook-questions.md#w337
+//    정답: 2번 · 이 문제는 선택 필드만 변경하는 정책을 전제로 하며 DTO의 nullable 여부만으로 PUT·PATCH가 결정되지는 않습니다.

@@ -1,17 +1,29 @@
 # MySQL 프로필 (SPRING_PROFILES_ACTIVE=mysql).
 # docker-compose 의 db 서비스 또는 외부 MySQL 에 연결한다.
 # 기본 application.yml(H2) 위에 datasource/jpa 일부를 덮어쓴다.
+# 프로필은 실행 환경별 설정 묶음입니다. mysql을 선택하면 MySQL 서버에 자료를 보관합니다.
+# Flyway는 V1, V2처럼 번호가 붙은 SQL을 순서대로 적용하고 적용 기록을 남기는 도구입니다.
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:scm}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    # sslMode는 DB 연결을 암호화할지 정합니다. 기본값 PREFERRED는 서버가 지원하면 암호화하고,
+    # 지원하지 않는 로컬 연습용 DB에는 그대로 연결합니다. 다른 서버의 실제 DB에 연결할 때는
+    # DB_SSL_MODE=VERIFY_IDENTITY, DB_ALLOW_PUBLIC_KEY_RETRIEVAL=false로 인증서 확인까지 강제하세요.
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:scm}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&sslMode=${DB_SSL_MODE:PREFERRED}&allowPublicKeyRetrieval=${DB_ALLOW_PUBLIC_KEY_RETRIEVAL:true}
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USER:scm}
     password: ${DB_PASSWORD:scm}
   jpa:
     hibernate:
-      ddl-auto: update        # MySQL 영속 DB: 스키마 유지하며 갱신 (시드는 최초 1회)
+      ddl-auto: validate      # Flyway가 스키마를 변경하고 JPA는 매핑 계약만 검증한다
     properties:
       hibernate.format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/mysql
+    validate-migration-naming: true
   h2:
     console:
       enabled: false          # MySQL 사용 시 H2 콘솔 비활성
+scm:
+  seed:
+    enabled: ${SCM_SEED_ENABLED:false} # 운영형 MySQL 프로필은 기본 계정 자동 생성을 끈다

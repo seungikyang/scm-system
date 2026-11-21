@@ -1,0 +1,16 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.76.1"
+  },
+  "ReportID": "01a17541-12d1-7d9c-a135-c5e9282a9ec6",
+  "CreatedAt": "2026-10-26T07:49:21.361893+09:00",
+  "ArtifactName": "build/libs",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "Loose File License(s)",
+      "Class": "license-file"
+    }
+  ]
+}

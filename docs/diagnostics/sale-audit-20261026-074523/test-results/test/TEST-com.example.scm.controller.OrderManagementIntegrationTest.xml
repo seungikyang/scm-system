@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scm.controller.OrderManagementIntegrationTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:45.717Z" hostname="yangseouui-MacBookPro.local" time="0.148">
+  <properties/>
+  <testcase name="combinedFiltersIncludeDateBoundariesAndPreservePagination()" classname="com.example.scm.controller.OrderManagementIntegrationTest" time="0.053"/>
+  <testcase name="permissionsAndInvalidDatesProduceConsistentErrors()" classname="com.example.scm.controller.OrderManagementIntegrationTest" time="0.021"/>
+  <testcase name="managerFindsOtherWritersShippedOrdersAndCompletesThem()" classname="com.example.scm.controller.OrderManagementIntegrationTest" time="0.031"/>
+  <testcase name="emptyStatisticsDefaultToThisMonthAndHideFromOrdinaryUsers()" classname="com.example.scm.controller.OrderManagementIntegrationTest" time="0.021"/>
+  <testcase name="statisticsSumHeadersOnceIncludeEmptyStatusesAndUseInclusiveDates()" classname="com.example.scm.controller.OrderManagementIntegrationTest" time="0.018"/>
+  <system-out><![CDATA[2026-10-26T07:45:45.718+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.OrderManagementIntegrationTest]: OrderManagementIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:45.718+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.OrderManagementIntegrationTest
+2026-10-26T07:45:45.719+09:00  INFO 48339 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.scm.controller.OrderManagementIntegrationTest]: OrderManagementIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T07:45:45.719+09:00  INFO 48339 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.scm.ScmApplication for test class com.example.scm.controller.OrderManagementIntegrationTest
+2026-10-26T07:45:45.867+09:00  INFO 48339 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-26T07:45:45.868+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-10-26T07:45:45.868+09:00  INFO 48339 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

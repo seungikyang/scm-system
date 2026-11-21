@@ -1,128 +1,67 @@
-// 실제 구현 위치 예: src/main/java/com/example/scm/dto/*Response.java
-// 목표: Entity → DTO 정적 팩토리와 헤더-라인 nested 매핑을 채우세요. TRD 3.16.3 참고.
+// 응답 DTO 매핑 패턴 (TRD 3.16.3) · 4지 선다
+// 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=32
+// 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-// ===== Item =====
-public record ItemResponse(
-        Long itemId,
-        String itemCode,
-        String name,
-        Long categoryId,
-        String categoryName,
-        String unit,
-        BigDecimal unitPrice,
-        Integer safetyStock,
-        String status
-) {
-    // TODO 01: 정적 팩토리.
-    public static ItemResponse ____(Item item) {
-        return new ItemResponse(
-            item.getId(),
-            item.getItemCode(),
-            item.getName(),
-            item.getCategory().getId(),
-            item.getCategory().getName(),
-            item.getUnit(),
-            item.getUnitPrice(),
-            item.getSafetyStock(),
-            item.getStatus().name()
-        );
-    }
-}
+// 선택형 [W137] ItemResponse.from(item) 정적 팩토리의 역할은?
+//    1. 엔티티에서 공개할 응답 필드를 일관되게 변환한다
+//    2. 새 엔티티를 항상 DB에 저장한다
+//    3. 사용자 비밀번호를 복호화한다
+//    4. 모든 페이지를 삭제한다
+//    정답·해설: practice/workbook-questions.md#w137
+//    정답: 1번 · DTO 생성·매핑 책임을 한곳에 모으는 패턴입니다.
 
-// ===== Partner =====
-public record PartnerResponse(
-        Long partnerId,
-        String name,
-        String businessNumber,
-        String partnerType,
-        String status
-) {
-    public static PartnerResponse from(Partner p) {
-        return new PartnerResponse(
-            p.getId(), p.getName(), p.getBusinessNumber(),
-            p.getPartnerType().name(), p.getStatus().name()
-        );
-    }
-}
+// 선택형 [W138] Page.map이 보존하는 정보는?
+//    1. 평문 비밀번호
+//    2. 모든 서버 세션
+//    3. 페이지 메타 정보와 변환된 content
+//    4. SQL 수정 권한
+//    정답·해설: practice/workbook-questions.md#w138
+//    정답: 3번 · 전체 개수와 페이지 수를 잃지 않고 Entity를 DTO로 바꿉니다.
 
-// ===== Purchase Order (헤더 + 라인) =====
-public record PurchaseOrderResponse(
-        Long purchaseOrderId,
-        String orderNumber,
-        Long partnerId,
-        String partnerName,
-        Long writerId,
-        Long approverId,
-        LocalDate orderDate,
-        LocalDate dueDate,
-        BigDecimal totalAmount,
-        String status,
-        String rejectReason,
-        LocalDateTime createdAt,
-        LocalDateTime approvedAt,
-        LocalDateTime receivedAt,
-        // TODO 02: 라인 nested 목록.
-        List<____> lines
-) {
-    public static PurchaseOrderResponse from(PurchaseOrder po) {
-        return new PurchaseOrderResponse(
-            po.getId(),
-            po.getOrderNumber(),
-            po.getPartner().getId(),
-            po.getPartner().getName(),
-            po.getWriterId(),
-            po.getApproverId(),
-            po.getOrderDate(),
-            po.getDueDate(),
-            po.getTotalAmount(),
-            po.getStatus().name(),
-            po.getRejectReason(),
-            po.getCreatedAt(),
-            po.getApprovedAt(),
-            po.getReceivedAt(),
-            // TODO 03: 라인을 DTO 리스트로 변환.
-            po.getLines().stream().map(PurchaseOrderLineResponse::from).____()
-        );
-    }
-}
+// 선택형 [W139] 주문 헤더-라인 응답 DTO의 자연스러운 구조는?
+//    1. 비밀번호 배열 안에 헤더를 둔다
+//    2. 각 라인이 모든 사용자 엔티티를 포함한다
+//    3. 모든 데이터를 CSV 문자열 한 글자로 바꾼다
+//    4. 헤더 DTO 안에 라인 DTO 목록을 둔다
+//    정답·해설: practice/workbook-questions.md#w139
+//    정답: 4번 · 응답 계약에 필요한 헤더·라인 필드를 명시해 중첩 구조로 구성합니다.
 
-public record PurchaseOrderLineResponse(
-        Long lineId,
-        Long itemId,
-        String itemCode,
-        String itemName,
-        Integer quantity,
-        BigDecimal unitPrice,
-        BigDecimal lineAmount
-) {
-    public static PurchaseOrderLineResponse from(PurchaseOrderLine l) {
-        return new PurchaseOrderLineResponse(
-            l.getId(),
-            l.getItem().getId(),
-            l.getItem().getItemCode(),
-            l.getItem().getName(),
-            l.getQuantity(),
-            l.getUnitPrice(),
-            l.getLineAmount()
-        );
-    }
-}
+// 선택형 [W140] Entity와 DTO 의존 방향의 올바른 원칙은?
+//    1. Entity가 Controller와 Session을 직접 호출한다
+//    2. Entity가 HTTP 응답 DTO에 의존하지 않게 한다
+//    3. DTO 사용 시 Entity도 반드시 DTO를 import한다
+//    4. Repository가 HTML 템플릿을 생성한다
+//    정답·해설: practice/workbook-questions.md#w140
+//    정답: 2번 · 도메인 모델은 외부 표현 계약의 변경으로부터 독립시키는 것이 좋습니다.
 
-// ===== Sales Order (헤더 + 라인) =====
-// (PurchaseOrderResponse 와 동일한 패턴으로 작성)
+// 선택형 [W141] record DTO와 일반 class DTO의 차이는?
+//    1. record는 JPA 연관관계를 자동 저장한다
+//    2. class는 필드를 가질 수 없다
+//    3. record면 내부 컬렉션도 항상 깊은 불변이다
+//    4. record는 구성 요소·접근자·값 동등성 등을 간결하게 선언한다
+//    정답·해설: practice/workbook-questions.md#w141
+//    정답: 4번 · record의 참조 재대입 제한과 참조하는 객체의 변경 가능성은 별개입니다.
 
-// ===== Page 변환 패턴 =====
-class PagingPattern {
-    public Page<ItemResponse> convert(Page<Item> page) {
-        // TODO 04: Page 의 메타 정보(totalElements 등) 를 유지하며 변환하려면?
-        return page.____(ItemResponse::from);
-    }
-}
+// 선택형 [W142] 매핑 라이브러리를 도입할 적절한 기준은?
+//    1. 필드가 하나여도 무조건 도입해야 한다
+//    2. 반복 매핑의 규모·복잡도와 디버깅·의존 비용을 비교한다
+//    3. 도입하면 모든 업무 검증이 자동 생긴다
+//    4. 매핑 도구가 인증·인가를 대신한다
+//    정답·해설: practice/workbook-questions.md#w142
+//    정답: 2번 · 단순 팩토리로 충분한지, 도구가 유지 비용을 줄이는지 판단합니다.
 
-// 학습 질문:
-// Q1. record DTO 와 class + Lombok DTO 의 트레이드오프는?
-//     A:
-// Q2. Entity → DTO 변환을 Service 가 아닌 DTO 의 정적 팩토리에 둔 이유는?
-//     A:
-// Q3. MapStruct / ModelMapper 를 도입할 시점은 언제일까?
-//     A:
+// 선택형 [W177] 응답 DTO에서 제외해야 할 정보는?
+//    1. 비밀번호 해시·내부 토큰 등 민감정보
+//    2. 공개 품목 이름
+//    3. 공개 카테고리 이름
+//    4. 공지 제목
+//    정답·해설: practice/workbook-questions.md#w177
+//    정답: 1번 · 평문뿐 아니라 비밀번호 해시와 내부 인증 자료도 응답 계약에서 제외합니다.
+
+// 선택형 [W247] 헤더와 라인 DTO를 함께 반환할 때의 장점은?
+//    1. 하나의 응답이면 반드시 SQL도 한 번만 실행된다
+//    2. nested 구조면 비밀번호를 포함해도 안전하다
+//    3. 서비스 트랜잭션이 필요 없어지게 된다
+//    4. 화면이 한 상세 응답에서 필요한 구성 정보를 얻는다
+//    정답·해설: practice/workbook-questions.md#w247
+//    정답: 4번 · HTTP 요청 횟수와 SQL 조회 횟수는 다릅니다. 응답 구조와 조회 계획을 따로 설계합니다.

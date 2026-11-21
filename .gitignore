@@ -3,6 +3,8 @@ build/
 .gradle/
 out/
 bin/
+output/
+.playwright-cli/
 
 # ===== IDE / Editor =====
 .idea/
@@ -23,6 +25,8 @@ Thumbs.db
 
 # ===== Claude 하네스 (로컬 개발 도구 — push 제외) =====
 .claude/
+.omc/
+build-report.json
 
 # ===== SDLC 중간 산출물 (정제판은 docs/ 에 있음) =====
 _workspace/
@@ -31,3 +35,10 @@ _workspace_prev/
 # ===== 임시·진단 스크립트 / 출력물 (history 추출 등) =====
 _*.py
 _*.txt
+
+# ===== 개인 학습 워크북 풀이 공간 =====
+practice/workspace/
+
+# ===== 저장소에 만들 수 있는 일반 임시 디렉터리 =====
+tmp/
+temp/

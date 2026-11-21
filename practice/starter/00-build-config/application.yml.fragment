@@ -1,47 +1,155 @@
-# 실제 파일 위치 예: src/main/resources/application.yml
-# 목표: 로컬 개발용 H2 + JPA 설정을 채우세요. TRD 3.1, 3.2 참고.
+# 빌드와 애플리케이션 설정 (TRD 3.1, 3.2) · 4지 선다
+# 브라우저에서 풀기: ../../sw-quiz/index.html?bank=workbook&module=00
+# 각 문제에서 1~4번 중 하나를 고릅니다. 정답·해설 보기: practice/answers.md
 
-spring:
-  datasource:
-    # TODO 01: H2 인메모리 모드 + 테스트 모드 끄기 설정을 채우세요.
-    url: jdbc:h2:mem:scmdb;MODE=____;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+# 선택형 [W001] Spring Web·JPA·Validation·Thymeleaf·H2의 역할 조합은?
+#    1. HTTP 처리·영속성·입력 검증·서버 HTML·DB
+#    2. 모두 비밀번호 암호화 전용이다
+#    3. JPA는 HTML, Thymeleaf는 DB를 담당한다
+#    4. H2는 HTTP 라우팅 도구다
+#    정답·해설: practice/workbook-questions.md#w001
+#    정답: 1번 · 각 의존성은 요청 처리부터 저장과 화면 생성까지 서로 다른 책임을 담당합니다.
 
-  h2:
-    console:
-      # TODO 02: 로컬에서 http://localhost:8080/h2-console 로 접속하려면?
-      enabled: ____
-      path: /h2-console
+# 선택형 [W002] 현재 프로젝트의 Java와 Jakarta API 사용 방식은?
+#    1. Java 8과 javax.persistence만 사용한다
+#    2. Java 17 대상 컴파일과 jakarta 패키지를 사용한다
+#    3. JavaScript로 Java 소스를 컴파일한다
+#    4. JDK 없이 javac을 직접 실행한다
+#    정답·해설: practice/workbook-questions.md#w002
+#    정답: 2번 · 정식 기준은 build.gradle이며 Servlet·Validation·Persistence에는 jakarta 이름 공간을 사용합니다.
 
-  jpa:
-    hibernate:
-      # TODO 03: 학습용: 시작할 때마다 스키마를 새로 만들고 종료 시 drop 하려면?
-      ddl-auto: ____
-    properties:
-      hibernate:
-        # TODO 04: 실행되는 SQL 을 보기 좋게 포맷하려면?
-        format_sql: ____
-    # TODO 05: 콘솔에 SQL 을 찍어 보려면?
-    show-sql: ____
-    # open-in-view 의 의미를 한 줄로 적어 보세요:
-    # A:
-    open-in-view: false
+# 선택형 [W003] MySQL 프로필에서 ddl-auto=validate의 의미는?
+#    1. 기동할 때 모든 데이터를 삭제한다
+#    2. 자동으로 누락된 컬럼을 추가한다
+#    3. Flyway 이력을 무시하고 테이블을 생성한다
+#    4. 스키마와 엔티티 매핑의 일치 여부를 검사한다
+#    정답·해설: practice/workbook-questions.md#w003
+#    정답: 4번 · 이 프로젝트의 MySQL 스키마 변경은 Flyway가 맡고 Hibernate는 validate로 확인합니다.
 
-server:
-  port: 8080
+# 선택형 [W004] 기본 H2 콘솔을 필요할 때만 켜는 방법은?
+#    1. 항상 공개하고 인증을 제거한다
+#    2. ddl-auto를 update로 바꾸면 콘솔이 켜진다
+#    3. H2_CONSOLE_ENABLED=true로 실행한다
+#    4. questions.js에서 콘솔 포트를 설정한다
+#    정답·해설: practice/workbook-questions.md#w004
+#    정답: 3번 · application.yml은 콘솔을 기본 비활성화하고 환경 변수로 활성화합니다.
 
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    # TODO 06: JPA 파라미터 바인딩 값을 보려면?
-    org.hibernate.orm.jdbc.bind: ____
+# 선택형 [W120] OSIV=false에서 LAZY 관계를 DTO로 변환할 위치는?
+#    1. 트랜잭션 안에서 필요한 관계를 로드해 Service에서 변환한다
+#    2. 브라우저가 JPA 프록시를 조회하게 한다
+#    3. 트랜잭션이 끝난 뒤 모든 관계를 처음 읽는다
+#    4. JSON 응답에 EntityManager를 넣는다
+#    정답·해설: practice/workbook-questions.md#w120
+#    정답: 1번 · 영속성 컨텍스트가 종료된 뒤의 지연 로딩을 피하도록 조회와 변환을 설계합니다.
 
-# 학습 질문:
-# Q1. ddl-auto 값 create / create-drop / update / validate / none 의 차이는?
-#     A:
-# Q2. 운영 환경에서 ddl-auto 로 안전한 값은?
-#     A:
-# Q3. open-in-view=false 로 두면 어떤 장점/단점이 있는가?
-#     A:
+# 선택형 [W323] ddl-auto 옵션의 의미 조합으로 올바른 것은?
+#    1. validate는 모든 테이블 삭제, none은 매번 생성
+#    2. update는 마이그레이션 이력과 롤백을 완전히 관리한다
+#    3. create-drop은 영속 운영 데이터 보존 전용이다
+#    4. create는 새 스키마 생성, create-drop은 종료 시 삭제, validate는 매핑 검사, none은 자동 DDL 없음
+#    정답·해설: practice/workbook-questions.md#w323
+#    정답: 4번 · update는 매핑에 맞춘 스키마 변경을 시도합니다. 현재 운영형 MySQL은 Flyway와 validate를 사용합니다.
+
+# 선택형 [W324] 현재 MySQL 프로필 실행에 필요한 DB 관련 의존성은?
+#    1. MySQL Connector/J와 Flyway MySQL 지원
+#    2. H2 드라이버만
+#    3. Thymeleaf만
+#    4. Mockito만
+#    정답·해설: practice/workbook-questions.md#w324
+#    정답: 1번 · 프로젝트는 MySQL JDBC 드라이버와 Flyway의 MySQL 모듈을 runtimeOnly로 선언합니다.
+
+# 선택형 [W325] 워크북에 의존성 버전을 따로 복사해 관리하지 않는 이유는?
+#    1. 버전이 있으면 JDK가 실행되지 않기 때문이다
+#    2. 루트 빌드·Wrapper 설정과 문서의 버전 불일치를 줄이기 위해서다
+#    3. 문서의 모든 버전이 항상 자동으로 변경되기 때문이다
+#    4. 라이브러리 업데이트가 검증을 필요로 하지 않기 때문이다
+#    정답·해설: practice/workbook-questions.md#w325
+#    정답: 2번 · 코드의 정식 설정을 기준으로 문서를 동기화하고 변경된 조합을 검증합니다.
+
+# 선택형 [W326] 현재 Boot 4 프로젝트의 JSON mapper와 MVC 테스트 의존성 조합은?
+#    1. javax.jackson과 spring-boot-starter-css
+#    2. mysql.mapper와 thymeleaf-test-only
+#    3. java.sql.ObjectMapper와 gradle-session
+#    4. tools.jackson.databind와 spring-boot-starter-webmvc-test
+#    정답·해설: practice/workbook-questions.md#w326
+#    정답: 4번 · 정식 소스 import와 build.gradle에서 실제 패키지·starter를 확인합니다.
+
+# 선택형 [W360] H2 콘솔을 활성화한 상태에서도 관리자 인증이 필요한 이유는?
+#    1. DB 조회·변경 기능이 데이터 노출·변조 경로가 될 수 있기 때문이다
+#    2. 콘솔은 정적 CSS만 제공하기 때문이다
+#    3. 콘솔 주소를 알면 누구나 운영 데이터를 바꿔야 하기 때문이다
+#    4. 콘솔이 비밀번호 해시를 자동으로 복원하기 때문이다
+#    정답·해설: practice/workbook-questions.md#w360
+#    정답: 1번 · 기본 비활성화와 활성화 시 서버 접근 통제를 함께 적용합니다.
+
+# 선택형 [W364] 학습용 설정에서 Hibernate SQL의 줄바꿈·들여쓰기를 활성화하는 값은?
+#    1. hibernate.format_sql: false
+#    2. server.port: 3306
+#    3. hibernate.format_sql: true
+#    4. spring.flyway.enabled: false
+#    정답·해설: practice/workbook-questions.md#w364
+#    정답: 3번 · format_sql은 SQL 표시 형식을 조절합니다. 출력 여부나 DB 스키마 변경 설정과는 구분합니다.
+
+# 선택형 [W365] 학습용 application.yml의 spring.jpa.show-sql 빈칸에 SQL 콘솔 출력을 켜는 값은?
+#    1. false
+#    2. validate
+#    3. true
+#    4. create-drop
+#    정답·해설: practice/workbook-questions.md#w365
+#    정답: 3번 · show-sql=true는 SQL 콘솔 출력을 켭니다. 로깅 프레임워크의 org.hibernate.SQL 설정과 구분하고 운영 로그 정책에 맞춰 사용합니다.
+
+# 선택형 [W366] Hibernate의 org.hibernate.orm.jdbc.bind에서 바인딩 값 상세 로그를 켜는 수준은?
+#    1. TRACE
+#    2. OFF
+#    3. ERROR
+#    4. WARN
+#    정답·해설: practice/workbook-questions.md#w366
+#    정답: 1번 · JDBC 파라미터 바인딩 상세 로그는 TRACE 수준으로 확인합니다. 실제 개인정보·비밀번호 등이 로그에 노출되지 않도록 학습 환경에서 필요한 범위만 사용합니다. 참조: https://docs.hibernate.org/orm/7.0/logging/logging.html
+
+# 선택형 [W367] 현재 Boot 4 빌드에서 서버의 MVC·REST 요청 처리를 위한 starter 이름은?
+#    1. spring-boot-starter-data-jpa
+#    2. spring-boot-starter-validation
+#    3. spring-boot-starter-thymeleaf
+#    4. spring-boot-starter-webmvc
+#    정답·해설: practice/workbook-questions.md#w367
+#    정답: 4번 · 루트 build.gradle은 Spring MVC 요청 처리에 spring-boot-starter-webmvc를 사용합니다.
+
+# 선택형 [W368] JPA·Hibernate와 Spring Data Repository를 사용하는 현재 빌드의 starter는?
+#    1. spring-boot-starter-validation
+#    2. spring-boot-starter-data-jpa
+#    3. spring-boot-starter-thymeleaf
+#    4. spring-boot-starter-security
+#    정답·해설: practice/workbook-questions.md#w368
+#    정답: 2번 · spring-boot-starter-data-jpa는 영속성 구현과 Spring Data JPA 사용을 위한 의존성입니다.
+
+# 선택형 [W369] 현재 빌드에서 jakarta.validation 기반 입력 검증을 제공하는 starter는?
+#    1. spring-boot-starter-thymeleaf
+#    2. spring-boot-starter-security
+#    3. spring-boot-starter-validation
+#    4. spring-boot-starter-data-jpa
+#    정답·해설: practice/workbook-questions.md#w369
+#    정답: 3번 · 입력 DTO 제약과 검증 구현을 사용하도록 spring-boot-starter-validation을 선언합니다. 실제 요청 검증을 적용할 지점도 지정해야 합니다.
+
+# 선택형 [W370] 현재 빌드에서 서버의 HTML 템플릿 렌더링을 위한 starter는?
+#    1. spring-boot-starter-data-jpa
+#    2. spring-boot-starter-security
+#    3. spring-boot-starter-validation
+#    4. spring-boot-starter-thymeleaf
+#    정답·해설: practice/workbook-questions.md#w370
+#    정답: 4번 · Thymeleaf starter는 서버에서 모델 값으로 HTML 템플릿을 렌더링하는 구성을 제공합니다.
+
+# 선택형 [W371] 현재 빌드에서 SecurityFilterChain·CSRF·보안 헤더를 구성하는 starter는?
+#    1. spring-boot-starter-security
+#    2. spring-boot-starter-thymeleaf
+#    3. spring-boot-starter-validation
+#    4. spring-boot-starter-data-jpa
+#    정답·해설: practice/workbook-questions.md#w371
+#    정답: 1번 · Security starter로 필터 기반 보안을 구성합니다. 현재 프로젝트의 로그인·업무 인가는 세션 인터셉터와 서비스 가드도 사용합니다.
+
+# 선택형 [W372] Gradle runtimeOnly에 선언하는 학습용 H2 JDBC 드라이버 좌표는?
+#    1. com.mysql:mysql-connector-j
+#    2. com.h2database:h2
+#    3. org.flywaydb:flyway-mysql
+#    4. org.springframework.security:spring-security-test
+#    정답·해설: practice/workbook-questions.md#w372
+#    정답: 2번 · 기본 인메모리 학습 DB의 JDBC 드라이버는 com.h2database:h2입니다. Boot 4의 H2 콘솔 자동 설정 모듈은 별도 의존성입니다.

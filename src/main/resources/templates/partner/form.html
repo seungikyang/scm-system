@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
+  거래처 등록할 값을 적는 화면입니다. form은 입력칸들을 묶고 method="post"는 입력값을 서버에 보내 저장을 요청합니다.
+  th:object는 Java 입력 양식을 선택하고 th:field는 그 양식의 칸과 화면 입력칸을 연결합니다.
+-->
 <head th:replace="~{fragments/layout :: head('거래처 ' + (${mode} == 'edit' ? '수정' : '등록') + ' - SCM')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
@@ -12,7 +16,7 @@
     </div>
 
     <div class="card">
-        <!-- create: POST /partners, edit: POST /partners/{id} -->
+        <!-- 새 거래처는 /partners로, 기존 거래처 수정은 /partners/{id}로 입력값을 보냅니다. -->
         <form th:object="${partnerForm}"
               th:action="${mode == 'edit'} ? @{/partners/{id}(id=${partnerId})} : @{/partners}"
               method="post">

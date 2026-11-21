@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
+ * 거래처 목록의 한 행에 표시할 회사명, 담당자, 연락처, 상태입니다.
+ * 목록에서 필요한 값을 골라 담아 각 회사의 정보를 짧게 보여 줍니다.
+ *
  * 거래처 목록 행 View DTO (Web 목록 + REST 목록 공용).
  */
 @Getter

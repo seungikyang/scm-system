@@ -1,6 +1,7 @@
 package com.example.scm.dto.item;
 
 import com.example.scm.domain.Item;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 브라우저에서 물건을 등록하거나 수정할 때 사용하는 입력 양식입니다.
+ * from 함수가 저장된 값을 옮겨 주면 수정 화면에서 기존 정보를 확인할 수 있습니다.
+ *
  * 품목 등록/수정 폼 객체 (Web). th:object="${itemForm}".
  */
 @Getter
@@ -35,6 +39,7 @@ public class ItemForm {
 
     @NotNull(message = "단가는 필수입니다.")
     @PositiveOrZero(message = "단가는 0 이상이어야 합니다.")
+    @Digits(integer = 13, fraction = 2, message = "단가는 정수 13자리, 소수 2자리 이하여야 합니다.")
     private BigDecimal unitPrice;
 
     @NotNull(message = "안전재고는 필수입니다.")

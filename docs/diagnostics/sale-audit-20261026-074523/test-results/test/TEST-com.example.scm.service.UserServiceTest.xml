@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="UserService 단위 테스트" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-25T22:45:49.881Z" hostname="yangseouui-MacBookPro.local" time="0.003">
+  <properties/>
+  <testcase name="내 정보 응답에는 비밀번호 없이 공개 가능한 필드만 포함한다" classname="com.example.scm.service.UserServiceTest" time="0.0"/>
+  <testcase name="현재 비밀번호가 틀리면 새 비밀번호를 해시하거나 저장하지 않는다" classname="com.example.scm.service.UserServiceTest" time="0.001"/>
+  <testcase name="존재하지 않는 사용자의 내 정보 조회는 USER_NOT_FOUND다" classname="com.example.scm.service.UserServiceTest" time="0.0"/>
+  <testcase name="현재 비밀번호가 맞으면 새 비밀번호를 해시해 변경한다" classname="com.example.scm.service.UserServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

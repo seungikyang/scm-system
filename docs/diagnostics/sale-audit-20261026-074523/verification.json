@@ -1,0 +1,12 @@
+{
+  "completed_at": "2026-10-25T23:06:58.664395+00:00",
+  "json_parse": "PASS",
+  "finding_required_fields": "PASS",
+  "local_report_links": "PASS",
+  "scenario_math": "PASS",
+  "source_integrity": "PASS",
+  "test_report_freshness": "PASS",
+  "secret_fields_allowlist": "PASS",
+  "finding_count": 31,
+  "removed_cache_bytes": 3201417053
+}
